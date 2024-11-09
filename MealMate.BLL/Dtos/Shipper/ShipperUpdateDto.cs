@@ -2,23 +2,16 @@
 {
     public class ShipperUpdateDto
     {
-        public int? VehicleCapacity { get; init; }
-        public string? Status { get; init; }
-        public string? SAddress { get; init; }
-        public string? SFName { get; init; }
-        public string? SLName { get; init; }
-        public List<string>? SPhoneNo { get; init; }
-        public List<string>? SArea { get; init; }
-
-        public void Deconstruct(out int? vehicleCapacity, out string? status, out string? sAddress, out string? sFName, out string? sLName, out List<string>? sPhoneNo, out List<string>? sArea)
+        public string? Address { get; init; }
+        public string? FName { get; init; }
+        public string? LName { get; init; }
+        public string? SPhoneNo { get; init; }
+        public void Deconstruct(out string? sAddress, out string? sFName, out string? sLName, out string? sPhoneNo)
         {
-            vehicleCapacity = VehicleCapacity;
-            status = Status;
-            sAddress = SAddress;
-            sFName = SFName;
-            sLName = SLName;
+            sAddress = Address;
+            sFName = FName;
+            sLName = LName;
             sPhoneNo = SPhoneNo;
-            sArea = SArea;
         }
     }
 }

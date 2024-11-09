@@ -39,7 +39,7 @@ namespace MealMate.DAL.Repositories
             // Query the database, excluding deleted entries
             var promotions = await _context.PromoteCategories
                 .Include(p => p.ProductCategoryPromotion)
-               .Where(p => p.ProductCategoryPromotion.Category == category && !p.IsDeleted)
+               .Where(p => p.ProductCategoryPromotion.Category == category && p.ProductCategoryPromotion.StartDay <= DateTime.UtcNow.AddHours(7) && p.ProductCategoryPromotion.EndDay >= DateTime.UtcNow.AddHours(7))
                .Select(p => p.ProductCategoryPromotion)
                .ToListAsync();
 
@@ -48,12 +48,12 @@ namespace MealMate.DAL.Repositories
 
         public async Task<List<ProductCategoryPromotion>> GetAllCategoryPromotionsAsync()
         {
-            return await _context.ProductCategoryPromotions.Where(p => !p.IsDeleted).ToListAsync();
+            return await _context.ProductCategoryPromotions.Where(p => p.StartDay <= DateTime.UtcNow.AddHours(7) && p.EndDay >= DateTime.UtcNow.AddHours(7)).ToListAsync();
         }
 
         public async Task<ProductCategoryPromotion?> GetCategoryPromotionByIdAsync(Guid id)
         {
-            return await _context.ProductCategoryPromotions.FirstOrDefaultAsync(p => p.Id == id && !p.IsDeleted);
+            return await _context.ProductCategoryPromotions.FirstOrDefaultAsync(p => p.Id == id && p.StartDay <= DateTime.UtcNow.AddHours(7) && p.EndDay >= DateTime.UtcNow.AddHours(7));
         }
 
         public async Task CreateAsync(ProductCategoryPromotion newPromotion)
@@ -64,14 +64,7 @@ namespace MealMate.DAL.Repositories
 
         public async Task DeleteAsync(ProductCategoryPromotion productPromotion)
         {
-            productPromotion.IsDeleted = true;
-            _context.Entry(productPromotion).State = EntityState.Modified;
-
-            foreach (var promoteProduct in productPromotion.PromoteProductCategories)
-            {
-                promoteProduct.IsDeleted = true;
-                _context.Entry(promoteProduct).State = EntityState.Modified;
-            }
+            _context.Remove(productPromotion);
 
             await _context.SaveChangesAsync();
         }

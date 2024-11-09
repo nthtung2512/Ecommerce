@@ -4,10 +4,10 @@ namespace MealMate.BLL.IServices
 {
     public interface IProductPromotionAppService
     {
-        Task<List<ProductPromotionCreationDto>> GetAllProductPromotionsAsync();
-        Task<ProductPromotionCreationDto> GetProductPromotionByIdAsync(Guid id);
-        Task<List<ProductPromotionCreationDto>> GetPromotionsByProductId(Guid productId);
-        Task<ProductPromotionCreationDto> CreateProductPromotionByProductIdAsync(ProductPromotionCreationDto promotionData, Guid productId);
-        Task DeletePromotionAsync(Guid id);
+        Task<List<ProductPromotionDto>> GetAllProductPromotionsAsync();
+        /* Task<ProductPromotionCreationDto> GetProductPromotionByIdAsync(Guid id);*/
+        Task<List<ProductPromotionDto>> GetPromotionsByProductId(Guid productId);
+        Task<ProductPromotionDto> CreateProductPromotionByProductIdAsync(ProductPromotionCreationDto promotionData);
+        Task DeleteExpiredPromotionsAsync();
     }
 }

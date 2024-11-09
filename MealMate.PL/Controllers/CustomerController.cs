@@ -43,20 +43,6 @@ namespace MealMate.PL.Controllers
             return Ok(result);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> CreateCustomer([FromBody] CustomerCreationDto data)
-        {
-            var customer = await _customerAppService.CreateAsync(data);
-            return Ok(customer);
-        }
-
-        [HttpGet("login/{email}/{password}")]
-        public async Task<IActionResult> GetCustomerForLogin(string email, string password)
-        {
-            var customer = await _customerAppService.GetCustomerForLoginAsync(email, password);
-            return Ok(customer);
-        }
-
         [HttpGet("customer-rank/{customerID}")]
         public async Task<IActionResult> GetCustomerRank(Guid customerID)
         {
@@ -64,10 +50,10 @@ namespace MealMate.PL.Controllers
 
             string rank = totalMoneySpent switch
             {
-                >= 100000000 => "platinum",
-                >= 50000000 => "gold",
-                >= 25000000 => "silver",
-                >= 10000000 => "iron",
+                >= 10000 => "platinum",
+                >= 5000 => "gold",
+                >= 1500 => "silver",
+                >= 500 => "iron",
                 _ => "none"
             };
 

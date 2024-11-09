@@ -1,13 +1,10 @@
-﻿namespace MealMate.BLL.Dtos.Customer
+﻿using MealMate.BLL.Dtos.ApplicationUser;
+
+namespace MealMate.BLL.Dtos.Customer
 {
-    public class CustomerDto
+    public class CustomerDto : ApplicationUserDto
     {
-        public Guid CustomerID { get; init; }
-        public string CAddress { get; init; } = string.Empty;
-        public required string CFName { get; init; }
-        public required string CLName { get; init; }
-        public required string CPhone { get; init; }
-        public required string CEmail { get; init; }
-        public decimal TotalMoneySpent { get; set; }
+        public required decimal TotalMoneySpent { get; set; }
+        public required int FortuneChance { get; set; }
     }
 }

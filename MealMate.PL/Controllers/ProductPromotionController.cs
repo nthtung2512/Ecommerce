@@ -22,12 +22,12 @@ namespace MealMate.PL.Controllers
             return Ok(promotions);
         }
 
-        [HttpGet("promotion/{promotionId}")]
-        public async Task<IActionResult> GetPromotionByPromotionId(Guid promotionId)
-        {
-            var promotion = await _productPromotionAppService.GetProductPromotionByIdAsync(promotionId);
-            return Ok(promotion);
-        }
+        /*        [HttpGet("promotion/{promotionId}")]
+                public async Task<IActionResult> GetPromotionByPromotionId(Guid promotionId)
+                {
+                    var promotion = await _productPromotionAppService.GetProductPromotionByIdAsync(promotionId);
+                    return Ok(promotion);
+                }*/
 
         [HttpGet("{productId}")]
         public async Task<IActionResult> GetPromotionByProductId(Guid productId)
@@ -36,18 +36,10 @@ namespace MealMate.PL.Controllers
             return Ok(promotion);
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeletePromotion(Guid id)
+        [HttpPost]
+        public async Task<IActionResult> CreateProductPromotionByProductId([FromBody] ProductPromotionCreationDto promotionData)
         {
-            await _productPromotionAppService.DeletePromotionAsync(id);
-
-            return Ok(new { message = "Promotion deleted successfully." });
-        }
-
-        [HttpPost("{productId}")]
-        public async Task<IActionResult> CreateProductPromotionByProductId([FromBody] ProductPromotionCreationDto promotionData, Guid productId)
-        {
-            var createdPromotion = await _productPromotionAppService.CreateProductPromotionByProductIdAsync(promotionData, productId);
+            var createdPromotion = await _productPromotionAppService.CreateProductPromotionByProductIdAsync(promotionData);
             return Ok(createdPromotion);
         }
     }

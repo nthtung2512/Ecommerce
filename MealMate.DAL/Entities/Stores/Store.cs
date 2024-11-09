@@ -1,4 +1,5 @@
-﻿using MealMate.DAL.Utils;
+﻿using MealMate.DAL.Entities.Products;
+using MealMate.DAL.Utils;
 using MealMate.DAL.Utils.EFCore;
 
 namespace MealMate.DAL.Entities.Stores
@@ -9,6 +10,8 @@ namespace MealMate.DAL.Entities.Stores
         public DateTime OpeningDate { get; set; }
         public required string ContactInfo { get; set; }
         public required string Location { get; set; }
+        public ICollection<AT> ATs { get; } = [];
+        public ICollection<Bill> Bills { get; } = [];
         public bool IsDeleted { get; set; }
     }
 }

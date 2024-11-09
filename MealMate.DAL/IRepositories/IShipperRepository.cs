@@ -1,10 +1,11 @@
 ﻿using MealMate.DAL.Entities.ApplicationUser;
+using MealMate.DAL.IRepositories.auth;
 
 namespace MealMate.DAL.IRepositories
 {
-    public interface IShipperRepository : IRepository<Shipper, Guid>
+    public interface IShipperRepository : IIdentityRepository<Shipper>
     {
-        Task<List<Shipper>> GetFreeShipperByAreaAsync(string area);
-        Task<Shipper?> GetPhoneNoAsync(string phoneNo);
+        Task<List<Shipper>> GetListAsync();
+        Task<Shipper?> GetShipperByPhoneNumberAsync(string phoneno);
     }
 }

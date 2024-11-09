@@ -3,6 +3,7 @@
     public enum DeliveryStatus
     {
         Pending,
+        Prepared,
         Accepted,
         OnDelivery,
         Delivered

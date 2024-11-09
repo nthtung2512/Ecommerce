@@ -1,8 +1,13 @@
-﻿namespace MealMate.DAL.Entities.ApplicationUser
+﻿using MealMate.DAL.Entities.Products;
+using MealMate.DAL.Entities.Promotion;
+
+namespace MealMate.DAL.Entities.ApplicationUser
 {
-    public class Customer(Guid id) : ApplicationUser(id)
+    public class Customer() : ApplicationUser()
     {
-        public decimal TotalMoneySpent { get; set; } = 0.0m;
+        public decimal TotalMoneySpent { get; set; } = 0.00m;
         public int FortuneChance { get; set; } = 0;
+        public ICollection<PromoteCustomer> PromoteCustomers { get; } = [];
+        public ICollection<Bill> Bills { get; } = [];
     }
 }

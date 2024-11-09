@@ -42,39 +42,54 @@ namespace MealMate.DAL.Repositories
 
         public async Task DeleteAsync(ProductPromotion productPromotion)
         {
-            productPromotion.IsDeleted = true;
-            _context.Entry(productPromotion).State = EntityState.Modified;
-
-            foreach (var promoteProduct in productPromotion.PromoteProducts)
-            {
-                promoteProduct.IsDeleted = true;
-                _context.Entry(promoteProduct).State = EntityState.Modified;
-            }
-
+            _context.Remove(productPromotion);
             await _context.SaveChangesAsync();
         }
 
         public async Task<List<ProductPromotion>> GetAllProductPromotionsAsync()
         {
             return await _context.ProductPromotions
-                .Where(p => !p.IsDeleted)
+                .Include(p => p.PromoteProducts)
+                .ThenInclude(pp => pp.Product)
+                .Where(p => p.StartDay <= DateTime.UtcNow.AddHours(7) && p.EndDay >= DateTime.UtcNow.AddHours(7))
                 .ToListAsync();
         }
 
-        public async Task<ProductPromotion?> GetProductPromotionByIdAsync(Guid id)
+        /*public async Task<ProductPromotion?> GetProductPromotionByIdAsync(Guid id)
         {
             return await _context.ProductPromotions
-                .FirstOrDefaultAsync(p => p.Id == id && !p.IsDeleted);
-        }
+                .FirstOrDefaultAsync(p => p.Id == id);
+        }*/
 
         public async Task<List<ProductPromotion>> GetPromotionByProductIdAsync(Guid productId)
         {
             var promotion = await _context.PromoteProducts
                         .Include(p => p.ProductPromotion)
-                        .Where(p => p.ProductId == productId && !p.IsDeleted)
+                        .Include(p => p.Product)
+                        .Where(p => p.ProductId == productId
+                           && p.ProductPromotion.StartDay <= DateTime.UtcNow.AddHours(7)
+                           && p.ProductPromotion.EndDay >= DateTime.UtcNow.AddHours(7))
                         .Select(p => p.ProductPromotion)
                         .ToListAsync();
             return promotion;
+        }
+
+        /*        public async Task<List<PromoteProduct>> GetPromotionInfoByProductIdAsync(Guid productId)
+                {
+                    var promotion = await _context.PromoteProducts
+                                .Include(p => p.ProductPromotion)
+                                .Include(p => p.Product)
+                                .Where(p => p.ProductId == productId)
+                                .ToListAsync();
+                    return promotion;
+                }*/
+
+        public async Task<List<ProductPromotion>> GetExpiredPromotionsAsync()
+        {
+            return await _context.ProductPromotions
+                .Include(p => p.PromoteProducts)
+                .Where(p => p.EndDay < DateTime.UtcNow.AddHours(7))
+                .ToListAsync();
         }
     }
 }

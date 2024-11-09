@@ -1,7 +1,10 @@
-﻿namespace MealMate.DAL.Entities.ApplicationUser
+﻿using MealMate.DAL.Entities.Products;
+
+namespace MealMate.DAL.Entities.ApplicationUser
 {
-    public class Shipper(Guid id) : ApplicationUser(id)
+    public class Shipper() : ApplicationUser()
     {
         public int VehicleCapacity { get; set; } = 0;
+        public ICollection<Bill> Bills { get; } = [];
     }
 }

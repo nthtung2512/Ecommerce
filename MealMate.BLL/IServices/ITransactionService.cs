@@ -1,14 +1,17 @@
 ﻿using MealMate.BLL.Dtos.Bills;
+using MealMate.DAL.Utils.Enum;
 
 namespace MealMate.BLL.IServices
 {
     public interface ITransactionService
     {
         // Bill
-        Task<List<BillCreationDto>> GetBillListAsync(Guid customerId);
-        Task<BillCreationDto> GetBillByIdAsync(Guid transactionId);
+        Task<List<BillDto>> GetAllBillAsync();
+        Task<List<BillDto>> GetBillListAsync(Guid customerId);
+        Task<FullBillDto> GetBillByIdAsync(Guid transactionId);
         Task<Guid> GetLastBillIdAsync(Guid customerId);
-        Task<BillCreationDto> CreateBillAsync(BillCreationDto billData);
-        Task<BillCreationDto> AssignShipperAsync(BillCreationDto assignedBill);
+        Task<FullBillDto> CreateBillAsync(BillCreationDto billData);
+        Task<BillDto> AssignShipperToBillAsync(Guid transactionId, Guid shipperId);
+        Task<DeliveryStatus> UpdateDeliveryStatusAsync(Guid transactionId, DeliveryStatus status);
     }
 }

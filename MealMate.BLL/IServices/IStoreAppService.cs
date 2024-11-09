@@ -7,7 +7,7 @@ namespace MealMate.BLL.IServices
         Task<List<ATDto>> GetAtByProductIDAsync(Guid productId);
         Task<ATDto> GetAtByProductIDAndStoreIDAsync(Guid productId, Guid storeId);
         Task<ATDto> CreateAtAsync(Guid productid, Guid storeid, int amount);
-        Task<ATDto> UpdateAmountAtAsync(ATDto existingProduct);
+        Task<ATDto> UpdateAmountAtAsync(Guid productid, Guid storeid, int amount);
         Task<List<StoreDto>> GetAllStoresAsync();
         Task<StoreDto> GetStoreByIdAsync(Guid storeId);
     }

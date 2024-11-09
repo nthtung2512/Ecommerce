@@ -5,58 +5,23 @@ using MealMate.BLL.IServices;
 using MealMate.DAL.Entities.ApplicationUser;
 using MealMate.DAL.IRepositories;
 using MealMate.DAL.Utils.Exceptions;
-using MealMate.DAL.Utils.GuidUtil;
-using Microsoft.AspNetCore.Identity;
 
 namespace MealMate.BLL.Services
 {
-    internal class CustomerAppService : ICustomerAppService
+    public class CustomerAppService : ICustomerAppService
     {
-        private readonly IPasswordHasher<Customer> _passwordHasher;
-        private readonly GuidGenerator _guidGenerator;
-        private readonly IValidator<Customer> _customerValidator;
         private readonly ICustomerRepository _customerRepository;
+        private readonly IValidator<ApplicationUser> _customerValidator;
         private readonly IMapper _mapper;
 
-        public CustomerAppService(IPasswordHasher<Customer> passwordHasher, GuidGenerator guidGenerator, ICustomerRepository customerRepository, IValidator<Customer> customerValidator, IMapper mapper)
+        public CustomerAppService(IValidator<ApplicationUser> customerValidator, IMapper mapper, ICustomerRepository customerRepository)
         {
-            _passwordHasher = passwordHasher;
-            _guidGenerator = guidGenerator;
-            _customerRepository = customerRepository;
             _customerValidator = customerValidator;
             _mapper = mapper;
+            _customerRepository = customerRepository;
         }
 
         private CustomerDto Map(Customer customer) => _mapper.Map<CustomerDto>(customer);
-
-        public async Task<CustomerDto> CreateAsync(CustomerCreationDto createData)
-        {
-            Customer insertingCustomer = new(_guidGenerator.Create())
-            {
-                CAddress = createData.CAddress,
-                CFName = createData.CFName,
-                CLName = createData.CLName,
-                CPhone = createData.CPhone,
-                CEmail = createData.CEmail,
-                Password = createData.Password,
-                TotalMoneySpent = 0.0m,
-                IsDeleted = false
-            };
-
-            insertingCustomer.Password = _passwordHasher.HashPassword(insertingCustomer, createData.Password);
-
-            var validationResult = await _customerValidator.ValidateAsync(insertingCustomer);
-            if (!validationResult.IsValid)
-            {
-                throw new EntityValidationException(
-                    $"Validation exception when create new customer: {string.Join(", ", validationResult.Errors)}"
-                );
-            }
-
-            await _customerRepository.CreateAsync(insertingCustomer);
-
-            return Map(insertingCustomer);
-        }
 
         // Get customer list
         public async Task<List<CustomerDto>> GetListAsync()
@@ -81,20 +46,19 @@ namespace MealMate.BLL.Services
         // Update customer by ID
         public async Task<CustomerDto> UpdateAsync(Guid customerId, CustomerUpdateDto updateData)
         {
-            // Fetch customer by ID to update
             var existingCustomer = await _customerRepository.GetAsync(customerId) ?? throw new EntityNotFoundException("No customer found");
 
             // Update customer properties
-            existingCustomer.CAddress = updateData.CAddress ?? existingCustomer.CAddress;
-            existingCustomer.CFName = updateData.CFName ?? existingCustomer.CFName;
-            existingCustomer.CLName = updateData.CLName ?? existingCustomer.CLName;
-            existingCustomer.CPhone = updateData.CPhone ?? existingCustomer.CPhone;
+            existingCustomer.Address = updateData.Address ?? existingCustomer.Address;
+            existingCustomer.FName = updateData.FName ?? existingCustomer.FName;
+            existingCustomer.LName = updateData.LName ?? existingCustomer.LName;
+            existingCustomer.PhoneNumber = updateData.CPhone ?? existingCustomer.PhoneNumber;
 
             var validationResult = await _customerValidator.ValidateAsync(existingCustomer);
             if (!validationResult.IsValid)
             {
                 throw new EntityValidationException(
-                    $"Validation exception when update customer: {string.Join(", ", validationResult.Errors)}"
+                    $"Validation exception when updating customer: {string.Join(", ", validationResult.Errors)}"
                 );
             }
 
@@ -103,32 +67,13 @@ namespace MealMate.BLL.Services
             return Map(existingCustomer);
         }
 
-        // Delete customer by ID
-        public async Task DeleteAsync(Guid customerId)
-        {
-            var customer = await _customerRepository.GetAsync(customerId) ?? throw new EntityNotFoundException("Customer not found");
-
-            await _customerRepository.DeleteAsync(customer);
-        }
-
-        // TODO: Move to auth later. Get customer for login based on email and password
-        public async Task<CustomerDto> GetCustomerForLoginAsync(string email, string password)
-        {
-            var customer = await _customerRepository.GetCustomerForLoginAsync(email, password) ?? throw new UnauthorizedAccessException("Invalid credentials");
-
-            var passwordVerificationResult = _passwordHasher.VerifyHashedPassword(customer, customer.Password, password);
-
-            if (passwordVerificationResult == PasswordVerificationResult.Failed)
-                throw new UnauthorizedAccessException("Invalid credentials");
-
-            return Map(customer);
-        }
-
         // Get the last customer ID
         public async Task<Guid> GetLastCustomerIdAsync()
         {
-            return await _customerRepository.GetLastCustomerIdAsync();
+            var lastUser = await _customerRepository.GetLastCustomerIdAsync();
+            return lastUser;
         }
+
         public async Task<CustomerDto> AddTotalMoneySpentByIdAsync(Guid id, decimal money)
         {
             // Fetch customer by ID to update
@@ -136,7 +81,7 @@ namespace MealMate.BLL.Services
 
             // Update customer properties
             existingCustomer.TotalMoneySpent += money;
-
+            existingCustomer.FortuneChance += (int)(money / 100);
             await _customerRepository.UpdateAsync(existingCustomer);
 
             return Map(existingCustomer);

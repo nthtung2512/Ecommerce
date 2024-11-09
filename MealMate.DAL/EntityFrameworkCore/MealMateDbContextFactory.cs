@@ -11,8 +11,7 @@ namespace MealMate.DAL.EntityFrameworkCore
             var configuration = BuildConfiguration();
 
             var builder = new DbContextOptionsBuilder<MealMateDbContext>().UseNpgsql(
-            configuration.GetConnectionString("Default")
-        );
+            configuration.GetConnectionString("Default"));
 
             return new MealMateDbContext(builder.Options);
         }

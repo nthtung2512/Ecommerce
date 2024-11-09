@@ -2,15 +2,15 @@
 {
     public class CustomerUpdateDto
     {
-        public string? CAddress { get; init; }
-        public string? CFName { get; init; }
-        public string? CLName { get; init; }
+        public string? Address { get; init; }
+        public string? FName { get; init; }
+        public string? LName { get; init; }
         public string? CPhone { get; init; }
         public void Deconstruct(out string? cAddress, out string? cFName, out string? cLName, out string? cPhone)
         {
-            cAddress = CAddress;
-            cFName = CFName;
-            cLName = CLName;
+            cAddress = Address;
+            cFName = FName;
+            cLName = LName;
             cPhone = CPhone;
         }
     }

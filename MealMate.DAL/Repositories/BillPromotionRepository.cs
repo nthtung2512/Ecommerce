@@ -41,7 +41,7 @@ namespace MealMate.DAL.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(BillPromotion billPromotion)
+        /*public async Task DeleteAsync(BillPromotion billPromotion)
         {
             billPromotion.IsDeleted = true;
             _context.Entry(billPromotion).State = EntityState.Modified;
@@ -51,26 +51,56 @@ namespace MealMate.DAL.Repositories
                 _context.Entry(promoteBill).State = EntityState.Modified;
             }
             await _context.SaveChangesAsync();
-        }
+        }*/
 
         public async Task<List<BillPromotion>> GetAllBillPromotionsAsync()
         {
-            return await _context.BillPromotions.Where(p => !p.IsDeleted).ToListAsync();
+            return await _context.BillPromotions.Include(p => p.PromoteBills).Where(p => p.StartDay <= DateTime.UtcNow.AddHours(7) && p.EndDay >= DateTime.UtcNow.AddHours(7)).ToListAsync();
         }
 
         public async Task<BillPromotion?> GetBillPromotionByIdAsync(Guid id)
         {
-            return await _context.BillPromotions.FirstOrDefaultAsync(p => p.Id == id && !p.IsDeleted);
+            return await _context.BillPromotions.Include(p => p.PromoteBills).FirstOrDefaultAsync(p => p.PromotionChance > 0 && p.Id == id && p.StartDay <= DateTime.UtcNow.AddHours(7) && p.EndDay >= DateTime.UtcNow.AddHours(7));
         }
 
         public async Task<List<BillPromotion>> GetPromotionByBillId(Guid billId)
         {
             var promotions = await _context.PromoteBills
                 .Include(p => p.BillPromotion)
-                .Where(p => p.TransactionId == billId && p.BillPromotion.ApplyPrice >= p.Bill.TotalPrice && !p.IsDeleted)
+                .Where(p => p.TransactionId == billId)
                 .Select(p => p.BillPromotion)
                 .ToListAsync();
             return promotions;
+        }
+
+        public async Task<BillPromotion?> GetBestBillPromotionByPriceAsync(decimal totalprice)
+        {
+            var promotion = await _context.BillPromotions
+                .Where(p => p.ApplyPrice <= totalprice && p.PromotionChance > 0 && p.StartDay <= DateTime.UtcNow.AddHours(7) && p.EndDay >= DateTime.UtcNow.AddHours(7))
+                .OrderByDescending(p => p.ApplyPrice)
+                .FirstOrDefaultAsync();
+            return promotion;
+        }
+
+        public async Task UpdateAsync(BillPromotion billPromotion)
+        {
+
+            // _context.Entry(billPromotion).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<List<BillPromotion>> GetExpiredBillPromotions()
+        {
+            var promotions = await _context.BillPromotions
+                .Where(p => p.EndDay < DateTime.UtcNow.AddHours(7))
+                .ToListAsync();
+            return promotions;
+        }
+
+        public async Task DeleteExpiredPromotionsAsync(BillPromotion billPromotion)
+        {
+            _context.Remove(billPromotion);
+            await _context.SaveChangesAsync();
         }
     }
 }

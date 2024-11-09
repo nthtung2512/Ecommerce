@@ -1,4 +1,5 @@
 using MealMate.Base.Extensions;
+using MealMate.DAL.EntityFrameworkCore;
 using MealMate.PL;
 using MealMate.PL.Environment;
 using Microsoft.AspNetCore.Identity;
@@ -45,7 +46,7 @@ try
 
     static async Task SeedRolesAsync(IServiceProvider serviceProvider)
     {
-        var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+        var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
 
         string[] roleNames = { "Admin", "Customer", "StoreManager", "Shipper" };
 
@@ -54,7 +55,7 @@ try
             var roleExists = await roleManager.RoleExistsAsync(roleName);
             if (!roleExists)
             {
-                await roleManager.CreateAsync(new IdentityRole(roleName));
+                await roleManager.CreateAsync(new IdentityRole<Guid>(roleName));
             }
         }
     }
@@ -65,11 +66,12 @@ try
     {
         await SeedRolesAsync(scope.ServiceProvider);
     }
-    /*
-        await using (var scope = app.Services.CreateAsyncScope())
-        {
-            scope.ServiceProvider.GetRequiredService<Seed>().Populate(env);
-        }*/
+
+    using (var scope = app.Services.CreateScope())
+    {
+        var seedService = scope.ServiceProvider.GetRequiredService<Seed>();
+        await seedService.Populate(env);  // This will now use the DbContext and UserManager within the scope
+    }
 
     // Configure the HTTP request pipeline.
     if (app.Environment.IsDevelopment())

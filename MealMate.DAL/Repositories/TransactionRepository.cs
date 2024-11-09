@@ -15,7 +15,10 @@ namespace MealMate.DAL.Repositories
         public async Task<List<Include>> GetAllItemsByBillIdAsync(Guid transactionId)
         {
             // Await the result of FirstOrDefaultAsync to get the Bill
-            var bill = await Query.FirstOrDefaultAsync(b => b.Id == transactionId);
+            var bill = await Query
+                .Include(b => b.Includes)
+                .ThenInclude(i => i.Product)
+                .FirstOrDefaultAsync(b => b.Id == transactionId);
 
             // Check if the bill is not null before proceeding
             if (bill != null)
@@ -33,7 +36,7 @@ namespace MealMate.DAL.Repositories
             return await _context.Bills.Include(b => b.Includes).ThenInclude(p => p.Product).FirstOrDefaultAsync(e => e.Id.Equals(id));
         }
 
-        public override async Task DeleteAsync(Bill bill)
+        /*public override async Task DeleteAsync(Bill bill)
         {
             bill.IsDeleted = true;
             _context.Entry(bill).State = EntityState.Modified;
@@ -41,26 +44,25 @@ namespace MealMate.DAL.Repositories
             {
                 include.IsDeleted = true;
                 _context.Entry(include).State = EntityState.Modified;
-
-                include.Product.IsDeleted = true;
-                _context.Entry(include.Product).State = EntityState.Modified;
             }
 
             await _context.SaveChangesAsync();
-        }
+        }*/
         public async Task<List<Product>> GetListProductByPromotionIDAsync(Guid promotionId)
         {
             // Fetch products from PromoteProducts that match the promotionId and are not deleted
-            var productsFromPromoteProducts = await _context.PromoteProducts
-                                                            .Where(p => p.PromotionId == promotionId && p.Product.IsDeleted == false)
-                                                            .Select(p => p.Product)
-                                                            .ToListAsync();
+            var productsFromPromoteProducts
+                = await _context.PromoteProducts
+                        .Where(p => p.PromotionId == promotionId && p.Product.IsDeleted == false)
+                        .Select(p => p.Product)
+                        .ToListAsync();
 
             // Fetch products from PromoteCategory that match the promotionId and are not deleted
-            var productsFromPromoteCategory = await _context.PromoteCategories
-                                                           .Where(p => p.PromotionId == promotionId && p.Product.IsDeleted == false)
-                                                           .Select(p => p.Product)
-                                                           .ToListAsync();
+            var productsFromPromoteCategory
+                = await _context.PromoteCategories
+                        .Where(p => p.PromotionId == promotionId && p.Product.IsDeleted == false)
+                        .Select(p => p.Product)
+                        .ToListAsync();
 
             // Combine the two lists and remove duplicates, if any
             var allProducts = productsFromPromoteProducts.Concat(productsFromPromoteCategory)
@@ -74,6 +76,11 @@ namespace MealMate.DAL.Repositories
         public Task<List<Bill>> GetBillListAsync(Guid customerId)
         {
             return _context.Bills.Where(b => b.CustomerID == customerId).ToListAsync();
+        }
+
+        public Task<List<Bill>> GetAllBillAsync()
+        {
+            return _context.Bills.Include(b => b.Includes).ToListAsync();
         }
     }
 }

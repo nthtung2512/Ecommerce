@@ -8,6 +8,9 @@ namespace MealMate.BLL.IServices
         Task<BillPromotionCreationDto> GetBillPromotionByIdAsync(Guid id);
         Task<List<BillPromotionCreationDto>> GetPromotionsByBillId(Guid transactionId);
         Task<BillPromotionCreationDto> CreateBillPromotionAsync(BillPromotionCreationDto promotionData);
-        Task DeletePromotionAsync(Guid id);
+        Task<BillPromotionCreationDto> GetBestBillPromotionByPriceAsync(decimal totalprice);
+        Task<int> ApplyBillPromotionToBillAsync(Guid promotionId, Guid billId);
+        /*        Task DeletePromotionAsync(Guid id);*/
+        Task DeleteExpiredPromotionsAsync();
     }
 }

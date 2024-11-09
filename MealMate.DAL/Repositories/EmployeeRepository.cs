@@ -1,32 +1,22 @@
 ﻿using MealMate.DAL.Entities.ApplicationUser;
 using MealMate.DAL.EntityFrameworkCore;
 using MealMate.DAL.IRepositories;
+using MealMate.DAL.Repositories.auth;
 using Microsoft.EntityFrameworkCore;
 
 namespace MealMate.DAL.Repositories
 {
-    internal class EmployeeRepository(MealMateDbContext context) : Repository<StoreManager, Guid>(context), IEmployeeRepository
+    internal class EmployeeRepository(MealMateDbContext context) : IdentityRepository<StoreManager>(context), IEmployeeRepository
     {
-        public override async Task<StoreManager?> GetAsync(Guid id)
+        public async Task<StoreManager?> GetEmployeeByStoreIdAsync(Guid storeid)
         {
-            return await _context.StoreManagers
-                .Include(e => e.EPhones)
-                .FirstOrDefaultAsync(e => e.Id.Equals(id));
+            var employee = await Query.FirstOrDefaultAsync(e => e.StoreId == storeid);
+            return employee;
         }
 
-        public async Task<StoreManager?> GetStoreManagerForLoginAsync(string email, string password)
+        public Task<List<StoreManager>> GetStoreManagerListAsync()
         {
-            return await _context.StoreManagers
-                .Include(e => e.EPhones)
-                .FirstOrDefaultAsync(e => e.Email.Equals(email));
-        }
-
-        public override async Task DeleteAsync(StoreManager storeManager)
-        {
-            storeManager.IsDeleted = true;
-            _context.Entry(storeManager).State = EntityState.Modified;
-            storeManager.EPhones.Clear();
-            await _context.SaveChangesAsync();
+            return Query.ToListAsync();
         }
     }
 }

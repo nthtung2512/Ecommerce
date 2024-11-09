@@ -4,7 +4,7 @@ namespace MealMate.BLL.Dtos.Promotion
 {
     public class PromotionCreationDto
     {
-        public Guid PromotionID { get; init; }
+        public Guid PromotionId { get; init; }
         [Precision(3, 2)]
         public required decimal Discount { get; init; }
         public required string Name { get; init; }

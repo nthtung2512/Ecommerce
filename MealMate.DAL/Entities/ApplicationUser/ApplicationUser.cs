@@ -1,17 +1,19 @@
 ﻿using FluentValidation;
 using MealMate.DAL.IRepositories.auth;
 using MealMate.DAL.Utils;
-using MealMate.DAL.Utils.EFCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace MealMate.DAL.Entities.ApplicationUser
 {
-    public class ApplicationUser(Guid id) : Entity<Guid>(id), IDeletableEntity
+    public class ApplicationUser : IdentityUser<Guid>, IDeletableEntity
     {
-        public required string Email { get; set; }
-        public required string FirstName { get; set; }
-        public required string LastName { get; set; }
+        public ApplicationUser() : base() // Parameterless constructor
+        {
+            // Initialization if needed
+        }
+        public string FName { get; set; } = string.Empty;
+        public string LName { get; set; } = string.Empty;
         public string Address { get; set; } = string.Empty;
-        public required string PhoneNumber { get; set; }
         public bool IsDeleted { get; set; } = false;
     }
 
@@ -23,14 +25,15 @@ namespace MealMate.DAL.Entities.ApplicationUser
         {
             _applicationUserRepository = applicationUserRepository;
 
-            RuleFor(user => user.Email)
-                .MustAsync(IsEmailUnique)
+            RuleFor(user => user)
+                .MustAsync((user, token) => IsEmailUnique(user.Email, user.Id, token))
                 .WithMessage("Email must be valid and unique");
         }
 
-        private async Task<bool> IsEmailUnique(string email, CancellationToken token)
+        private async Task<bool> IsEmailUnique(string email, Guid customerid, CancellationToken token)
         {
-            return await _applicationUserRepository.GetByEmailAsync(email) == null;
+            var existingUser = await _applicationUserRepository.GetByEmailAsync(email);
+            return existingUser == null || existingUser.Id == customerid;
         }
     }
 

@@ -16,6 +16,13 @@ namespace MealMate.PL.Controllers
             _transactionService = transactionService;
         }
 
+        [HttpGet()]
+        public async Task<IActionResult> GetAllShippers()
+        {
+            var shipper = await _shipperAppService.GetListAsync();
+            return Ok(shipper);
+        }
+
         [HttpGet("{shipperId}")]
         public async Task<IActionResult> GetShipperById(Guid shipperId)
         {
@@ -23,32 +30,24 @@ namespace MealMate.PL.Controllers
             return Ok(shipper);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetFreeShipperByArea([FromBody] string area)
+        [HttpGet("phone/{phoneno}")]
+        public async Task<IActionResult> GetShipperByPhoneNumber(string phoneno)
         {
-            var shipper = await _shipperAppService.GetFreeShipperByAreaAsync(area);
+            var shipper = await _shipperAppService.GetShipperByPhoneNumberAsync(phoneno);
             return Ok(shipper);
-        }
-
-        [HttpPatch("assign/{transactionId}")]
-        public async Task<IActionResult> AssignShipper(Guid transactionId)
-        {
-            var assignedBill = await _transactionService.GetBillByIdAsync(transactionId);
-            var result = await _transactionService.AssignShipperAsync(assignedBill);
-            return Ok(result);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> CreateShipper([FromBody] ShipperCreationDto shipperData)
-        {
-            var result = await _shipperAppService.CreateShipperAsync(shipperData);
-            return Ok(result);
         }
 
         [HttpPatch("{shipperId}")]
         public async Task<IActionResult> UpdateShipper(Guid shipperId, [FromBody] ShipperUpdateDto shipperData)
         {
             var result = await _shipperAppService.UpdateShipperAsync(shipperId, shipperData);
+            return Ok(result);
+        }
+
+        [HttpPatch("{shipperId}/{capacity}")]
+        public async Task<IActionResult> UpdateShipperCapacity(Guid shipperId, int capacity)
+        {
+            var result = await _shipperAppService.UpdateShipperCapacityAsync(shipperId, capacity);
             return Ok(result);
         }
 

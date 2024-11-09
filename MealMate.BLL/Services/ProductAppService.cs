@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using FluentValidation;
+﻿using FluentValidation;
 using MealMate.BLL.Dtos.Product;
 using MealMate.BLL.IServices;
 using MealMate.DAL.Entities.Promotion;
@@ -18,13 +17,11 @@ namespace MealMate.BLL.Services
         private readonly ICategoryPromotionRepository _categoryPromotionRepository;
         private readonly IValidator<Product> _productValidator;
         private readonly GuidGenerator _guidGenerator;
-        private readonly Mapper _mapper;
 
-        public ProductAppService(IProductRepository productRepository, GuidGenerator guidGenerator, Mapper mapper, IValidator<Product> productValidator, ITransactionRepository transactionRepository, IProductPromotionRepository productPromotionRepository, ICategoryPromotionRepository categoryPromotionRepository)
+        public ProductAppService(IProductRepository productRepository, GuidGenerator guidGenerator, IValidator<Product> productValidator, ITransactionRepository transactionRepository, IProductPromotionRepository productPromotionRepository, ICategoryPromotionRepository categoryPromotionRepository)
         {
             _productRepository = productRepository;
             _guidGenerator = guidGenerator;
-            _mapper = mapper;
             _productValidator = productValidator;
             _transactionRepository = transactionRepository;
             _productPromotionRepository = productPromotionRepository;
@@ -49,7 +46,8 @@ namespace MealMate.BLL.Services
                 Price = product.Price,
                 Discount = totalDiscount,
                 DiscountedPrice = Math.Round(discountedPrice, 2),
-                Weight = product.Weight
+                Weight = product.Weight,
+                ImageURL = product.ImageURL
             };
             return productDto;
         }
@@ -64,8 +62,8 @@ namespace MealMate.BLL.Services
             var productDtos = new List<ProductDto>();
             foreach (var item in includes)
             {
-                var discount = item.Discount;
-                var discountedPrice = CalculateProductDiscountedPrice(item.Product.Price, discount) == 0 ? item.Product.Price : CalculateProductDiscountedPrice(item.Product.Price, discount);
+                /* var discount = item.Discount;
+                 var discountedPrice = CalculateProductDiscountedPrice(item.Product.Price, discount) == 0 ? item.Product.Price : CalculateProductDiscountedPrice(item.Product.Price, discount);*/
                 var productDto = new ProductDto
                 {
                     ProductID = item.Product.Id,
@@ -73,9 +71,9 @@ namespace MealMate.BLL.Services
                     Description = item.Product.Description,
                     PName = item.Product.PName,
                     Price = item.Product.Price,
-                    Discount = discount,
-                    DiscountedPrice = Math.Round(discountedPrice, 2),
-                    Weight = item.Product.Weight
+                    DiscountedPrice = (double)(item.SubTotal / item.NumberOfProductInBill),
+                    Weight = item.Product.Weight,
+                    ImageURL = item.Product.ImageURL
                 };
                 productDtos.Add(productDto);
             }
@@ -167,7 +165,7 @@ namespace MealMate.BLL.Services
 
         public async Task<ProductDto> CreateProductAsync(ProductCreationDto createData)
         {
-            var newProduct = new Product(_guidGenerator.Create()) { Category = createData.Category, Description = createData.Description, PName = createData.PName, Price = createData.Price, Weight = createData.Weight, IsDeleted = false };
+            var newProduct = new Product(_guidGenerator.Create()) { Category = createData.Category, Description = createData.Description, PName = createData.PName, Price = createData.Price, Weight = createData.Weight, ImageURL = createData.ImageURL, IsDeleted = false };
 
             var validationResult = await _productValidator.ValidateAsync(newProduct);
             if (!validationResult.IsValid)
@@ -176,8 +174,9 @@ namespace MealMate.BLL.Services
                     $"Validation exception when creating new product: {string.Join(", ", validationResult.Errors)}"
                 );
             }
+            var newProductDto = await MapProductDto(newProduct);
             await _productRepository.CreateAsync(newProduct);
-            return await MapProductDto(newProduct);
+            return newProductDto;
         }
 
         public async Task DeleteProductAsync(Guid id)
@@ -190,6 +189,12 @@ namespace MealMate.BLL.Services
         {
             var product = await _productRepository.GetAsync(id) ?? throw new EntityNotFoundException("Product not found");
 
+            product.Category = updateData.Category ?? product.Category;
+            product.Description = updateData.Description ?? product.Description;
+            product.Price = updateData.Price ?? product.Price;
+            product.Weight = updateData.Weight ?? product.Weight;
+            product.ImageURL = updateData.ImageURL ?? product.ImageURL;
+
             var validationResult = await _productValidator.ValidateAsync(product);
             if (!validationResult.IsValid)
             {
@@ -197,9 +202,9 @@ namespace MealMate.BLL.Services
                     $"Validation exception when updating product: {string.Join(", ", validationResult.Errors)}"
                 );
             }
-
+            var productDto = await MapProductDto(product);
             await _productRepository.UpdateAsync(product);
-            return await MapProductDto(product);
+            return productDto;
         }
 
         public double ShortCutCalculateProductDiscountedPrice(List<ProductPromotion> productPromotions, List<ProductCategoryPromotion> productCategoryPromotions, double price)
@@ -220,8 +225,12 @@ namespace MealMate.BLL.Services
 
         public double CalculateProductDiscountedPrice(double price, decimal discount)
         {
-            return price * (double)discount;
+            return price * (1 - (double)discount);
         }
 
+        public async Task DeleteProductAtStoreAsync(Guid productId, Guid storeId)
+        {
+            await _productRepository.DeleteProductAtStoreAsync(productId, storeId);
+        }
     }
 }

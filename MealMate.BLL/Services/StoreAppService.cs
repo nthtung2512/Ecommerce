@@ -12,14 +12,16 @@ namespace MealMate.BLL.Services
         private readonly IStoreRepository _storeRepository;
         private readonly IAtRepository _atRepository;
         private readonly IProductRepository _productRepository;
+        private readonly IProductAppService _productAppService;
         private readonly IMapper _mapper;
 
-        public StoreAppService(IStoreRepository storeRepository, IAtRepository atRepository, IProductRepository productRepository, IMapper mapper)
+        public StoreAppService(IStoreRepository storeRepository, IAtRepository atRepository, IProductRepository productRepository, IMapper mapper, IProductAppService productAppService)
         {
             _storeRepository = storeRepository;
             _atRepository = atRepository;
             _productRepository = productRepository;
             _mapper = mapper;
+            _productAppService = productAppService;
         }
 
         public async Task<ATDto> CreateAtAsync(Guid productid, Guid storeid, int amount)
@@ -35,8 +37,17 @@ namespace MealMate.BLL.Services
                 NumberAtStore = amount,
                 IsDeleted = false
             };
+            var productDto = await _productAppService.MapProductDto(product);
             await _atRepository.CreateAsync(newAt);
-            return _mapper.Map<ATDto>(newAt);
+
+            var atDto = new ATDto
+            {
+                ProductID = productid,
+                StoreID = storeid,
+                NumberAtStore = amount,
+                Product = productDto
+            };
+            return atDto;
         }
 
         public async Task<List<StoreDto>> GetAllStoresAsync()
@@ -52,7 +63,15 @@ namespace MealMate.BLL.Services
         public async Task<ATDto> GetAtByProductIDAndStoreIDAsync(Guid productId, Guid storeId)
         {
             var at = await _atRepository.GetAtByProductIDAndStoreIDAsync(productId, storeId) ?? throw new EntityNotFoundException("No product found");
-            return _mapper.Map<ATDto>(at);
+            var product = await _productRepository.GetAsync(productId) ?? throw new EntityNotFoundException("No product found");
+            var productDto = await _productAppService.MapProductDto(product);
+            return new ATDto
+            {
+                ProductID = productId,
+                StoreID = storeId,
+                NumberAtStore = at.NumberAtStore,
+                Product = productDto
+            };
         }
 
         public async Task<List<ATDto>> GetAtByProductIDAsync(Guid productId)
@@ -62,7 +81,20 @@ namespace MealMate.BLL.Services
             {
                 throw new EntityNotFoundException("No product found");
             }
-            return _mapper.Map<List<ATDto>>(at);
+            var atDtos = new List<ATDto>();
+            foreach (var item in at)
+            {
+                var product = await _productRepository.GetAsync(productId) ?? throw new EntityNotFoundException("No product found");
+                var productDto = await _productAppService.MapProductDto(product);
+                atDtos.Add(new ATDto
+                {
+                    ProductID = productId,
+                    StoreID = item.StoreID,
+                    NumberAtStore = item.NumberAtStore,
+                    Product = productDto
+                });
+            }
+            return atDtos;
         }
 
         public async Task<StoreDto> GetStoreByIdAsync(Guid storeId)
@@ -71,12 +103,29 @@ namespace MealMate.BLL.Services
             return _mapper.Map<StoreDto>(store);
         }
 
-        public async Task<ATDto> UpdateAmountAtAsync(ATDto existingProduct)
+        public async Task<ATDto> UpdateAmountAtAsync(Guid productid, Guid storeid, int amount)
         {
-            var at = await _atRepository.GetAtByProductIDAndStoreIDAsync(existingProduct.ProductID, existingProduct.StoreID) ?? throw new EntityNotFoundException("No product found");
-            at.NumberAtStore = existingProduct.NumberAtStore;
-            await _atRepository.UpdateAmountAtAsync(at);
-            return _mapper.Map<ATDto>(at);
+            var existingProduct = await _atRepository.GetAtByProductIDAndStoreIDAsync(productid, storeid);
+            if (existingProduct == null)
+            {
+                var atDto = await CreateAtAsync(productid, storeid, amount);
+                return atDto;
+            }
+            else
+            {
+                existingProduct.NumberAtStore += amount;
+                await _atRepository.UpdateAsync(existingProduct);
+                var productDto = await _productAppService.MapProductDto(existingProduct.Product);
+                return new ATDto
+                {
+                    ProductID = existingProduct.ProductID,
+                    StoreID = existingProduct.StoreID,
+                    NumberAtStore = existingProduct.NumberAtStore,
+                    Product = productDto
+                };
+            }
+
+
         }
     }
 }

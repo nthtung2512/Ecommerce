@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using FluentValidation;
+using MealMate.BLL.Dtos.ApplicationUser;
 using MealMate.BLL.Dtos.Customer;
 using MealMate.BLL.Dtos.Employee;
 using MealMate.BLL.Dtos.Shipper;
@@ -35,12 +36,14 @@ namespace MealMate.BLL.Services.auth
 
         public async Task<CustomerDto> RegisterCustomerAsync(CustomerCreationDto customerDto)
         {
-            var user = new Customer(_guidGenerator.Create())
+            var user = new Customer()
             {
+                Id = _guidGenerator.Create(),
                 Email = customerDto.CEmail,
-                FirstName = customerDto.CFName,
-                LastName = customerDto.CLName,
-                Address = customerDto.CAddress ?? string.Empty,
+                UserName = customerDto.FName + customerDto.LName,
+                FName = customerDto.FName,
+                LName = customerDto.LName,
+                Address = customerDto.Address ?? string.Empty,
                 PhoneNumber = customerDto.CPhone,
             };
 
@@ -65,13 +68,15 @@ namespace MealMate.BLL.Services.auth
             return _mapper.Map<CustomerDto>(user);
         }
 
-        public async Task<EmployeeCreationDto> RegisterStoreManagerAsync(EmployeeCreationDto storeManagerDto)
+        public async Task<EmployeeDto> RegisterStoreManagerAsync(EmployeeCreationDto storeManagerDto)
         {
-            var user = new StoreManager(_guidGenerator.Create())
+            var user = new StoreManager()
             {
+                Id = _guidGenerator.Create(),
                 Email = storeManagerDto.Email,
-                FirstName = storeManagerDto.FirstName,
-                LastName = storeManagerDto.LastName,
+                UserName = storeManagerDto.FName + storeManagerDto.LName,
+                FName = storeManagerDto.FName,
+                LName = storeManagerDto.LName,
                 Address = storeManagerDto.Address ?? string.Empty,
                 PhoneNumber = storeManagerDto.EPhone,
                 Salary = storeManagerDto.Salary,
@@ -93,19 +98,21 @@ namespace MealMate.BLL.Services.auth
                 throw new EntityBadRequestException($"Failed to create new manager: {errors}");
             }
 
-            await _userManager.AddToRoleAsync(user, "Manager");
+            await _userManager.AddToRoleAsync(user, "StoreManager");
 
-            return _mapper.Map<EmployeeCreationDto>(user);
+            return _mapper.Map<EmployeeDto>(user);
         }
 
         public async Task<ShipperDto> RegisterShipperAsync(ShipperCreationDto shipperDto)
         {
-            var user = new Shipper(_guidGenerator.Create())
+            var user = new Shipper()
             {
+                Id = _guidGenerator.Create(),
                 Email = shipperDto.SEmail,
-                FirstName = shipperDto.SFName,
-                LastName = shipperDto.SLName,
-                Address = shipperDto.SAddress ?? string.Empty,
+                UserName = shipperDto.FName + shipperDto.LName,
+                FName = shipperDto.FName,
+                LName = shipperDto.LName,
+                Address = shipperDto.Address ?? string.Empty,
                 PhoneNumber = shipperDto.SPhoneNo,
             };
 
@@ -129,7 +136,7 @@ namespace MealMate.BLL.Services.auth
             return _mapper.Map<ShipperDto>(user);
         }
 
-        public async Task<ApplicationUser> GetUserAsync(string email, string password)
+        public async Task<UserWithRoleDto> GetUserAsync(string email, string password)
         {
             var user = await _userManager.FindByEmailAsync(email);
             if (user == null || !await _userManager.CheckPasswordAsync(user, password))
@@ -148,14 +155,49 @@ namespace MealMate.BLL.Services.auth
             string role = roles.First();
 
             // Fetch role-specific data based on role
-            return role switch
+            UserWithRoleDto userWithRoleData;
+
+            if (role == "Customer")
             {
-                "Customer" => await _customerRepository.GetAsync(user.Id),
-                "StoreManager" => await _employeeRepository.GetAsync(user.Id),
-                "Shipper" => await _shipperRepository.GetAsync(user.Id),
-                "Admin" => user,
-                _ => throw new EntityValidationException("Invalid user role")
-            };
+                var customer = await _customerRepository.GetAsync(user.Id);
+                userWithRoleData = new UserWithRoleDto
+                {
+                    User = _mapper.Map<CustomerDto>(customer),
+                    Role = role
+                };
+            }
+            else if (role == "StoreManager")
+            {
+                var storeManager = await _employeeRepository.GetAsync(user.Id);
+                userWithRoleData = new UserWithRoleDto
+                {
+                    User = _mapper.Map<EmployeeDto>(storeManager),
+                    Role = role
+                };
+            }
+            else if (role == "Shipper")
+            {
+                var shipper = await _shipperRepository.GetAsync(user.Id);
+                userWithRoleData = new UserWithRoleDto
+                {
+                    User = _mapper.Map<ShipperDto>(shipper),
+                    Role = role
+                };
+            }
+            else if (role == "Admin")
+            {
+                userWithRoleData = new UserWithRoleDto
+                {
+                    User = _mapper.Map<ApplicationUserDto>(user),
+                    Role = role
+                };
+            }
+            else
+            {
+                throw new EntityValidationException("Invalid user role");
+            }
+
+            return userWithRoleData;
         }
     }
 

@@ -15,6 +15,13 @@ namespace MealMate.PL.Controllers
             _employeeAppService = employeeAppService;
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetListEmployees()
+        {
+            var employee = await _employeeAppService.GetListEmployeeAsync();
+            return Ok(employee);
+        }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetEmployeeById(Guid id)
         {
@@ -22,11 +29,11 @@ namespace MealMate.PL.Controllers
             return Ok(employee);
         }
 
-        [HttpGet("login/{email}/{password}")]
-        public async Task<IActionResult> GetStoreManagerForLogin(string email, string password)
+        [HttpGet("store/{storeid}")]
+        public async Task<IActionResult> GetEmployeeByStoreId(Guid storeid)
         {
-            var customer = await _employeeAppService.GetStoreManagerForLoginAsync(email, password);
-            return Ok(customer);
+            var employee = await _employeeAppService.GetEmployeeByStoreIdAsync(storeid);
+            return Ok(employee);
         }
 
         [HttpPatch("{id}")]

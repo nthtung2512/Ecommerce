@@ -1,13 +1,8 @@
-﻿using MailKit.Security;
-using MealMate.DAL.Entities.Email;
-using MimeKit;
-using MimeKit.Text;
-
-namespace MealMate.BLL.Services
+﻿namespace MealMate.BLL.Services
 {
     public class EmailNotificationService
     {
-        public static async Task SendAsync(EmailSetting emailSetting, string subject, string message)
+        /*public static async Task SendAsync(EmailSetting emailSetting, string subject, string message)
         {
             var email = new MimeMessage()
             {
@@ -30,7 +25,7 @@ namespace MealMate.BLL.Services
             await client.AuthenticateAsync(emailSetting.FromEmail, emailSetting.Password);
             await client.SendAsync(email);
             await client.DisconnectAsync(true);
-        }
+        }*/
     }
 
 }

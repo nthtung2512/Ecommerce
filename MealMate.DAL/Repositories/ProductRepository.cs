@@ -49,5 +49,31 @@ namespace MealMate.DAL.Repositories
 
             return topProducts;
         }
+
+        public override async Task DeleteAsync(Product entity)
+        {
+            entity.IsDeleted = true;
+            _context.Entry(entity).State = EntityState.Modified;
+
+            var ATs = await _context.ATs.Where(a => a.ProductID == entity.Id).ToListAsync();
+
+            foreach (var at in ATs)
+            {
+                at.IsDeleted = true;
+                _context.Entry(at).State = EntityState.Modified;
+            }
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteProductAtStoreAsync(Guid productId, Guid storeId)
+        {
+            var at = await _context.ATs.FirstOrDefaultAsync(a => a.ProductID == productId && a.StoreID == storeId);
+            if (at != null)
+            {
+                at.IsDeleted = true;
+                _context.Entry(at).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+            }
+        }
     }
 }

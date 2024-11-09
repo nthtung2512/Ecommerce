@@ -9,9 +9,9 @@ GET "/users/login/:email/:password" : "Login",
 CustomerDTO
 	{
 	   Guid CustomerID
-	   string CAddress
-	   string CFName
-	   string CLName
+	   string Address
+	   string FName
+	   string LName
 	   string CPhone
 	   string CEmail
 	   decimal TotalMoneySpent
@@ -31,9 +31,9 @@ GET "/customers/rank/:customerid" : "Get customer rank by customer id",
 
 PATCH "/customers/:id/" : "Update customer information",
 	From request body needs to have one of them:
-		- CAddress
-		- CFName
-		- CLName
+		- Address
+		- FName
+		- LName
 		- CPhone
 	=> Return  StatusCode(...)  +  CustomerDTO
 
@@ -49,9 +49,9 @@ PATCH "/customers/totalmoney/:id/:money" : "Add total money spent by customer id
 POST "/customers" : "Create new customer"
 	From request body needs to have:
 		- CustomerID
-		- CAddress (optional)
-		- CFName
-		- CLName
+		- Address (optional)
+		- FName
+		- LName
 		- CPhone
 		- CEmail
 		- Password
@@ -61,9 +61,9 @@ POST "/customers" : "Create new customer"
 ManagerDto
 	{
         Guid EmployeeID
-        string FirstName
+        string FName
         double Salary
-        string LastName
+        string LName
         string Address
         string Email
         Guid StoreID
@@ -78,9 +78,9 @@ GET "/storemanagers/:id" : "Get store manager by store manager id"
 
 POST "/storemanagers" : "Create new store manager"
 	From request body needs to have:
-		- FirstName
+		- FName
 		- Salary
-		- LastName
+		- LName
 		- Address
 		- Email
 		- StoreID
@@ -90,9 +90,9 @@ POST "/storemanagers" : "Create new store manager"
 
 PATCH "/storemanagers/:id/" : "Update store manager information",
 	From request body needs to have one of them:
-		- FirstName
+		- FName
 		- Salary
-		- LastName
+		- LName
 		- Address
 		- Phone
 	=> Return  StatusCode(...)  +  ManagerDto
@@ -104,9 +104,9 @@ DELETE "/storemanagers/:id" : "Delete store manager by store manager id",
 ShipperDto
 	{
 		Guid ShipperID
-		string SAddress
-		string SFName
-		string SLName
+		string Address
+		string FName
+		string LName
 		string SPhoneNo
 		string SEmail
 		double Capacity
@@ -126,17 +126,17 @@ PATCH "/shippers/:id/:capacity" : "Update shipper capacity"
 
 PATCH "/shippers/:id/" : "Update shipper information",
 	From request body needs to have one of them:
-		- SAddress
-		- SFName
-		- SLName
+		- Address
+		- FName
+		- LName
 		- SPhone
 	=> Return  StatusCode(...)  +  ShipperDto
 
 POST "/shippers" : "Create new shipper"
 	From request body needs to have:
-		- SAddress
-		- SFName
-		- SLName
+		- Address
+		- FName
+		- LName
 		- SPhone
 		- SEmail
 		- Password

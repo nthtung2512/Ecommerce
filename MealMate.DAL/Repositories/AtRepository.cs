@@ -11,7 +11,7 @@ namespace MealMate.DAL.Repositories
         private IQueryable<AT> Query => context.ATs.IsNotDeleted();
         public async Task<AT?> GetAtByProductIDAndStoreIDAsync(Guid productID, Guid storeID)
         {
-            return await Query.FirstOrDefaultAsync(at => at.ProductID == productID && at.StoreID == storeID);
+            return await Query.Include(a => a.Product).FirstOrDefaultAsync(at => at.ProductID == productID && at.StoreID == storeID);
         }
 
         public async Task<List<AT>> GetAtByProductIDAsync(Guid productID)
@@ -19,7 +19,7 @@ namespace MealMate.DAL.Repositories
             return await Query.Where(at => at.ProductID == productID).ToListAsync() ?? [];
         }
 
-        public async Task UpdateAmountAtAsync(AT updateData)
+        public async Task UpdateAsync(AT updateData)
         {
             context.Entry(updateData).State = EntityState.Modified;
             await context.SaveChangesAsync();

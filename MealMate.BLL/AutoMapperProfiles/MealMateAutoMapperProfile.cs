@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using MealMate.BLL.Dtos.ApplicationUser;
 using MealMate.BLL.Dtos.Bills;
 using MealMate.BLL.Dtos.Customer;
 using MealMate.BLL.Dtos.Employee;
@@ -19,16 +20,18 @@ namespace MealMate.BLL.AutoMapperProfiles
         public MealMateAutoMapperProfile()
         {
             CreateMap<Customer, CustomerDto>();
-            CreateMap<Bill, BillCreationDto>();
-            CreateMap<StoreManager, EmployeeCreationDto>();
-            CreateMap<Product, ProductCreationDto>();
-            CreateMap<BillPromotion, BillPromotionCreationDto>();
-            CreateMap<ProductPromotion, ProductPromotionCreationDto>();
-            CreateMap<Promotion, PromotionCreationDto>();
-            CreateMap<Shipper, ShipperCreationDto>();
+            CreateMap<StoreManager, EmployeeDto>();
+            CreateMap<Shipper, ShipperDto>();
+            CreateMap<ApplicationUser, ApplicationUserDto>();
+            CreateMap<Bill, BillDto>()
+                .ForMember(dest => dest.TransactionId, opt => opt.MapFrom(src => src.Id));
+            CreateMap<Product, ProductCreationDto>()
+                .ForMember(dest => dest.ProductId, opt => opt.MapFrom(src => src.Id));
+            CreateMap<BillPromotion, BillPromotionCreationDto>()
+                .ForMember(dest => dest.PromotionId, opt => opt.MapFrom(src => src.Id));
             CreateMap<AT, ATDto>();
-            CreateMap<Include, IncludeCreationDto>();
-            CreateMap<Store, StoreDto>();
+            CreateMap<Store, StoreDto>()
+                .ForMember(dest => dest.StoreID, opt => opt.MapFrom(src => src.Id));
         }
     }
 }

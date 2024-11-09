@@ -1,5 +1,6 @@
 ﻿using MealMate.BLL.Dtos.Bills;
 using MealMate.BLL.IServices;
+using MealMate.DAL.Utils.Enum;
 using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
@@ -13,59 +14,53 @@ public class TransactionController : ControllerBase
         _transactionService = transactionService;
     }
 
+    [HttpGet]
+    public async Task<IActionResult> GetAllBills()
+    {
+        var bills = await _transactionService.GetAllBillAsync();
+        return Ok(bills);
+    }
+
     [HttpGet("customer/{customerId}")]
     public async Task<IActionResult> GetBillListByCustomerIdAsync(Guid customerId)
     {
-        try
-        {
-            var bills = await _transactionService.GetBillListAsync(customerId);
-            return Ok(bills);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new { error = "Failed to retrieve bill", details = ex.Message });
-        }
-    }
-
-    [HttpPost]
-    public async Task<IActionResult> CreateBill([FromBody] BillCreationDto billData)
-    {
-        try
-        {
-            var newBillId = await _transactionService.CreateBillAsync(billData);
-            return Ok(new { new_bill = newBillId });
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new { error = "Failed to create bill", details = ex.Message });
-        }
+        var bills = await _transactionService.GetBillListAsync(customerId);
+        return Ok(bills);
     }
 
     [HttpGet("{transactionId}")]
-    public async Task<IActionResult> GetBillById(Guid transactionId)
+    public async Task<IActionResult> GetFullBillById(Guid transactionId)
     {
-        try
-        {
-            var bill = await _transactionService.GetBillByIdAsync(transactionId);
-            return Ok(bill);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new { error = "Failed to retrieve bill", details = ex.Message });
-        }
+        var bill = await _transactionService.GetBillByIdAsync(transactionId);
+        return Ok(bill);
     }
 
     [HttpGet("last/{customerId}")]
     public async Task<IActionResult> GetLastBillId(Guid customerId)
     {
-        try
-        {
-            var lastBillId = await _transactionService.GetLastBillIdAsync(customerId);
-            return Ok(lastBillId);
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new { error = "Failed to retrieve last bill ID", details = ex.Message });
-        }
+        var lastBillId = await _transactionService.GetLastBillIdAsync(customerId);
+        return Ok(lastBillId);
     }
+
+    [HttpPost]
+    public async Task<IActionResult> CreateBill([FromBody] BillCreationDto billData)
+    {
+        var newBillId = await _transactionService.CreateBillAsync(billData);
+        return Ok(new { new_bill = newBillId });
+    }
+
+    [HttpPatch("status/{transactionId}/{status}")]
+    public async Task<IActionResult> UpdateDeliveryStatus(Guid transactionId, DeliveryStatus status)
+    {
+        var result = await _transactionService.UpdateDeliveryStatusAsync(transactionId, status);
+        return Ok(result);
+    }
+
+    [HttpPatch("{transactionId}/{shipperId}")]
+    public async Task<IActionResult> AssignShipperToBill(Guid transactionId, Guid shipperId)
+    {
+        var result = await _transactionService.AssignShipperToBillAsync(transactionId, shipperId);
+        return Ok(result);
+    }
+
 }

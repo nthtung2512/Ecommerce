@@ -2,8 +2,11 @@
 using MealMate.BLL.Dtos.Employee;
 using MealMate.BLL.Dtos.Shipper;
 using MealMate.BLL.IServices.auth;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 // change this to auth later
 namespace MealMate.PL.Controllers
@@ -22,8 +25,28 @@ namespace MealMate.PL.Controllers
         [HttpGet("/login/{email}/{password}")]
         public async Task<IActionResult> Login(string email, string password)
         {
-            var users = await _applicationUserAppService.GetUserAsync(email, password);
-            return Ok(users);
+            var userWithRole = await _applicationUserAppService.GetUserAsync(email, password);
+            // Sign in user to create authentication cookie
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, userWithRole.User.Id.ToString()),
+                new Claim(ClaimTypes.Name, $"{userWithRole.User.FName} {userWithRole.User.LName}"),
+                new Claim(ClaimTypes.Role, userWithRole.Role)
+            };
+
+            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var authProperties = new AuthenticationProperties
+            {
+                IsPersistent = true, // Keeps cookie even after browser close
+                ExpiresUtc = DateTimeOffset.UtcNow.AddHours(6) // Sets the 6-hour expiration
+            };
+
+            await HttpContext.SignInAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                new ClaimsPrincipal(claimsIdentity),
+                authProperties
+            );
+            return Ok(userWithRole);
         }
 
         [Authorize(Roles = "Customer")]

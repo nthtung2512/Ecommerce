@@ -1,0 +1,193 @@
+2024-11-08 22:51:47.344 +07:00 [INF] Starting web host.
+2024-11-08 22:51:52.639 +07:00 [FTL] Host terminated unexpectedly!
+System.AggregateException: Some services are not able to be constructed (Error while validating the service descriptor 'ServiceType: MealMate.DAL.EntityFrameworkCore.Seed Lifetime: Transient ImplementationType: MealMate.DAL.EntityFrameworkCore.Seed': Unable to resolve service for type 'Microsoft.AspNetCore.Identity.PasswordHasher`1[MealMate.DAL.Entities.ApplicationUser.ApplicationUser]' while attempting to activate 'MealMate.DAL.EntityFrameworkCore.Seed'.)
+ ---> System.InvalidOperationException: Error while validating the service descriptor 'ServiceType: MealMate.DAL.EntityFrameworkCore.Seed Lifetime: Transient ImplementationType: MealMate.DAL.EntityFrameworkCore.Seed': Unable to resolve service for type 'Microsoft.AspNetCore.Identity.PasswordHasher`1[MealMate.DAL.Entities.ApplicationUser.ApplicationUser]' while attempting to activate 'MealMate.DAL.EntityFrameworkCore.Seed'.
+ ---> System.InvalidOperationException: Unable to resolve service for type 'Microsoft.AspNetCore.Identity.PasswordHasher`1[MealMate.DAL.Entities.ApplicationUser.ApplicationUser]' while attempting to activate 'MealMate.DAL.EntityFrameworkCore.Seed'.
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteFactory.CreateArgumentCallSites(ServiceIdentifier serviceIdentifier, Type implementationType, CallSiteChain callSiteChain, ParameterInfo[] parameters, Boolean throwIfCallSiteNotFound)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteFactory.CreateConstructorCallSite(ResultCache lifetime, ServiceIdentifier serviceIdentifier, Type implementationType, CallSiteChain callSiteChain)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteFactory.TryCreateExact(ServiceDescriptor descriptor, ServiceIdentifier serviceIdentifier, CallSiteChain callSiteChain, Int32 slot)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteFactory.GetCallSite(ServiceDescriptor serviceDescriptor, CallSiteChain callSiteChain)
+   at Microsoft.Extensions.DependencyInjection.ServiceProvider.ValidateService(ServiceDescriptor descriptor)
+   --- End of inner exception stack trace ---
+   at Microsoft.Extensions.DependencyInjection.ServiceProvider.ValidateService(ServiceDescriptor descriptor)
+   at Microsoft.Extensions.DependencyInjection.ServiceProvider..ctor(ICollection`1 serviceDescriptors, ServiceProviderOptions options)
+   --- End of inner exception stack trace ---
+   at Microsoft.Extensions.DependencyInjection.ServiceProvider..ctor(ICollection`1 serviceDescriptors, ServiceProviderOptions options)
+   at Microsoft.Extensions.DependencyInjection.ServiceCollectionContainerBuilderExtensions.BuildServiceProvider(IServiceCollection services, ServiceProviderOptions options)
+   at Microsoft.Extensions.Hosting.HostApplicationBuilder.Build()
+   at Microsoft.AspNetCore.Builder.WebApplicationBuilder.Build()
+   at Program.<Main>$(String[] args) in D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.PL\Program.cs:line 64
+2024-11-08 23:02:20.132 +07:00 [INF] Starting web host.
+2024-11-08 23:02:20.889 +07:00 [FTL] Host terminated unexpectedly!
+System.AggregateException: Some services are not able to be constructed (Error while validating the service descriptor 'ServiceType: MealMate.DAL.EntityFrameworkCore.Seed Lifetime: Transient ImplementationType: MealMate.DAL.EntityFrameworkCore.Seed': Unable to resolve service for type 'Microsoft.AspNetCore.Identity.PasswordHasher`1[MealMate.DAL.Entities.ApplicationUser.ApplicationUser]' while attempting to activate 'MealMate.DAL.EntityFrameworkCore.Seed'.)
+ ---> System.InvalidOperationException: Error while validating the service descriptor 'ServiceType: MealMate.DAL.EntityFrameworkCore.Seed Lifetime: Transient ImplementationType: MealMate.DAL.EntityFrameworkCore.Seed': Unable to resolve service for type 'Microsoft.AspNetCore.Identity.PasswordHasher`1[MealMate.DAL.Entities.ApplicationUser.ApplicationUser]' while attempting to activate 'MealMate.DAL.EntityFrameworkCore.Seed'.
+ ---> System.InvalidOperationException: Unable to resolve service for type 'Microsoft.AspNetCore.Identity.PasswordHasher`1[MealMate.DAL.Entities.ApplicationUser.ApplicationUser]' while attempting to activate 'MealMate.DAL.EntityFrameworkCore.Seed'.
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteFactory.CreateArgumentCallSites(ServiceIdentifier serviceIdentifier, Type implementationType, CallSiteChain callSiteChain, ParameterInfo[] parameters, Boolean throwIfCallSiteNotFound)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteFactory.CreateConstructorCallSite(ResultCache lifetime, ServiceIdentifier serviceIdentifier, Type implementationType, CallSiteChain callSiteChain)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteFactory.TryCreateExact(ServiceDescriptor descriptor, ServiceIdentifier serviceIdentifier, CallSiteChain callSiteChain, Int32 slot)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteFactory.GetCallSite(ServiceDescriptor serviceDescriptor, CallSiteChain callSiteChain)
+   at Microsoft.Extensions.DependencyInjection.ServiceProvider.ValidateService(ServiceDescriptor descriptor)
+   --- End of inner exception stack trace ---
+   at Microsoft.Extensions.DependencyInjection.ServiceProvider.ValidateService(ServiceDescriptor descriptor)
+   at Microsoft.Extensions.DependencyInjection.ServiceProvider..ctor(ICollection`1 serviceDescriptors, ServiceProviderOptions options)
+   --- End of inner exception stack trace ---
+   at Microsoft.Extensions.DependencyInjection.ServiceProvider..ctor(ICollection`1 serviceDescriptors, ServiceProviderOptions options)
+   at Microsoft.Extensions.DependencyInjection.ServiceCollectionContainerBuilderExtensions.BuildServiceProvider(IServiceCollection services, ServiceProviderOptions options)
+   at Microsoft.Extensions.Hosting.HostApplicationBuilder.Build()
+   at Microsoft.AspNetCore.Builder.WebApplicationBuilder.Build()
+   at Program.<Main>$(String[] args) in D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.PL\Program.cs:line 64
+2024-11-08 23:08:39.974 +07:00 [INF] Starting web host.
+2024-11-08 23:08:45.041 +07:00 [INF] User profile is available. Using 'C:\Users\Admin\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2024-11-08 23:13:04.519 +07:00 [INF] Starting web host.
+2024-11-08 23:13:08.023 +07:00 [INF] User profile is available. Using 'C:\Users\Admin\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2024-11-08 23:13:46.600 +07:00 [INF] Starting web host.
+2024-11-08 23:13:53.755 +07:00 [INF] User profile is available. Using 'C:\Users\Admin\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2024-11-08 23:15:11.722 +07:00 [INF] Starting web host.
+2024-11-08 23:15:15.154 +07:00 [INF] User profile is available. Using 'C:\Users\Admin\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2024-11-08 23:18:29.944 +07:00 [INF] Starting web host.
+2024-11-08 23:18:32.922 +07:00 [INF] User profile is available. Using 'C:\Users\Admin\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2024-11-08 23:24:18.619 +07:00 [INF] Starting web host.
+2024-11-08 23:24:21.813 +07:00 [INF] User profile is available. Using 'C:\Users\Admin\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2024-11-08 23:26:02.592 +07:00 [INF] Starting web host.
+2024-11-08 23:26:04.208 +07:00 [INF] User profile is available. Using 'C:\Users\Admin\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2024-11-08 23:31:24.518 +07:00 [INF] Starting web host.
+2024-11-08 23:31:26.159 +07:00 [INF] User profile is available. Using 'C:\Users\Admin\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2024-11-08 23:32:50.123 +07:00 [INF] Starting web host.
+2024-11-08 23:32:51.887 +07:00 [INF] User profile is available. Using 'C:\Users\Admin\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2024-11-08 23:34:33.815 +07:00 [INF] Starting web host.
+2024-11-08 23:34:35.681 +07:00 [INF] User profile is available. Using 'C:\Users\Admin\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2024-11-08 23:34:36.067 +07:00 [WRN] The WebRootPath was not found: D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.PL\wwwroot. Static files may be unavailable.
+2024-11-08 23:34:36.198 +07:00 [WRN] The WebRootPath was not found: D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.PL\wwwroot. Static files may be unavailable.
+2024-11-08 23:34:36.351 +07:00 [INF] Now listening on: https://localhost:7288
+2024-11-08 23:34:36.352 +07:00 [INF] Now listening on: http://localhost:5200
+2024-11-08 23:34:36.354 +07:00 [INF] Application started. Press Ctrl+C to shut down.
+2024-11-08 23:34:36.355 +07:00 [INF] Hosting environment: Development
+2024-11-08 23:34:36.356 +07:00 [INF] Content root path: D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.PL
+2024-11-08 23:34:37.114 +07:00 [INF] Request starting HTTP/2 GET https://localhost:7288/swagger/index.html - null null
+2024-11-08 23:34:37.321 +07:00 [INF] Request finished HTTP/2 GET https://localhost:7288/swagger/index.html - 200 null text/html;charset=utf-8 212.701ms
+2024-11-08 23:34:37.326 +07:00 [INF] Request starting HTTP/2 GET https://localhost:7288/_framework/aspnetcore-browser-refresh.js - null null
+2024-11-08 23:34:37.330 +07:00 [INF] Request starting HTTP/2 GET https://localhost:7288/_vs/browserLink - null null
+2024-11-08 23:34:37.335 +07:00 [INF] Request finished HTTP/2 GET https://localhost:7288/_framework/aspnetcore-browser-refresh.js - 200 13758 application/javascript; charset=utf-8 9.7504ms
+2024-11-08 23:34:37.416 +07:00 [INF] Request finished HTTP/2 GET https://localhost:7288/_vs/browserLink - 200 null text/javascript; charset=UTF-8 86.1275ms
+2024-11-08 23:34:37.445 +07:00 [INF] Request starting HTTP/2 GET https://localhost:7288/swagger/v1/swagger.json - null null
+2024-11-08 23:34:37.574 +07:00 [INF] Request finished HTTP/2 GET https://localhost:7288/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 129.3137ms
+2024-11-08 23:36:08.015 +07:00 [INF] Starting web host.
+2024-11-08 23:36:11.091 +07:00 [INF] User profile is available. Using 'C:\Users\Admin\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2024-11-08 23:36:25.675 +07:00 [FTL] Host terminated unexpectedly!
+System.InvalidOperationException: Sequence contains no elements
+   at System.Linq.ThrowHelper.ThrowNoElementsException()
+   at System.Linq.Enumerable.First[TSource](IEnumerable`1 source)
+   at MealMate.DAL.EntityFrameworkCore.Seed.SeedDevelopmentStagingAsync() in D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.DAL\EntityFrameworkCore\Seed.cs:line 631
+   at MealMate.DAL.EntityFrameworkCore.Seed.Populate(String strEnv) in D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.DAL\EntityFrameworkCore\Seed.cs:line 32
+   at Program.<Main>$(String[] args) in D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.PL\Program.cs:line 73
+2024-11-08 23:44:04.858 +07:00 [INF] Starting web host.
+2024-11-08 23:44:06.466 +07:00 [INF] User profile is available. Using 'C:\Users\Admin\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2024-11-08 23:44:06.890 +07:00 [WRN] The WebRootPath was not found: D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.PL\wwwroot. Static files may be unavailable.
+2024-11-08 23:44:06.971 +07:00 [WRN] The WebRootPath was not found: D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.PL\wwwroot. Static files may be unavailable.
+2024-11-08 23:44:07.101 +07:00 [INF] Now listening on: https://localhost:7288
+2024-11-08 23:44:07.101 +07:00 [INF] Now listening on: http://localhost:5200
+2024-11-08 23:44:07.103 +07:00 [INF] Application started. Press Ctrl+C to shut down.
+2024-11-08 23:44:07.104 +07:00 [INF] Hosting environment: Development
+2024-11-08 23:44:07.104 +07:00 [INF] Content root path: D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.PL
+2024-11-08 23:44:08.016 +07:00 [INF] Request starting HTTP/2 GET https://localhost:7288/swagger/index.html - null null
+2024-11-08 23:44:08.153 +07:00 [INF] Request finished HTTP/2 GET https://localhost:7288/swagger/index.html - 200 null text/html;charset=utf-8 142.1722ms
+2024-11-08 23:44:08.156 +07:00 [INF] Request starting HTTP/2 GET https://localhost:7288/_framework/aspnetcore-browser-refresh.js - null null
+2024-11-08 23:44:08.162 +07:00 [INF] Request starting HTTP/2 GET https://localhost:7288/_vs/browserLink - null null
+2024-11-08 23:44:08.163 +07:00 [INF] Request finished HTTP/2 GET https://localhost:7288/_framework/aspnetcore-browser-refresh.js - 200 13758 application/javascript; charset=utf-8 6.758ms
+2024-11-08 23:44:08.195 +07:00 [INF] Request finished HTTP/2 GET https://localhost:7288/_vs/browserLink - 200 null text/javascript; charset=UTF-8 33.0109ms
+2024-11-08 23:44:08.229 +07:00 [INF] Request starting HTTP/2 GET https://localhost:7288/swagger/v1/swagger.json - null null
+2024-11-08 23:44:08.342 +07:00 [INF] Request finished HTTP/2 GET https://localhost:7288/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 113.733ms
+2024-11-08 23:44:49.891 +07:00 [INF] Starting web host.
+2024-11-08 23:44:52.959 +07:00 [INF] User profile is available. Using 'C:\Users\Admin\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2024-11-08 23:44:53.246 +07:00 [WRN] The WebRootPath was not found: D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.PL\wwwroot. Static files may be unavailable.
+2024-11-08 23:44:53.319 +07:00 [WRN] The WebRootPath was not found: D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.PL\wwwroot. Static files may be unavailable.
+2024-11-08 23:44:53.444 +07:00 [INF] Now listening on: https://localhost:7288
+2024-11-08 23:44:53.444 +07:00 [INF] Now listening on: http://localhost:5200
+2024-11-08 23:44:53.446 +07:00 [INF] Application started. Press Ctrl+C to shut down.
+2024-11-08 23:44:53.447 +07:00 [INF] Hosting environment: Development
+2024-11-08 23:44:53.447 +07:00 [INF] Content root path: D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.PL
+2024-11-08 23:44:53.835 +07:00 [INF] Request starting HTTP/2 GET https://localhost:7288/swagger/index.html - null null
+2024-11-08 23:44:53.957 +07:00 [INF] Request finished HTTP/2 GET https://localhost:7288/swagger/index.html - 200 null text/html;charset=utf-8 128.0675ms
+2024-11-08 23:44:53.960 +07:00 [INF] Request starting HTTP/2 GET https://localhost:7288/_framework/aspnetcore-browser-refresh.js - null null
+2024-11-08 23:44:53.964 +07:00 [INF] Request starting HTTP/2 GET https://localhost:7288/_vs/browserLink - null null
+2024-11-08 23:44:53.965 +07:00 [INF] Request finished HTTP/2 GET https://localhost:7288/_framework/aspnetcore-browser-refresh.js - 200 13758 application/javascript; charset=utf-8 5.7408ms
+2024-11-08 23:44:53.996 +07:00 [INF] Request finished HTTP/2 GET https://localhost:7288/_vs/browserLink - 200 null text/javascript; charset=UTF-8 31.7256ms
+2024-11-08 23:44:54.034 +07:00 [INF] Request starting HTTP/2 GET https://localhost:7288/swagger/v1/swagger.json - null null
+2024-11-08 23:44:54.151 +07:00 [INF] Request finished HTTP/2 GET https://localhost:7288/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 117.2441ms
+2024-11-08 23:49:13.369 +07:00 [INF] Starting web host.
+2024-11-08 23:49:16.429 +07:00 [INF] User profile is available. Using 'C:\Users\Admin\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2024-11-08 23:49:16.713 +07:00 [WRN] The WebRootPath was not found: D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.PL\wwwroot. Static files may be unavailable.
+2024-11-08 23:49:16.784 +07:00 [WRN] The WebRootPath was not found: D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.PL\wwwroot. Static files may be unavailable.
+2024-11-08 23:49:16.906 +07:00 [INF] Now listening on: https://localhost:7288
+2024-11-08 23:49:16.906 +07:00 [INF] Now listening on: http://localhost:5200
+2024-11-08 23:49:16.908 +07:00 [INF] Application started. Press Ctrl+C to shut down.
+2024-11-08 23:49:16.908 +07:00 [INF] Hosting environment: Development
+2024-11-08 23:49:16.909 +07:00 [INF] Content root path: D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.PL
+2024-11-08 23:49:17.416 +07:00 [INF] Request starting HTTP/2 GET https://localhost:7288/swagger/index.html - null null
+2024-11-08 23:49:17.555 +07:00 [INF] Request finished HTTP/2 GET https://localhost:7288/swagger/index.html - 200 null text/html;charset=utf-8 144.258ms
+2024-11-08 23:49:17.566 +07:00 [INF] Request starting HTTP/2 GET https://localhost:7288/_framework/aspnetcore-browser-refresh.js - null null
+2024-11-08 23:49:17.573 +07:00 [INF] Request finished HTTP/2 GET https://localhost:7288/_framework/aspnetcore-browser-refresh.js - 200 13758 application/javascript; charset=utf-8 6.7959ms
+2024-11-08 23:49:17.581 +07:00 [INF] Request starting HTTP/2 GET https://localhost:7288/_vs/browserLink - null null
+2024-11-08 23:49:17.609 +07:00 [INF] Request finished HTTP/2 GET https://localhost:7288/_vs/browserLink - 200 null text/javascript; charset=UTF-8 28.5258ms
+2024-11-08 23:49:17.653 +07:00 [INF] Request starting HTTP/2 GET https://localhost:7288/swagger/v1/swagger.json - null null
+2024-11-08 23:49:17.746 +07:00 [INF] Request finished HTTP/2 GET https://localhost:7288/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 92.9642ms
+2024-11-08 23:50:16.637 +07:00 [INF] Starting web host.
+2024-11-08 23:50:19.770 +07:00 [INF] User profile is available. Using 'C:\Users\Admin\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2024-11-08 23:50:20.053 +07:00 [WRN] The WebRootPath was not found: D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.PL\wwwroot. Static files may be unavailable.
+2024-11-08 23:50:20.120 +07:00 [WRN] The WebRootPath was not found: D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.PL\wwwroot. Static files may be unavailable.
+2024-11-08 23:50:20.239 +07:00 [INF] Now listening on: https://localhost:7288
+2024-11-08 23:50:20.240 +07:00 [INF] Now listening on: http://localhost:5200
+2024-11-08 23:50:20.241 +07:00 [INF] Application started. Press Ctrl+C to shut down.
+2024-11-08 23:50:20.242 +07:00 [INF] Hosting environment: Development
+2024-11-08 23:50:20.242 +07:00 [INF] Content root path: D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.PL
+2024-11-08 23:50:20.688 +07:00 [INF] Request starting HTTP/2 GET https://localhost:7288/swagger/index.html - null null
+2024-11-08 23:50:20.820 +07:00 [INF] Request finished HTTP/2 GET https://localhost:7288/swagger/index.html - 200 null text/html;charset=utf-8 137.9748ms
+2024-11-08 23:50:20.824 +07:00 [INF] Request starting HTTP/2 GET https://localhost:7288/_framework/aspnetcore-browser-refresh.js - null null
+2024-11-08 23:50:20.828 +07:00 [INF] Request starting HTTP/2 GET https://localhost:7288/_vs/browserLink - null null
+2024-11-08 23:50:20.830 +07:00 [INF] Request finished HTTP/2 GET https://localhost:7288/_framework/aspnetcore-browser-refresh.js - 200 13758 application/javascript; charset=utf-8 5.1699ms
+2024-11-08 23:50:20.859 +07:00 [INF] Request finished HTTP/2 GET https://localhost:7288/_vs/browserLink - 200 null text/javascript; charset=UTF-8 31.1425ms
+2024-11-08 23:50:20.894 +07:00 [INF] Request starting HTTP/2 GET https://localhost:7288/swagger/v1/swagger.json - null null
+2024-11-08 23:50:21.012 +07:00 [INF] Request finished HTTP/2 GET https://localhost:7288/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 118.257ms
+2024-11-08 23:51:38.130 +07:00 [INF] Starting web host.
+2024-11-08 23:51:41.225 +07:00 [INF] User profile is available. Using 'C:\Users\Admin\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2024-11-08 23:51:41.510 +07:00 [WRN] The WebRootPath was not found: D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.PL\wwwroot. Static files may be unavailable.
+2024-11-08 23:51:41.578 +07:00 [WRN] The WebRootPath was not found: D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.PL\wwwroot. Static files may be unavailable.
+2024-11-08 23:51:41.694 +07:00 [INF] Now listening on: https://localhost:7288
+2024-11-08 23:51:41.695 +07:00 [INF] Now listening on: http://localhost:5200
+2024-11-08 23:51:41.697 +07:00 [INF] Application started. Press Ctrl+C to shut down.
+2024-11-08 23:51:41.697 +07:00 [INF] Hosting environment: Development
+2024-11-08 23:51:41.698 +07:00 [INF] Content root path: D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.PL
+2024-11-08 23:51:42.160 +07:00 [INF] Request starting HTTP/2 GET https://localhost:7288/swagger/index.html - null null
+2024-11-08 23:51:42.301 +07:00 [INF] Request finished HTTP/2 GET https://localhost:7288/swagger/index.html - 200 null text/html;charset=utf-8 145.9743ms
+2024-11-08 23:51:42.304 +07:00 [INF] Request starting HTTP/2 GET https://localhost:7288/_framework/aspnetcore-browser-refresh.js - null null
+2024-11-08 23:51:42.307 +07:00 [INF] Request starting HTTP/2 GET https://localhost:7288/_vs/browserLink - null null
+2024-11-08 23:51:42.310 +07:00 [INF] Request finished HTTP/2 GET https://localhost:7288/_framework/aspnetcore-browser-refresh.js - 200 13758 application/javascript; charset=utf-8 5.6869ms
+2024-11-08 23:51:42.334 +07:00 [INF] Request finished HTTP/2 GET https://localhost:7288/_vs/browserLink - 200 null text/javascript; charset=UTF-8 26.8619ms
+2024-11-08 23:51:42.368 +07:00 [INF] Request starting HTTP/2 GET https://localhost:7288/swagger/v1/swagger.json - null null
+2024-11-08 23:51:42.474 +07:00 [INF] Request finished HTTP/2 GET https://localhost:7288/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 106.543ms
+2024-11-08 23:52:32.101 +07:00 [INF] Starting web host.
+2024-11-08 23:52:35.075 +07:00 [INF] User profile is available. Using 'C:\Users\Admin\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2024-11-08 23:53:23.056 +07:00 [INF] Starting web host.
+2024-11-08 23:53:26.082 +07:00 [INF] User profile is available. Using 'C:\Users\Admin\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2024-11-08 23:53:35.748 +07:00 [FTL] Host terminated unexpectedly!
+System.InvalidOperationException: Sequence contains no elements
+   at System.Linq.ThrowHelper.ThrowNoElementsException()
+   at System.Linq.Enumerable.First[TSource](IEnumerable`1 source)
+   at MealMate.DAL.EntityFrameworkCore.Seed.SeedDevelopmentStagingAsync() in D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.DAL\EntityFrameworkCore\Seed.cs:line 667
+   at MealMate.DAL.EntityFrameworkCore.Seed.Populate(String strEnv) in D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.DAL\EntityFrameworkCore\Seed.cs:line 32
+   at Program.<Main>$(String[] args) in D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.PL\Program.cs:line 73
+2024-11-08 23:54:11.486 +07:00 [INF] Starting web host.
+2024-11-08 23:54:14.506 +07:00 [INF] User profile is available. Using 'C:\Users\Admin\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2024-11-08 23:57:54.039 +07:00 [INF] Starting web host.
+2024-11-08 23:57:57.425 +07:00 [INF] User profile is available. Using 'C:\Users\Admin\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2024-11-08 23:58:08.342 +07:00 [FTL] Host terminated unexpectedly!
+System.InvalidOperationException: Sequence contains no elements
+   at System.Linq.ThrowHelper.ThrowNoElementsException()
+   at System.Linq.Enumerable.First[TSource](IEnumerable`1 source)
+   at MealMate.DAL.EntityFrameworkCore.Seed.SeedDevelopmentStagingAsync() in D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.DAL\EntityFrameworkCore\Seed.cs:line 667
+   at MealMate.DAL.EntityFrameworkCore.Seed.Populate(String strEnv) in D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.DAL\EntityFrameworkCore\Seed.cs:line 32
+   at Program.<Main>$(String[] args) in D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.PL\Program.cs:line 73
+2024-11-08 23:58:17.089 +07:00 [INF] Starting web host.
+2024-11-08 23:58:18.705 +07:00 [INF] User profile is available. Using 'C:\Users\Admin\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2024-11-08 23:58:38.066 +07:00 [INF] Starting web host.
+2024-11-08 23:58:41.296 +07:00 [INF] User profile is available. Using 'C:\Users\Admin\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.

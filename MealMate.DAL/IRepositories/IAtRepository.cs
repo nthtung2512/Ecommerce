@@ -7,6 +7,6 @@ namespace MealMate.DAL.IRepositories
         Task<AT?> GetAtByProductIDAndStoreIDAsync(Guid productID, Guid storeID);
         Task<List<AT>> GetAtByProductIDAsync(Guid productID);
         Task CreateAsync(AT at);
-        Task UpdateAmountAtAsync(AT updateData);
+        Task UpdateAsync(AT updateData);
     }
 }

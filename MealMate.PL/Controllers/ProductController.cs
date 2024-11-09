@@ -91,16 +91,18 @@ namespace MealMate.PL.Controllers
         [HttpPut("addtostore/{productid}/{storeid}/{amount}")]
         public async Task<IActionResult> IncreaseProductAtStore(Guid productid, Guid storeid, int amount)
         {
-            var existingProduct = await _storeAppService.GetAtByProductIDAndStoreIDAsync(productid, storeid);
+            var result = await _storeAppService.UpdateAmountAtAsync(productid, storeid, amount);
+            return Ok(result);
+            /*var existingProduct = await _storeAppService.GetAtByProductIDAndStoreIDAsync(productid, storeid);
             if (existingProduct == null)
             {
                 return Ok(await _storeAppService.CreateAtAsync(productid, storeid, amount));
             }
             else
             {
-                var result = await _storeAppService.UpdateAmountAtAsync(existingProduct);
+                var result = await _storeAppService.UpdateAmountAtAsync(existingProduct, amount);
                 return Ok(result);
-            }
+            }*/
         }
 
         [HttpDelete("{id}")]
@@ -110,6 +112,12 @@ namespace MealMate.PL.Controllers
             return Ok(new { data = true });
         }
 
+        [HttpDelete("{productid}/{storeid}")]
+        public async Task<IActionResult> DeleteProductAtStore(Guid productid, Guid storeid)
+        {
+            await _productAppService.DeleteProductAtStoreAsync(productid, storeid);
+            return Ok(new { data = true });
+        }
 
     }
 }

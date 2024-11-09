@@ -1,9 +1,11 @@
 ﻿using MealMate.DAL.Entities.ApplicationUser;
+using MealMate.DAL.IRepositories.auth;
 
 namespace MealMate.DAL.IRepositories
 {
-    public interface IEmployeeRepository : IRepository<StoreManager, Guid>
+    public interface IEmployeeRepository : IIdentityRepository<StoreManager>
     {
-        Task<StoreManager?> GetStoreManagerForLoginAsync(string email, string password);
+        Task<List<StoreManager>> GetStoreManagerListAsync();
+        Task<StoreManager?> GetEmployeeByStoreIdAsync(Guid storeid);
     }
 }

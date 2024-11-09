@@ -38,7 +38,7 @@ public class GuidGenerator
 
         // We start with the number of milliseconds that have elapsed since
         // DateTime.MinValue.  This will form the timestamp.  There's no use
-        // being more specific than milliseconds, since DateTime.Now has
+        // being more specific than milliseconds, since DateTime.UtcNow.AddHours(7) has
         // limited resolution.
 
         // Using millisecond resolution for our 48-bit timestamp gives us

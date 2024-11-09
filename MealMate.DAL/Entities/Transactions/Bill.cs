@@ -1,4 +1,5 @@
 ﻿using MealMate.DAL.Entities.ApplicationUser;
+using MealMate.DAL.Entities.Promotion;
 using MealMate.DAL.Entities.Stores;
 using MealMate.DAL.Utils;
 using MealMate.DAL.Utils.EFCore;
@@ -14,11 +15,12 @@ namespace MealMate.DAL.Entities.Products
         public Customer? Customer { get; init; }
         public required Guid StoreID { get; init; }
         public Store? Store { get; init; }
-        public Guid ShipperID { get; set; }
+        public Guid? ShipperID { get; set; }
         public Shipper? Shipper { get; set; }
         public List<Include> Includes { get; } = [];
-        public decimal TotalPrice { get; set; }
-        public double TotalWeight { get; set; }
+        public PromoteBill? PromoteBill { get; set; }
+        public double TotalPrice { get; set; }
+        public int TotalWeight { get; set; }
         public required DeliveryStatus DeliveryStatus { get; set; }
         public bool IsDeleted { get; set; }
     }
