@@ -3,8 +3,10 @@ using MealMate.BLL.AutoMapperProfiles;
 using MealMate.BLL.ExceptionHandler;
 using MealMate.BLL.IServices;
 using MealMate.BLL.IServices.auth;
+using MealMate.BLL.IServices.Payment;
 using MealMate.BLL.Services;
 using MealMate.BLL.Services.auth;
+using MealMate.BLL.Services.Payment;
 using MealMate.DAL.Utils.GuidUtil;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,6 +30,8 @@ namespace MealMate.BLL
             services.AddScoped<IShipperAppService, ShipperAppService>();
             services.AddScoped<IStoreAppService, StoreAppService>();
             services.AddScoped<ITransactionService, TransactionService>();
+
+            services.AddScoped<IMomoService, MomoService>();
 
             services.AddSingleton(new GuidGenerator(SequentialGuidType.SequentialAsString));
 

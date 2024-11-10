@@ -1,4 +1,5 @@
 using MealMate.Base.Extensions;
+using MealMate.DAL.Entities.Payment;
 using MealMate.DAL.EntityFrameworkCore;
 using MealMate.PL;
 using MealMate.PL.Environment;
@@ -42,6 +43,10 @@ try
     Console.WriteLine($"Environment: {env}");
 
     var builder = WebApplication.CreateBuilder(args);
+
+    // Connect MOMO API
+    builder.Services.Configure<MomoOptionModel>(builder.Configuration.GetSection("MomoAPI"));
+
     builder.Host.UseSerilog();
     builder.AddModules<MealMateHostModule>();
     builder.Configuration.AddEnvironmentVariables();

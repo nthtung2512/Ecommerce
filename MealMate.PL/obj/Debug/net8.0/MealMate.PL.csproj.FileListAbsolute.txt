@@ -83,3 +83,4 @@ D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.PL\obj\Debug\net8.0\MealMate.PL.M
 D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.PL\bin\Debug\net8.0\DotNetEnv.dll
 D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.PL\bin\Debug\net8.0\Sprache.dll
 D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.PL\bin\Debug\net8.0\Swashbuckle.AspNetCore.Annotations.dll
+D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.PL\bin\Debug\net8.0\RestSharp.dll
