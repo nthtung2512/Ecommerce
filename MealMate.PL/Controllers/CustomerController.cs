@@ -1,6 +1,7 @@
 ﻿using MealMate.BLL.Dtos.Customer;
 using MealMate.BLL.IServices;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace MealMate.PL.Controllers
 {
@@ -16,6 +17,10 @@ namespace MealMate.PL.Controllers
         }
 
         [HttpGet]
+        [SwaggerOperation(
+            Summary = "Get all customers",
+            Description = "Return: Guid Id; string Address; string FName; string LName; string PhoneNumber; string Email; decimal TotalMoneySpent; int FortuneChance"
+        )]
         public async Task<IActionResult> GetCustomerList()
         {
             var customers = await _customerAppService.GetListAsync();
@@ -23,6 +28,10 @@ namespace MealMate.PL.Controllers
         }
 
         [HttpGet("{id}")]
+        [SwaggerOperation(
+            Summary = "Get customer by customer id",
+            Description = "Return: Guid Id; string Address; string FName; string LName; string PhoneNumber; string Email; decimal TotalMoneySpent; int FortuneChance"
+        )]
         public async Task<IActionResult> GetCustomerById(Guid id)
         {
             var customer = await _customerAppService.GetByIdAsync(id);
@@ -30,6 +39,10 @@ namespace MealMate.PL.Controllers
         }
 
         [HttpPatch("{id}")]
+        [SwaggerOperation(
+            Summary = "Update customer information by customer id",
+            Description = "Return: Guid Id; string Address; string FName; string LName; string PhoneNumber; string Email; decimal TotalMoneySpent; int FortuneChance"
+        )]
         public async Task<IActionResult> UpdateCustomerInfoById(Guid id, [FromBody] CustomerUpdateDto data)
         {
             var result = await _customerAppService.UpdateAsync(id, data);
@@ -37,6 +50,10 @@ namespace MealMate.PL.Controllers
         }
 
         [HttpPatch("totalmoney/{id}/{money}")]
+        [SwaggerOperation(
+            Summary = "Add total money spent by customer id",
+            Description = "Return: Guid Id; string Address; string FName; string LName; string PhoneNumber; string Email; decimal TotalMoneySpent; int FortuneChance"
+        )]
         public async Task<IActionResult> AddTotalMoneySpentById(Guid id, decimal money)
         {
             var result = await _customerAppService.AddTotalMoneySpentByIdAsync(id, money);
@@ -44,6 +61,10 @@ namespace MealMate.PL.Controllers
         }
 
         [HttpGet("customer-rank/{customerID}")]
+        [SwaggerOperation(
+            Summary = "Get customer rank",
+            Description = "Return: string rank"
+        )]
         public async Task<IActionResult> GetCustomerRank(Guid customerID)
         {
             var totalMoneySpent = (await _customerAppService.GetByIdAsync(customerID)).TotalMoneySpent;
@@ -61,6 +82,10 @@ namespace MealMate.PL.Controllers
         }
 
         [HttpGet("lastid")]
+        [SwaggerOperation(
+            Summary = "Get last customer id",
+            Description = "Return: Guid CustomerId"
+        )]
         public async Task<IActionResult> GetLastCustomerID()
         {
             try

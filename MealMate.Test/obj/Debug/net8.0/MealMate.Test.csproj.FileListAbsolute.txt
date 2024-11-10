@@ -160,3 +160,6 @@ D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.Test\obj\Debug\net8.0\refint\Meal
 D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.Test\obj\Debug\net8.0\MealMate.Test.pdb
 D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.Test\obj\Debug\net8.0\MealMate.Test.genruntimeconfig.cache
 D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.Test\obj\Debug\net8.0\ref\MealMate.Test.dll
+D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.Test\bin\Debug\net8.0\DotNetEnv.dll
+D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.Test\bin\Debug\net8.0\Sprache.dll
+D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.Test\bin\Debug\net8.0\Swashbuckle.AspNetCore.Annotations.dll

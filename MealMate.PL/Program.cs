@@ -25,6 +25,7 @@ Log.Logger = new LoggerConfiguration()
 
 try
 {
+    DotNetEnv.Env.Load();
     var env =
         Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")?.ToString()
         ?? SelectedEnvironment.Value.ToString();
@@ -43,6 +44,7 @@ try
     var builder = WebApplication.CreateBuilder(args);
     builder.Host.UseSerilog();
     builder.AddModules<MealMateHostModule>();
+    builder.Configuration.AddEnvironmentVariables();
 
     static async Task SeedRolesAsync(IServiceProvider serviceProvider)
     {

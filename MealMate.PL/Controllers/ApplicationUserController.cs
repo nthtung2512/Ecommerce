@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 using System.Security.Claims;
 
 // change this to auth later
@@ -23,6 +24,10 @@ namespace MealMate.PL.Controllers
         }
 
         [HttpGet("/login/{email}/{password}")]
+        [SwaggerOperation(
+            Summary = "User login",
+            Description = "Login by email and password then return Cookie. Cookie has 3 claim: Id, Username, Role"
+        )]
         public async Task<IActionResult> Login(string email, string password)
         {
             var userWithRole = await _applicationUserAppService.GetUserAsync(email, password);
@@ -51,6 +56,10 @@ namespace MealMate.PL.Controllers
 
         [Authorize(Roles = "Customer")]
         [HttpPost("/register/customer")]
+        [SwaggerOperation(
+            Summary = "Register customer",
+            Description = "Return: Guid Id; string Address; string FName; string LName; string PhoneNumber; string Email; decimal TotalMoneySpent; int FortuneChance"
+        )]
         public async Task<IActionResult> RegisterCustomer([FromBody] CustomerCreationDto customerDto)
         {
             var customer = await _applicationUserAppService.RegisterCustomerAsync(customerDto);
@@ -59,6 +68,10 @@ namespace MealMate.PL.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPost("/register/storemanager")]
+        [SwaggerOperation(
+            Summary = "Register storemanager",
+            Description = "Return: Guid Id; string Address; string FName; string LName; string PhoneNumber; string Email; double Salary; Guid StoreID"
+        )]
         public async Task<IActionResult> RegisterStoreManager([FromBody] EmployeeCreationDto storeManagerDto)
         {
             var storeManager = await _applicationUserAppService.RegisterStoreManagerAsync(storeManagerDto);
@@ -67,6 +80,10 @@ namespace MealMate.PL.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPost("/register/shipper")]
+        [SwaggerOperation(
+            Summary = "Register shipper",
+            Description = "Return: Guid Id; string Address; string FName; string LName; string PhoneNumber; string Email; int VehicleCapacity"
+        )]
         public async Task<IActionResult> RegisterShipper([FromBody] ShipperCreationDto shipperDto)
         {
             var shipper = await _applicationUserAppService.RegisterShipperAsync(shipperDto);
