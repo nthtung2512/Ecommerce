@@ -15,15 +15,19 @@ namespace MealMate.BLL.Services
     {
         private readonly ITransactionRepository _transactionRepository;
         private readonly IProductRepository _productRepository;
+        private readonly IAtRepository _atRepository;
+        private readonly ICustomerAppService _customerAppService;
         private readonly GuidGenerator _guidGenerator;
         private readonly IMapper _mapper;
 
-        public TransactionService(ITransactionRepository transactionRepository, GuidGenerator guidGenerator, IMapper mapper, IProductRepository productRepository)
+        public TransactionService(ITransactionRepository transactionRepository, GuidGenerator guidGenerator, IMapper mapper, IProductRepository productRepository, ICustomerAppService customerAppService, IAtRepository atRepository)
         {
             _transactionRepository = transactionRepository;
             _guidGenerator = guidGenerator;
             _mapper = mapper;
             _productRepository = productRepository;
+            _customerAppService = customerAppService;
+            _atRepository = atRepository;
         }
 
         public async Task<List<BillDto>> GetAllBillAsync()
@@ -59,6 +63,7 @@ namespace MealMate.BLL.Services
                 CustomerID = bill.CustomerID,
                 StoreID = bill.StoreID,
                 ShipperID = bill.ShipperID,
+                PaymentMethod = bill.PaymentMethod,
                 DateAndTime = bill.DateAndTime,
                 DeliveryStatus = bill.DeliveryStatus,
                 TotalPrice = bill.TotalPrice,
@@ -100,6 +105,12 @@ namespace MealMate.BLL.Services
                 var product = await _productRepository.GetAsync(includeDto.ProductID)
                     ?? throw new EntityNotFoundException("Product not found");
 
+                var at = await _atRepository.GetAtByProductIDAndStoreIDAsync(includeDto.ProductID, newBill.StoreID) ?? throw new EntityNotFoundException("No product found at store.");
+
+                at.NumberAtStore -= includeDto.NumberOfProductInBill;
+
+                await _atRepository.UpdateAsync(at);
+
                 includes.Add(new Include
                 {
                     TransactionID = newId,
@@ -131,6 +142,7 @@ namespace MealMate.BLL.Services
                 CustomerID = newBill.CustomerID,
                 StoreID = newBill.StoreID,
                 ShipperID = newBill.ShipperID,
+                PaymentMethod = newBill.PaymentMethod,
                 DateAndTime = newBill.DateAndTime,
                 DeliveryStatus = newBill.DeliveryStatus,
                 TotalPrice = newBill.TotalPrice,
@@ -152,8 +164,51 @@ namespace MealMate.BLL.Services
         {
             var bill = await _transactionRepository.GetAsync(transactionId) ?? throw new EntityNotFoundException("Bill not found");
             bill.DeliveryStatus = status;
+            if (status == DeliveryStatus.Delivered)
+            {
+                await _customerAppService.AddTotalMoneySpentByIdAsync(bill.CustomerID, (decimal)Math.Round(bill.TotalPrice, 2));
+            }
             await _transactionRepository.UpdateAsync(bill);
             return status;
+        }
+
+        public async Task<List<FullBillDto>> GetBillListByStoreIdAsync(Guid storeId, DeliveryStatus status)
+        {
+            var bills = await _transactionRepository.GetBillListByStoreIdAsync(storeId, status);
+            if (bills.Count == 0)
+            {
+                throw new EntityNotFoundException("No bills found");
+            }
+
+            var fullBillDtos = new List<FullBillDto>();
+            foreach (var bill in bills)
+            {
+                var includesDto = bill.Includes.Select(include => new IncludeDto
+                {
+                    TransactionID = include.TransactionID,
+                    ProductID = include.ProductID,
+                    NumberOfProductInBill = include.NumberOfProductInBill,
+                    SubTotal = include.SubTotal,
+                    Product = _mapper.Map<ProductCreationDto>(include.Product)
+                }).ToList();
+
+                var fullBillDto = new FullBillDto
+                {
+                    TransactionId = bill.Id,
+                    CustomerID = bill.CustomerID,
+                    StoreID = bill.StoreID,
+                    ShipperID = bill.ShipperID,
+                    PaymentMethod = bill.PaymentMethod,
+                    DateAndTime = bill.DateAndTime,
+                    DeliveryStatus = bill.DeliveryStatus,
+                    TotalPrice = bill.TotalPrice,
+                    TotalWeight = bill.TotalWeight,
+                    Includes = includesDto
+                };
+                fullBillDtos.Add(fullBillDto);
+            }
+
+            return fullBillDtos;
         }
     }
 }

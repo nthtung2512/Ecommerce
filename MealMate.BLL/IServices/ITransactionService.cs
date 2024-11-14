@@ -9,6 +9,7 @@ namespace MealMate.BLL.IServices
         Task<List<BillDto>> GetAllBillAsync();
         Task<List<BillDto>> GetBillListAsync(Guid customerId);
         Task<FullBillDto> GetBillByIdAsync(Guid transactionId);
+        Task<List<FullBillDto>> GetBillListByStoreIdAsync(Guid storeId, DeliveryStatus status);
         Task<Guid> GetLastBillIdAsync(Guid customerId);
         Task<FullBillDto> CreateBillAsync(BillCreationDto billData);
         Task<BillDto> AssignShipperToBillAsync(Guid transactionId, Guid shipperId);

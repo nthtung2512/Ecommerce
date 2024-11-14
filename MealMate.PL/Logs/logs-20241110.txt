@@ -624,3 +624,23 @@ System.Net.Mail.SmtpException: The SMTP server requires a secure connection or t
 2024-11-10 20:10:28.790 +07:00 [INF] Request finished HTTP/2 GET https://localhost:7288/_vs/browserLink - 200 null text/javascript; charset=UTF-8 29.4657ms
 2024-11-10 20:10:28.824 +07:00 [INF] Request starting HTTP/2 GET https://localhost:7288/swagger/v1/swagger.json - null null
 2024-11-10 20:10:28.976 +07:00 [INF] Request finished HTTP/2 GET https://localhost:7288/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 152.6187ms
+2024-11-10 22:58:27.993 +07:00 [INF] Starting web host.
+2024-11-10 22:58:36.501 +07:00 [INF] User profile is available. Using 'C:\Users\Admin\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2024-11-10 22:58:37.331 +07:00 [INF] Email: 21
+2024-11-10 22:58:37.332 +07:00 [INF] Password: 19
+2024-11-10 22:58:37.349 +07:00 [WRN] The WebRootPath was not found: D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.PL\wwwroot. Static files may be unavailable.
+2024-11-10 22:58:37.556 +07:00 [WRN] The WebRootPath was not found: D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.PL\wwwroot. Static files may be unavailable.
+2024-11-10 22:58:37.883 +07:00 [INF] Now listening on: https://localhost:7288
+2024-11-10 22:58:37.885 +07:00 [INF] Now listening on: http://localhost:5200
+2024-11-10 22:58:37.887 +07:00 [INF] Application started. Press Ctrl+C to shut down.
+2024-11-10 22:58:37.888 +07:00 [INF] Hosting environment: Development
+2024-11-10 22:58:37.890 +07:00 [INF] Content root path: D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.PL
+2024-11-10 22:58:39.016 +07:00 [INF] Request starting HTTP/2 GET https://localhost:7288/swagger/index.html - null null
+2024-11-10 22:58:39.429 +07:00 [INF] Request finished HTTP/2 GET https://localhost:7288/swagger/index.html - 200 null text/html;charset=utf-8 429.8629ms
+2024-11-10 22:58:39.432 +07:00 [INF] Request starting HTTP/2 GET https://localhost:7288/_framework/aspnetcore-browser-refresh.js - null null
+2024-11-10 22:58:39.440 +07:00 [INF] Request starting HTTP/2 GET https://localhost:7288/_vs/browserLink - null null
+2024-11-10 22:58:39.447 +07:00 [INF] Request finished HTTP/2 GET https://localhost:7288/_framework/aspnetcore-browser-refresh.js - 200 13758 application/javascript; charset=utf-8 14.8606ms
+2024-11-10 22:58:39.544 +07:00 [INF] Request finished HTTP/2 GET https://localhost:7288/_vs/browserLink - 200 null text/javascript; charset=UTF-8 104.1354ms
+2024-11-10 22:58:39.637 +07:00 [INF] Request starting HTTP/2 GET https://localhost:7288/swagger/v1/swagger.json - null null
+2024-11-10 22:58:40.026 +07:00 [INF] Request finished HTTP/2 GET https://localhost:7288/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 389.6472ms
+2024-11-10 23:10:26.048 +07:00 [INF] Starting web host.

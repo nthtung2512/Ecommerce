@@ -10,16 +10,12 @@ namespace MealMate.DAL.EntityFrameworkCore
         {
             var configuration = BuildConfiguration();
 
-            // Build the connection string from environment variables
-            var host = Environment.GetEnvironmentVariable("POSTGRESQL_HOST");
-            var port = Environment.GetEnvironmentVariable("POSTGRESQL_PORT");
-            var database = Environment.GetEnvironmentVariable("POSTGRESQL_DATABASE");
-            var username = Environment.GetEnvironmentVariable("POSTGRESQL_USERNAME");
-            var password = Environment.GetEnvironmentVariable("POSTGRESQL_PASSWORD");
+            Console.WriteLine(configuration.GetConnectionString("Default"));
 
-            var connectionString = $"Host={host};Port={port};Database={database};Username={username};Password={password}";
+            var builder = new DbContextOptionsBuilder<MealMateDbContext>().UseNpgsql(
+                 configuration.GetConnectionString("Default")
+             );
 
-            var builder = new DbContextOptionsBuilder<MealMateDbContext>().UseNpgsql(connectionString);
 
             return new MealMateDbContext(builder.Options);
         }

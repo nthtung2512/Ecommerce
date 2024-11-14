@@ -1,0 +1,111 @@
+2024-11-15 00:17:10.795 +07:00 [INF] Starting web host.
+2024-11-15 00:17:20.123 +07:00 [INF] User profile is available. Using 'C:\Users\Admin\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2024-11-15 00:17:21.029 +07:00 [INF] Email: 21
+2024-11-15 00:17:21.031 +07:00 [INF] Password: 19
+2024-11-15 00:17:21.047 +07:00 [WRN] The WebRootPath was not found: D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.PL\wwwroot. Static files may be unavailable.
+2024-11-15 00:17:21.341 +07:00 [WRN] The WebRootPath was not found: D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.PL\wwwroot. Static files may be unavailable.
+2024-11-15 00:17:21.767 +07:00 [INF] Now listening on: https://localhost:7288
+2024-11-15 00:17:21.770 +07:00 [INF] Now listening on: http://localhost:5200
+2024-11-15 00:17:21.772 +07:00 [INF] Application started. Press Ctrl+C to shut down.
+2024-11-15 00:17:21.773 +07:00 [INF] Hosting environment: Development
+2024-11-15 00:17:21.774 +07:00 [INF] Content root path: D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.PL
+2024-11-15 00:17:23.047 +07:00 [INF] Request starting HTTP/2 GET https://localhost:7288/swagger/index.html - null null
+2024-11-15 00:17:23.619 +07:00 [INF] Request finished HTTP/2 GET https://localhost:7288/swagger/index.html - 200 null text/html;charset=utf-8 585.3895ms
+2024-11-15 00:17:23.626 +07:00 [INF] Request starting HTTP/2 GET https://localhost:7288/_framework/aspnetcore-browser-refresh.js - null null
+2024-11-15 00:17:23.648 +07:00 [INF] Request starting HTTP/2 GET https://localhost:7288/_vs/browserLink - null null
+2024-11-15 00:17:23.656 +07:00 [INF] Request finished HTTP/2 GET https://localhost:7288/_framework/aspnetcore-browser-refresh.js - 200 13758 application/javascript; charset=utf-8 29.5422ms
+2024-11-15 00:17:23.797 +07:00 [INF] Request finished HTTP/2 GET https://localhost:7288/_vs/browserLink - 200 null text/javascript; charset=UTF-8 149.2984ms
+2024-11-15 00:17:23.852 +07:00 [INF] Request starting HTTP/2 GET https://localhost:7288/swagger/v1/swagger.json - null null
+2024-11-15 00:17:23.897 +07:00 [INF] Request starting HTTP/2 GET https://localhost:7288/swagger/favicon-32x32.png - null null
+2024-11-15 00:17:23.923 +07:00 [INF] Sending file. Request path: '/favicon-32x32.png'. Physical path: 'N/A'
+2024-11-15 00:17:23.942 +07:00 [INF] Request finished HTTP/2 GET https://localhost:7288/swagger/favicon-32x32.png - 200 628 image/png 46.3754ms
+2024-11-15 00:17:24.256 +07:00 [INF] Request finished HTTP/2 GET https://localhost:7288/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 404.17ms
+2024-11-15 00:21:26.370 +07:00 [INF] Request starting HTTP/2 PATCH https://localhost:7288/transactions/status/bfcbcbf8-dc23-4908-a468-c4c5c5bcb351/4 - null null
+2024-11-15 00:21:26.484 +07:00 [INF] CORS policy execution failed.
+2024-11-15 00:21:26.486 +07:00 [INF] Request origin https://localhost:7288 does not have permission to access the resource.
+2024-11-15 00:21:26.516 +07:00 [INF] Executing endpoint 'TransactionController.UpdateDeliveryStatus (MealMate.PL)'
+2024-11-15 00:21:26.567 +07:00 [INF] Route matched with {action = "UpdateDeliveryStatus", controller = "Transaction", page = "", area = ""}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] UpdateDeliveryStatus(System.Guid, MealMate.DAL.Utils.Enum.DeliveryStatus) on controller TransactionController (MealMate.PL).
+2024-11-15 00:21:27.703 +07:00 [INF] Executing OkObjectResult, writing value of type 'MealMate.DAL.Utils.Enum.DeliveryStatus'.
+2024-11-15 00:21:27.721 +07:00 [INF] Executed action TransactionController.UpdateDeliveryStatus (MealMate.PL) in 1144.9009ms
+2024-11-15 00:21:27.725 +07:00 [INF] Executed endpoint 'TransactionController.UpdateDeliveryStatus (MealMate.PL)'
+2024-11-15 00:21:27.732 +07:00 [INF] Request finished HTTP/2 PATCH https://localhost:7288/transactions/status/bfcbcbf8-dc23-4908-a468-c4c5c5bcb351/4 - 200 null application/json; charset=utf-8 1362.1932ms
+2024-11-15 00:27:19.536 +07:00 [INF] Request starting HTTP/2 GET https://localhost:7288/products/atstore/product/bfcbcbf8-dc23-4908-a468-c4c5c5bcb351 - null null
+2024-11-15 00:27:19.562 +07:00 [INF] Executing endpoint 'MealMate.PL.Controllers.ProductController.GetProductInformationAtStore (MealMate.PL)'
+2024-11-15 00:27:19.575 +07:00 [INF] Route matched with {action = "GetProductInformationAtStore", controller = "Product", page = "", area = ""}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetProductInformationAtStore(System.Guid) on controller MealMate.PL.Controllers.ProductController (MealMate.PL).
+2024-11-15 00:27:19.852 +07:00 [INF] Executed action MealMate.PL.Controllers.ProductController.GetProductInformationAtStore (MealMate.PL) in 273.8507ms
+2024-11-15 00:27:19.856 +07:00 [INF] Executed endpoint 'MealMate.PL.Controllers.ProductController.GetProductInformationAtStore (MealMate.PL)'
+2024-11-15 00:27:19.862 +07:00 [ERR] An unhandled exception has occurred while executing the request.
+MealMate.DAL.Utils.Exceptions.EntityNotFoundException: No product found for this store
+   at MealMate.BLL.Services.StoreAppService.GetAtByStoreIdAsync(Guid storeId) in D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.BLL\Services\StoreAppService.cs:line 105
+   at MealMate.PL.Controllers.ProductController.GetProductInformationAtStore(Guid storeid) in D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.PL\Controllers\ProductController.cs:line 72
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+2024-11-15 00:27:19.970 +07:00 [INF] Request finished HTTP/2 GET https://localhost:7288/products/atstore/product/bfcbcbf8-dc23-4908-a468-c4c5c5bcb351 - 404 null application/json; charset=utf-8 436.4483ms
+2024-11-15 00:27:28.746 +07:00 [INF] Request starting HTTP/2 GET https://localhost:7288/products/atstore/product/0e5e4932-764a-4074-8ecb-dce993f825d9 - null null
+2024-11-15 00:27:28.787 +07:00 [INF] Executing endpoint 'MealMate.PL.Controllers.ProductController.GetProductInformationAtStore (MealMate.PL)'
+2024-11-15 00:27:28.795 +07:00 [INF] Route matched with {action = "GetProductInformationAtStore", controller = "Product", page = "", area = ""}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetProductInformationAtStore(System.Guid) on controller MealMate.PL.Controllers.ProductController (MealMate.PL).
+2024-11-15 00:27:29.284 +07:00 [INF] Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[MealMate.BLL.Dtos.Stores.ATDto, MealMate.BLL, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2024-11-15 00:27:29.338 +07:00 [INF] Executed action MealMate.PL.Controllers.ProductController.GetProductInformationAtStore (MealMate.PL) in 539.7742ms
+2024-11-15 00:27:29.340 +07:00 [INF] Executed endpoint 'MealMate.PL.Controllers.ProductController.GetProductInformationAtStore (MealMate.PL)'
+2024-11-15 00:27:29.342 +07:00 [INF] Request finished HTTP/2 GET https://localhost:7288/products/atstore/product/0e5e4932-764a-4074-8ecb-dce993f825d9 - 200 null application/json; charset=utf-8 597.2862ms
+2024-11-15 00:35:43.357 +07:00 [INF] Starting web host.
+2024-11-15 00:35:48.112 +07:00 [INF] User profile is available. Using 'C:\Users\Admin\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2024-11-15 00:35:48.846 +07:00 [INF] Email: 21
+2024-11-15 00:35:48.848 +07:00 [INF] Password: 19
+2024-11-15 00:35:48.861 +07:00 [WRN] The WebRootPath was not found: D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.PL\wwwroot. Static files may be unavailable.
+2024-11-15 00:35:49.080 +07:00 [WRN] The WebRootPath was not found: D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.PL\wwwroot. Static files may be unavailable.
+2024-11-15 00:35:49.275 +07:00 [INF] Now listening on: https://localhost:7288
+2024-11-15 00:35:49.282 +07:00 [INF] Now listening on: http://localhost:5200
+2024-11-15 00:35:49.289 +07:00 [INF] Application started. Press Ctrl+C to shut down.
+2024-11-15 00:35:49.291 +07:00 [INF] Hosting environment: Development
+2024-11-15 00:35:49.292 +07:00 [INF] Content root path: D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.PL
+2024-11-15 00:35:49.951 +07:00 [INF] Request starting HTTP/2 GET https://localhost:7288/swagger/index.html - null null
+2024-11-15 00:35:50.296 +07:00 [INF] Request finished HTTP/2 GET https://localhost:7288/swagger/index.html - 200 null text/html;charset=utf-8 353.6665ms
+2024-11-15 00:35:50.322 +07:00 [INF] Request starting HTTP/2 GET https://localhost:7288/_framework/aspnetcore-browser-refresh.js - null null
+2024-11-15 00:35:50.322 +07:00 [INF] Request starting HTTP/2 GET https://localhost:7288/_vs/browserLink - null null
+2024-11-15 00:35:50.345 +07:00 [INF] Request finished HTTP/2 GET https://localhost:7288/_framework/aspnetcore-browser-refresh.js - 200 13758 application/javascript; charset=utf-8 23.7944ms
+2024-11-15 00:35:50.419 +07:00 [INF] Request finished HTTP/2 GET https://localhost:7288/_vs/browserLink - 200 null text/javascript; charset=UTF-8 98.0417ms
+2024-11-15 00:35:50.481 +07:00 [INF] Request starting HTTP/2 GET https://localhost:7288/swagger/v1/swagger.json - null null
+2024-11-15 00:35:50.879 +07:00 [INF] Request finished HTTP/2 GET https://localhost:7288/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 398.6139ms
+2024-11-15 00:58:01.441 +07:00 [INF] Starting web host.
+2024-11-15 00:58:05.747 +07:00 [INF] User profile is available. Using 'C:\Users\Admin\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2024-11-15 00:58:06.537 +07:00 [INF] Email: 21
+2024-11-15 00:58:06.539 +07:00 [INF] Password: 19
+2024-11-15 00:58:06.555 +07:00 [WRN] The WebRootPath was not found: D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.PL\wwwroot. Static files may be unavailable.
+2024-11-15 00:58:06.732 +07:00 [WRN] The WebRootPath was not found: D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.PL\wwwroot. Static files may be unavailable.
+2024-11-15 00:58:06.912 +07:00 [INF] Now listening on: https://localhost:7288
+2024-11-15 00:58:06.914 +07:00 [INF] Now listening on: http://localhost:5200
+2024-11-15 00:58:06.917 +07:00 [INF] Application started. Press Ctrl+C to shut down.
+2024-11-15 00:58:06.918 +07:00 [INF] Hosting environment: Development
+2024-11-15 00:58:06.921 +07:00 [INF] Content root path: D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.PL
+2024-11-15 00:58:07.697 +07:00 [INF] Request starting HTTP/2 GET https://localhost:7288/swagger/index.html - null null
+2024-11-15 00:58:08.075 +07:00 [INF] Request finished HTTP/2 GET https://localhost:7288/swagger/index.html - 200 null text/html;charset=utf-8 389.9989ms
+2024-11-15 00:58:08.106 +07:00 [INF] Request starting HTTP/2 GET https://localhost:7288/_framework/aspnetcore-browser-refresh.js - null null
+2024-11-15 00:58:08.106 +07:00 [INF] Request starting HTTP/2 GET https://localhost:7288/_vs/browserLink - null null
+2024-11-15 00:58:08.120 +07:00 [INF] Request finished HTTP/2 GET https://localhost:7288/_framework/aspnetcore-browser-refresh.js - 200 13758 application/javascript; charset=utf-8 14.869ms
+2024-11-15 00:58:08.185 +07:00 [INF] Request finished HTTP/2 GET https://localhost:7288/_vs/browserLink - 200 null text/javascript; charset=UTF-8 80.2886ms
+2024-11-15 00:58:08.251 +07:00 [INF] Request starting HTTP/2 GET https://localhost:7288/swagger/v1/swagger.json - null null
+2024-11-15 00:58:08.621 +07:00 [INF] Request finished HTTP/2 GET https://localhost:7288/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 370.7133ms
+2024-11-15 01:02:58.960 +07:00 [INF] Request starting HTTP/2 POST https://localhost:7288/transactions - application/json 372
+2024-11-15 01:02:59.086 +07:00 [INF] CORS policy execution failed.
+2024-11-15 01:02:59.088 +07:00 [INF] Request origin https://localhost:7288 does not have permission to access the resource.
+2024-11-15 01:02:59.111 +07:00 [INF] Executing endpoint 'TransactionController.CreateBill (MealMate.PL)'
+2024-11-15 01:02:59.147 +07:00 [INF] Route matched with {action = "CreateBill", controller = "Transaction", page = "", area = ""}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] CreateBill(MealMate.BLL.Dtos.Bills.BillCreationDto) on controller TransactionController (MealMate.PL).
+2024-11-15 01:03:00.179 +07:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType6`1[[MealMate.BLL.Dtos.Bills.FullBillDto, MealMate.BLL, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2024-11-15 01:03:00.226 +07:00 [INF] Executed action TransactionController.CreateBill (MealMate.PL) in 1070.2267ms
+2024-11-15 01:03:00.231 +07:00 [INF] Executed endpoint 'TransactionController.CreateBill (MealMate.PL)'
+2024-11-15 01:03:00.238 +07:00 [INF] Request finished HTTP/2 POST https://localhost:7288/transactions - 200 null application/json; charset=utf-8 1278.316ms

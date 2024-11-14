@@ -2,6 +2,7 @@
 using MealMate.DAL.Entities.Transactions;
 using MealMate.DAL.EntityFrameworkCore;
 using MealMate.DAL.IRepositories;
+using MealMate.DAL.Utils.Enum;
 using Microsoft.EntityFrameworkCore;
 
 namespace MealMate.DAL.Repositories
@@ -73,14 +74,19 @@ namespace MealMate.DAL.Repositories
         }
 
 
-        public Task<List<Bill>> GetBillListAsync(Guid customerId)
+        public async Task<List<Bill>> GetBillListAsync(Guid customerId)
         {
-            return _context.Bills.Where(b => b.CustomerID == customerId).ToListAsync();
+            return await _context.Bills.Where(b => b.CustomerID == customerId).ToListAsync();
         }
 
-        public Task<List<Bill>> GetAllBillAsync()
+        public async Task<List<Bill>> GetAllBillAsync()
         {
-            return _context.Bills.Include(b => b.Includes).ToListAsync();
+            return await _context.Bills.Include(b => b.Includes).ToListAsync();
+        }
+
+        public async Task<List<Bill>> GetBillListByStoreIdAsync(Guid storeId, DeliveryStatus status)
+        {
+            return await _context.Bills.Include(b => b.Includes).ThenInclude(i => i.Product).Where(b => b.StoreID == storeId && !b.IsDeleted && b.DeliveryStatus == status).ToListAsync();
         }
     }
 }

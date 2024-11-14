@@ -1,0 +1,104 @@
+2024-11-13 00:16:36.969 +07:00 [INF] Starting web host.
+2024-11-13 00:16:40.597 +07:00 [INF] User profile is available. Using 'C:\Users\Admin\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2024-11-13 00:16:40.919 +07:00 [INF] Email: 21
+2024-11-13 00:16:40.919 +07:00 [INF] Password: 19
+2024-11-13 00:16:40.928 +07:00 [WRN] The WebRootPath was not found: D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.PL\wwwroot. Static files may be unavailable.
+2024-11-13 00:16:41.037 +07:00 [WRN] The WebRootPath was not found: D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.PL\wwwroot. Static files may be unavailable.
+2024-11-13 00:16:41.216 +07:00 [INF] Now listening on: https://localhost:7288
+2024-11-13 00:16:41.217 +07:00 [INF] Now listening on: http://localhost:5200
+2024-11-13 00:16:41.218 +07:00 [INF] Application started. Press Ctrl+C to shut down.
+2024-11-13 00:16:41.218 +07:00 [INF] Hosting environment: Development
+2024-11-13 00:16:41.219 +07:00 [INF] Content root path: D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.PL
+2024-11-13 00:16:41.650 +07:00 [INF] Request starting HTTP/2 GET https://localhost:7288/swagger/index.html - null null
+2024-11-13 00:16:41.846 +07:00 [INF] Request finished HTTP/2 GET https://localhost:7288/swagger/index.html - 200 null text/html;charset=utf-8 200.3148ms
+2024-11-13 00:16:41.851 +07:00 [INF] Request starting HTTP/2 GET https://localhost:7288/_framework/aspnetcore-browser-refresh.js - null null
+2024-11-13 00:16:41.854 +07:00 [INF] Request starting HTTP/2 GET https://localhost:7288/_vs/browserLink - null null
+2024-11-13 00:16:41.858 +07:00 [INF] Request finished HTTP/2 GET https://localhost:7288/_framework/aspnetcore-browser-refresh.js - 200 13758 application/javascript; charset=utf-8 7.3728ms
+2024-11-13 00:16:41.907 +07:00 [INF] Request finished HTTP/2 GET https://localhost:7288/_vs/browserLink - 200 null text/javascript; charset=UTF-8 53.1781ms
+2024-11-13 00:16:41.935 +07:00 [INF] Request starting HTTP/2 GET https://localhost:7288/swagger/v1/swagger.json - null null
+2024-11-13 00:16:42.085 +07:00 [INF] Request finished HTTP/2 GET https://localhost:7288/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 150.6133ms
+2024-11-13 00:21:50.864 +07:00 [INF] Request starting HTTP/2 GET https://localhost:7288/transactions/store/073a6a78-65b9-459f-8003-574302404236 - null null
+2024-11-13 00:21:50.921 +07:00 [INF] Executing endpoint 'TransactionController.GetBillListByStoreIdAsync (MealMate.PL)'
+2024-11-13 00:21:50.944 +07:00 [INF] Route matched with {action = "GetBillListByStoreId", controller = "Transaction", page = "", area = ""}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetBillListByStoreIdAsync(System.Guid) on controller TransactionController (MealMate.PL).
+2024-11-13 00:21:51.134 +07:00 [INF] Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[MealMate.BLL.Dtos.Bills.FullBillDto, MealMate.BLL, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2024-11-13 00:21:51.158 +07:00 [INF] Executed action TransactionController.GetBillListByStoreIdAsync (MealMate.PL) in 210.4874ms
+2024-11-13 00:21:51.160 +07:00 [INF] Executed endpoint 'TransactionController.GetBillListByStoreIdAsync (MealMate.PL)'
+2024-11-13 00:21:51.162 +07:00 [INF] Request finished HTTP/2 GET https://localhost:7288/transactions/store/073a6a78-65b9-459f-8003-574302404236 - 200 null application/json; charset=utf-8 299.1866ms
+2024-11-13 00:40:20.606 +07:00 [INF] Starting web host.
+2024-11-13 00:40:28.374 +07:00 [INF] User profile is available. Using 'C:\Users\Admin\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2024-11-13 00:40:29.079 +07:00 [INF] Email: 21
+2024-11-13 00:40:29.080 +07:00 [INF] Password: 19
+2024-11-13 00:40:29.099 +07:00 [WRN] The WebRootPath was not found: D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.PL\wwwroot. Static files may be unavailable.
+2024-11-13 00:40:29.260 +07:00 [WRN] The WebRootPath was not found: D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.PL\wwwroot. Static files may be unavailable.
+2024-11-13 00:40:29.590 +07:00 [INF] Now listening on: https://localhost:7288
+2024-11-13 00:40:29.592 +07:00 [INF] Now listening on: http://localhost:5200
+2024-11-13 00:40:29.594 +07:00 [INF] Application started. Press Ctrl+C to shut down.
+2024-11-13 00:40:29.599 +07:00 [INF] Hosting environment: Development
+2024-11-13 00:40:29.601 +07:00 [INF] Content root path: D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.PL
+2024-11-13 00:40:30.543 +07:00 [INF] Request starting HTTP/2 GET https://localhost:7288/swagger/index.html - null null
+2024-11-13 00:40:30.912 +07:00 [INF] Request finished HTTP/2 GET https://localhost:7288/swagger/index.html - 200 null text/html;charset=utf-8 381.9905ms
+2024-11-13 00:40:30.918 +07:00 [INF] Request starting HTTP/2 GET https://localhost:7288/_framework/aspnetcore-browser-refresh.js - null null
+2024-11-13 00:40:30.925 +07:00 [INF] Request starting HTTP/2 GET https://localhost:7288/_vs/browserLink - null null
+2024-11-13 00:40:30.935 +07:00 [INF] Request finished HTTP/2 GET https://localhost:7288/_framework/aspnetcore-browser-refresh.js - 200 13758 application/javascript; charset=utf-8 17.0252ms
+2024-11-13 00:40:31.016 +07:00 [INF] Request finished HTTP/2 GET https://localhost:7288/_vs/browserLink - 200 null text/javascript; charset=UTF-8 91.5456ms
+2024-11-13 00:40:31.254 +07:00 [INF] Request starting HTTP/2 GET https://localhost:7288/swagger/v1/swagger.json - null null
+2024-11-13 00:40:31.608 +07:00 [INF] Request finished HTTP/2 GET https://localhost:7288/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 355.1548ms
+2024-11-13 00:40:52.524 +07:00 [INF] Request starting HTTP/2 GET https://localhost:7288/transactions/store/073a6a78-65b9-459f-8003-574302404236/0 - null null
+2024-11-13 00:40:52.659 +07:00 [INF] Executing endpoint 'TransactionController.GetBillListByStoreIdAsync (MealMate.PL)'
+2024-11-13 00:40:52.716 +07:00 [INF] Route matched with {action = "GetBillListByStoreId", controller = "Transaction", page = "", area = ""}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetBillListByStoreIdAsync(System.Guid, MealMate.DAL.Utils.Enum.DeliveryStatus) on controller TransactionController (MealMate.PL).
+2024-11-13 00:40:53.421 +07:00 [INF] Executed action TransactionController.GetBillListByStoreIdAsync (MealMate.PL) in 694.3039ms
+2024-11-13 00:40:53.426 +07:00 [INF] Executed endpoint 'TransactionController.GetBillListByStoreIdAsync (MealMate.PL)'
+2024-11-13 00:40:53.438 +07:00 [ERR] An unhandled exception has occurred while executing the request.
+MealMate.DAL.Utils.Exceptions.EntityNotFoundException: No bills found
+   at MealMate.BLL.Services.TransactionService.GetBillListByStoreIdAsync(Guid storeId, DeliveryStatus status) in D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.BLL\Services\TransactionService.cs:line 166
+   at TransactionController.GetBillListByStoreIdAsync(Guid storeid, DeliveryStatus status) in D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.PL\Controllers\TransactionController.cs:line 41
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddlewareImpl.<Invoke>g__Awaited|10_0(ExceptionHandlerMiddlewareImpl middleware, HttpContext context, Task task)
+2024-11-13 00:40:53.566 +07:00 [INF] Request finished HTTP/2 GET https://localhost:7288/transactions/store/073a6a78-65b9-459f-8003-574302404236/0 - 404 null application/json; charset=utf-8 1041.8466ms
+2024-11-13 00:40:57.124 +07:00 [INF] Request starting HTTP/2 GET https://localhost:7288/transactions/store/073a6a78-65b9-459f-8003-574302404236/1 - null null
+2024-11-13 00:40:57.155 +07:00 [INF] Executing endpoint 'TransactionController.GetBillListByStoreIdAsync (MealMate.PL)'
+2024-11-13 00:40:57.160 +07:00 [INF] Route matched with {action = "GetBillListByStoreId", controller = "Transaction", page = "", area = ""}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetBillListByStoreIdAsync(System.Guid, MealMate.DAL.Utils.Enum.DeliveryStatus) on controller TransactionController (MealMate.PL).
+2024-11-13 00:40:57.371 +07:00 [INF] Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[MealMate.BLL.Dtos.Bills.FullBillDto, MealMate.BLL, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2024-11-13 00:40:57.427 +07:00 [INF] Executed action TransactionController.GetBillListByStoreIdAsync (MealMate.PL) in 260.5939ms
+2024-11-13 00:40:57.430 +07:00 [INF] Executed endpoint 'TransactionController.GetBillListByStoreIdAsync (MealMate.PL)'
+2024-11-13 00:40:57.432 +07:00 [INF] Request finished HTTP/2 GET https://localhost:7288/transactions/store/073a6a78-65b9-459f-8003-574302404236/1 - 200 null application/json; charset=utf-8 308.5668ms
+2024-11-13 00:42:31.729 +07:00 [INF] Starting web host.
+2024-11-13 00:42:38.953 +07:00 [INF] User profile is available. Using 'C:\Users\Admin\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2024-11-13 00:42:39.650 +07:00 [INF] Email: 21
+2024-11-13 00:42:39.651 +07:00 [INF] Password: 19
+2024-11-13 00:42:39.666 +07:00 [WRN] The WebRootPath was not found: D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.PL\wwwroot. Static files may be unavailable.
+2024-11-13 00:42:39.853 +07:00 [WRN] The WebRootPath was not found: D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.PL\wwwroot. Static files may be unavailable.
+2024-11-13 00:42:40.189 +07:00 [INF] Now listening on: https://localhost:7288
+2024-11-13 00:42:40.192 +07:00 [INF] Now listening on: http://localhost:5200
+2024-11-13 00:42:40.196 +07:00 [INF] Application started. Press Ctrl+C to shut down.
+2024-11-13 00:42:40.198 +07:00 [INF] Hosting environment: Development
+2024-11-13 00:42:40.199 +07:00 [INF] Content root path: D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.PL
+2024-11-13 00:42:40.931 +07:00 [INF] Request starting HTTP/2 GET https://localhost:7288/swagger/index.html - null null
+2024-11-13 00:42:41.271 +07:00 [INF] Request finished HTTP/2 GET https://localhost:7288/swagger/index.html - 200 null text/html;charset=utf-8 355.5386ms
+2024-11-13 00:42:41.323 +07:00 [INF] Request starting HTTP/2 GET https://localhost:7288/_vs/browserLink - null null
+2024-11-13 00:42:41.323 +07:00 [INF] Request starting HTTP/2 GET https://localhost:7288/_framework/aspnetcore-browser-refresh.js - null null
+2024-11-13 00:42:41.369 +07:00 [INF] Request finished HTTP/2 GET https://localhost:7288/_framework/aspnetcore-browser-refresh.js - 200 13758 application/javascript; charset=utf-8 45.4384ms
+2024-11-13 00:42:41.446 +07:00 [INF] Request finished HTTP/2 GET https://localhost:7288/_vs/browserLink - 200 null text/javascript; charset=UTF-8 122.898ms
+2024-11-13 00:42:41.549 +07:00 [INF] Request starting HTTP/2 GET https://localhost:7288/swagger/v1/swagger.json - null null
+2024-11-13 00:42:41.961 +07:00 [INF] Request finished HTTP/2 GET https://localhost:7288/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 413.3348ms
+2024-11-13 00:43:24.404 +07:00 [INF] Request starting HTTP/2 GET https://localhost:7288/transactions/store/073a6a78-65b9-459f-8003-574302404236/1 - null null
+2024-11-13 00:43:24.552 +07:00 [INF] Executing endpoint 'TransactionController.GetBillListByStoreIdAsync (MealMate.PL)'
+2024-11-13 00:43:24.610 +07:00 [INF] Route matched with {action = "GetBillListByStoreId", controller = "Transaction", page = "", area = ""}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetBillListByStoreIdAsync(System.Guid, MealMate.DAL.Utils.Enum.DeliveryStatus) on controller TransactionController (MealMate.PL).
+2024-11-13 00:43:25.306 +07:00 [INF] Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[MealMate.BLL.Dtos.Bills.FullBillDto, MealMate.BLL, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2024-11-13 00:43:25.360 +07:00 [INF] Executed action TransactionController.GetBillListByStoreIdAsync (MealMate.PL) in 740.7231ms
+2024-11-13 00:43:25.364 +07:00 [INF] Executed endpoint 'TransactionController.GetBillListByStoreIdAsync (MealMate.PL)'
+2024-11-13 00:43:25.370 +07:00 [INF] Request finished HTTP/2 GET https://localhost:7288/transactions/store/073a6a78-65b9-459f-8003-574302404236/1 - 200 null application/json; charset=utf-8 967.9345ms

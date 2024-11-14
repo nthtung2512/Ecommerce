@@ -1,6 +1,7 @@
 ﻿using MealMate.BLL.Dtos.Product;
 using MealMate.BLL.IServices;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace MealMate.PL.Controllers
 {
@@ -52,10 +53,23 @@ namespace MealMate.PL.Controllers
             return Ok(product);
         }
 
-        [HttpGet("atstore/{id}")]
-        public async Task<IActionResult> GetProductInformationAtStoreByID(Guid id)
+        [HttpGet("atstore/{productid}")]
+        [SwaggerOperation(
+            Summary = "Which store have this product (Return ATDto)"
+        )]
+        public async Task<IActionResult> GetProductInformationAtStoreByID(Guid productid)
         {
-            var productsAtStore = await _storeAppService.GetAtByProductIDAsync(id);
+            var productsAtStore = await _storeAppService.GetAtByProductIDAsync(productid);
+            return Ok(productsAtStore);
+        }
+
+        [HttpGet("atstore/product/{storeid}")]
+        [SwaggerOperation(
+            Summary = "Get all products with stock at a store"
+        )]
+        public async Task<IActionResult> GetProductInformationAtStore(Guid storeid)
+        {
+            var productsAtStore = await _storeAppService.GetAtByStoreIdAsync(storeid);
             return Ok(productsAtStore);
         }
 
