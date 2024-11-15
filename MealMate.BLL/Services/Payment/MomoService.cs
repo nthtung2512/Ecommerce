@@ -19,18 +19,25 @@ namespace MealMate.BLL.Services.Payment
 
         public async Task<MomoCreatePaymentResponseModel> CreatePaymentAsync(OrderInfoModel model)
         {
-            model.OrderId = DateTime.UtcNow.Ticks.ToString();
             model.OrderInformation = "Customer: " + model.FullName + "\n" + "Content: " + model.OrderInformation;
+
+            // Assuming model.Amount is in USD, convert to VND
+            decimal amountInUSD = (decimal)Math.Round(model.Amount, 2); // Example: 12.3
+            decimal exchangeRate = 25000; // Example exchange rate: 1 USD = 25,000 VND
+            long amountInVND = (long)Math.Round(amountInUSD * exchangeRate);
+
+
             var rawData =
                 $"partnerCode={_options.Value.PartnerCode}" +
-                $"&accesskey={_options.Value.AccessKey}" +
+                $"&accessKey={_options.Value.AccessKey}" +
                 $"&requestId={model.OrderId}" +
-                $"&amount={model.Amount}" +
+                $"&amount={amountInVND}" +
                 $"&orderId={model.OrderId}" +
                 $"&orderInfo={model.OrderInformation}" +
                 $"&returnUrl={_options.Value.ReturnUrl}" +
                 $"&notifyUrl={_options.Value.NotifyUrl}" +
                 $"&extraData=";
+
 
             // Encrypt raw data when transacting
             var signature = ComputeHmacSha256(rawData, _options.Value.SecretKey);
@@ -44,18 +51,19 @@ namespace MealMate.BLL.Services.Payment
             // Create an object representing the request data
             var requestData = new
             {
-                accesskey = _options.Value.AccessKey,
+                accessKey = _options.Value.AccessKey,
                 partnerCode = _options.Value.PartnerCode,
                 requestType = _options.Value.RequestType,
                 notifyUrl = _options.Value.NotifyUrl,
                 returnUrl = _options.Value.ReturnUrl,
                 orderId = model.OrderId,
-                amount = model.Amount.ToString(),
+                amount = amountInVND.ToString(),
                 orderInfo = model.OrderInformation,
                 requestId = model.OrderId,
                 extraData = "",
                 signature
             };
+
             request.AddParameter("application/json", JsonConvert.SerializeObject(requestData), ParameterType.RequestBody);
             // Send the request to the server, including the MoMo API Url and request data
             var response = await client.ExecuteAsync(request);
@@ -71,9 +79,11 @@ namespace MealMate.BLL.Services.Payment
             var amount = collection.First(s => s.Key == "amount").Value;
             var orderInfo = collection.First(s => s.Key == "orderInfo").Value;
             var orderId = collection.First(s => s.Key == "orderId").Value;
+            var fullName = collection.First(s => s.Key == "fullName").Value;
 
             return new MomoExecuteResponseModel()
             {
+                FullName = string.IsNullOrEmpty(fullName.ToString()) ? string.Empty : fullName.ToString(),
                 Amount = string.IsNullOrEmpty(amount.ToString()) ? "0" : amount.ToString(),
                 OrderId = string.IsNullOrEmpty(orderId.ToString()) ? string.Empty : orderId.ToString(),
                 OrderInfo = string.IsNullOrEmpty(orderInfo.ToString()) ? string.Empty : orderInfo.ToString()
@@ -85,13 +95,18 @@ namespace MealMate.BLL.Services.Payment
         {
             var keyBytes = Encoding.UTF8.GetBytes(secretKey);
             var messageBytes = Encoding.UTF8.GetBytes(message);
+
             byte[] hashBytes;
+
             using (var hmac = new HMACSHA256(keyBytes))
             {
                 hashBytes = hmac.ComputeHash(messageBytes);
             }
+
             var hashString = BitConverter.ToString(hashBytes).Replace("-", "").ToLower();
+
             return hashString;
         }
+
     }
 }

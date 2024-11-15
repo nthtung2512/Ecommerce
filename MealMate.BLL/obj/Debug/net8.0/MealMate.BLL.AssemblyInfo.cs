@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MealMate.BLL")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9212e889c0f341dc3f44779f8c7c468ba9601ef6")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a435b5d095ebaab2f7600129e97ad9b4a6d779e8")]
 [assembly: System.Reflection.AssemblyProductAttribute("MealMate.BLL")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MealMate.BLL")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
