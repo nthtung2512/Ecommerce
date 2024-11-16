@@ -32,6 +32,7 @@ namespace MealMate.BLL
             services.AddScoped<ITransactionService, TransactionService>();
 
             services.AddScoped<IMomoService, MomoService>();
+            services.AddScoped<IVnPayService, VnPayService>();
 
             services.AddSingleton(new GuidGenerator(SequentialGuidType.SequentialAsString));
 
