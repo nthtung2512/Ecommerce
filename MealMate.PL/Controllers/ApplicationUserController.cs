@@ -54,7 +54,6 @@ namespace MealMate.PL.Controllers
             return Ok(userWithRole);
         }
 
-        [Authorize(Roles = "Customer")]
         [HttpPost("/register/customer")]
         [SwaggerOperation(
             Summary = "Register customer",
