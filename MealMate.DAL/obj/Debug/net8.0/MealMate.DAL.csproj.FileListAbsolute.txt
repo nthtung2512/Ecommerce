@@ -1,5 +1,3 @@
-D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.DAL\bin\Debug\net8.0\appsettings.Development.json
-D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.DAL\bin\Debug\net8.0\appsettings.json
 D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.DAL\bin\Debug\net8.0\MealMate.DAL.deps.json
 D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.DAL\bin\Debug\net8.0\MealMate.DAL.runtimeconfig.json
 D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.DAL\bin\Debug\net8.0\MealMate.DAL.dll

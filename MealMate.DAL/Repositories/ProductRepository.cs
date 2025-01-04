@@ -20,7 +20,7 @@ namespace MealMate.DAL.Repositories
 
         public async Task<List<Product>> GetListProductHavePromotionAsync()
         {
-            var productsFromPromoteProducts = await _context.PromoteProducts.Where(p => p.Product.IsDeleted == false).Select(p => p.Product).ToListAsync();
+            var productsFromPromoteProducts = await _context.PromoteProducts.Where(p => p.ProductPromotion.StartDay <= DateTime.UtcNow.AddHours(7) && p.ProductPromotion.EndDay >= DateTime.UtcNow.AddHours(7)).Select(p => p.Product).ToListAsync();
 
             var productsFromPromoteCategory = await _context.PromoteCategories.Where(p => p.Product.IsDeleted == false).Select(p => p.Product).ToListAsync();
 
@@ -48,6 +48,11 @@ namespace MealMate.DAL.Repositories
                 .ToListAsync();
 
             return topProducts;
+        }
+
+        public async Task<List<Product>> GetProductsByListNameAsync(List<string> productNames)
+        {
+            return await Query.Where(p => productNames.Contains(p.PName)).ToListAsync();
         }
 
         public override async Task DeleteAsync(Product entity)

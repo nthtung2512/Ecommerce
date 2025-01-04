@@ -26,24 +26,22 @@ namespace MealMate.BLL.Services.Payment
             decimal exchangeRate = 25000; // Example exchange rate: 1 USD = 25,000 VND
             long amountInVND = (long)Math.Round(amountInUSD * exchangeRate);
 
-
             var rawData =
-                $"partnerCode={_options.Value.PartnerCode}" +
-                $"&accessKey={_options.Value.AccessKey}" +
+                $"partnerCode=MOMO" +
+                $"&accessKey=F8BBA842ECF85" +
                 $"&requestId={model.OrderId}" +
                 $"&amount={amountInVND}" +
                 $"&orderId={model.OrderId}" +
                 $"&orderInfo={model.OrderInformation}" +
-                $"&returnUrl={_options.Value.ReturnUrl}" +
-                $"&notifyUrl={_options.Value.NotifyUrl}" +
+                $"&returnUrl=https://mealmate-seven.vercel.app/Checkout/PaymentCallBack" +
+                $"&notifyUrl=https://mealmate-seven.vercel.app/Checkout/PaymentCallBack" +
                 $"&extraData=";
 
-
             // Encrypt raw data when transacting
-            var signature = ComputeHmacSha256(rawData, _options.Value.SecretKey);
+            var signature = ComputeHmacSha256(rawData, "K951B6PE1waDMi640xX08PD3vg6EkVlz");
 
             // Client request an URL to do the transaction
-            var client = new RestClient(_options.Value.MomoApiUrl);
+            var client = new RestClient("https://test-payment.momo.vn/gw_payment/transactionProcessor");
             var request = new RestRequest() { Method = Method.Post };
 
             request.AddHeader("Content-Type", "application/json; charset=UTF-8");
@@ -51,11 +49,11 @@ namespace MealMate.BLL.Services.Payment
             // Create an object representing the request data
             var requestData = new
             {
-                accessKey = _options.Value.AccessKey,
-                partnerCode = _options.Value.PartnerCode,
-                requestType = _options.Value.RequestType,
-                notifyUrl = _options.Value.NotifyUrl,
-                returnUrl = _options.Value.ReturnUrl,
+                accessKey = "F8BBA842ECF85",
+                partnerCode = "MOMO",
+                requestType = "captureMoMoWallet", // or payWithATM
+                notifyUrl = "https://mealmate-seven.vercel.app/Checkout/PaymentCallBack",
+                returnUrl = "https://mealmate-seven.vercel.app/Checkout/PaymentCallBack",
                 orderId = model.OrderId,
                 amount = amountInVND.ToString(),
                 orderInfo = model.OrderInformation,
@@ -71,6 +69,7 @@ namespace MealMate.BLL.Services.Payment
             // Convert json response to object
             return JsonConvert.DeserializeObject<MomoCreatePaymentResponseModel>(response.Content!)!;
         }
+
 
 
         public MomoExecuteResponseModel PaymentExecuteAsync(IQueryCollection collection)

@@ -1,12 +1,18 @@
 ﻿using MealMate.Base;
+using MealMate.Base.Extensions;
+using MealMate.Base.Hub;
 using MealMate.BLL.AutoMapperProfiles;
 using MealMate.BLL.ExceptionHandler;
 using MealMate.BLL.IServices;
 using MealMate.BLL.IServices.auth;
+using MealMate.BLL.IServices.Hubs;
 using MealMate.BLL.IServices.Payment;
+using MealMate.BLL.IServices.Redis;
 using MealMate.BLL.Services;
 using MealMate.BLL.Services.auth;
+using MealMate.BLL.Services.Hubs;
 using MealMate.BLL.Services.Payment;
+using MealMate.BLL.Services.Redis;
 using MealMate.DAL.Utils.GuidUtil;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,6 +23,7 @@ namespace MealMate.BLL
     {
         public override void ConfigureService(IServiceCollection services)
         {
+            var config = services.GetConfiguration();
             services.AddAutoMapper(typeof(MealMateAutoMapperProfile));
 
             services.AddScoped<IApplicationUserAppService, ApplicationUserAppService>();
@@ -39,6 +46,15 @@ namespace MealMate.BLL
             services.AddExceptionHandler<DomainExceptionHandler>();
 
             services.AddTransient<IEmailSender, EmailSender>();
+
+            services.AddScoped<IRedisCacheService, RedisCacheService>();
+            services.AddScoped<ICartService, CartService>();
+
+            services.AddSignalR();
+
+            services.AddTransient<IHubContextWrapper<IProductHubClient>, ProductHubWrapper>();
+
+            /*services.AddScoped<IProductHubClient, ProductHubClient>();*/
 
             // Schedule job
             /*services.AddHostedService<PromotionCleanupService>();*/

@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using MealMate.BLL.Dtos.Product;
 using MealMate.BLL.IServices;
+using MealMate.BLL.IServices.Redis;
 using MealMate.DAL.Entities.Promotion;
 using MealMate.DAL.Entities.Transactions;
 using MealMate.DAL.IRepositories;
@@ -15,10 +16,11 @@ namespace MealMate.BLL.Services
         private readonly ITransactionRepository _transactionRepository;
         private readonly IProductPromotionRepository _productPromotionRepository;
         private readonly ICategoryPromotionRepository _categoryPromotionRepository;
+        private readonly ICartService _cartService;
         private readonly IValidator<Product> _productValidator;
         private readonly GuidGenerator _guidGenerator;
 
-        public ProductAppService(IProductRepository productRepository, GuidGenerator guidGenerator, IValidator<Product> productValidator, ITransactionRepository transactionRepository, IProductPromotionRepository productPromotionRepository, ICategoryPromotionRepository categoryPromotionRepository)
+        public ProductAppService(IProductRepository productRepository, GuidGenerator guidGenerator, IValidator<Product> productValidator, ITransactionRepository transactionRepository, IProductPromotionRepository productPromotionRepository, ICategoryPromotionRepository categoryPromotionRepository, ICartService cartService)
         {
             _productRepository = productRepository;
             _guidGenerator = guidGenerator;
@@ -26,6 +28,8 @@ namespace MealMate.BLL.Services
             _transactionRepository = transactionRepository;
             _productPromotionRepository = productPromotionRepository;
             _categoryPromotionRepository = categoryPromotionRepository;
+            _cartService = cartService;
+            _cartService = cartService;
         }
 
         public async Task<ProductDto> MapProductDto(Product product)
@@ -163,6 +167,23 @@ namespace MealMate.BLL.Services
             return tempTop5Products;
         }
 
+        public async Task<List<ProductDto>> GetProductsByListNameAsync(List<string> productNames)
+        {
+            var products = await _productRepository.GetProductsByListNameAsync(productNames);
+            if (products.Count == 0)
+            {
+                throw new EntityNotFoundException("No product found for this list of product names");
+            }
+            var productDtos = new List<ProductDto>();
+            foreach (var product in products)
+            {
+                var productDto = await MapProductDto(product);
+                productDtos.Add(productDto);
+            }
+
+            return productDtos;
+        }
+
         public async Task<ProductDto> CreateProductAsync(ProductCreationDto createData)
         {
             var newProduct = new Product(_guidGenerator.Create()) { Category = createData.Category, Description = createData.Description, PName = createData.PName, Price = createData.Price, Weight = createData.Weight, ImageURL = createData.ImageURL, IsDeleted = false };
@@ -204,6 +225,8 @@ namespace MealMate.BLL.Services
             }
             var productDto = await MapProductDto(product);
             await _productRepository.UpdateAsync(product);
+
+            await _cartService.RevalidateCartsWithProductIdsAsync([id]);
             return productDto;
         }
 

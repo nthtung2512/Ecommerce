@@ -1,0 +1,13 @@
+D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.base\bin\Release\net8.0\MealMate.base.deps.json
+D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.base\bin\Release\net8.0\MealMate.base.dll
+D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.base\bin\Release\net8.0\MealMate.base.pdb
+D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.base\obj\Release\net8.0\MealMate.base.csproj.AssemblyReference.cache
+D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.base\obj\Release\net8.0\MealMate.base.GeneratedMSBuildEditorConfig.editorconfig
+D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.base\obj\Release\net8.0\MealMate.base.AssemblyInfoInputs.cache
+D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.base\obj\Release\net8.0\MealMate.base.AssemblyInfo.cs
+D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.base\obj\Release\net8.0\MealMate.base.csproj.CoreCompileInputs.cache
+D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.base\obj\Release\net8.0\MealMate.base.sourcelink.json
+D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.base\obj\Release\net8.0\MealMate.base.dll
+D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.base\obj\Release\net8.0\refint\MealMate.base.dll
+D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.base\obj\Release\net8.0\MealMate.base.pdb
+D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.base\obj\Release\net8.0\ref\MealMate.base.dll

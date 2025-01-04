@@ -12,12 +12,10 @@ namespace MealMate.DAL.EntityFrameworkCore
     public class Seed
     {
         private readonly MealMateDbContext _context;
-        private readonly PasswordHasher<ApplicationUser> _passwordHasher;
         private readonly UserManager<ApplicationUser> _userManager;
-        public Seed(MealMateDbContext context, PasswordHasher<ApplicationUser> passwordHasher, UserManager<ApplicationUser> userManager)
+        public Seed(MealMateDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
-            _passwordHasher = passwordHasher;
             _userManager = userManager;
         }
         public async Task Populate(string strEnv)
@@ -44,176 +42,6 @@ namespace MealMate.DAL.EntityFrameworkCore
             {
                 return;   // DB has been seeded
             }
-
-            /*var allUsers = new List<ApplicationUser>
-            {
-                new ApplicationUser
-                {
-                    Id = new Guid("3fd99782-4556-4bbc-bf79-8e5ade728fc4"),
-                    UserName = "Customer1",
-                    FName = "Cường Dũng",
-                    LName = "Trần",
-                    Address = "123 Elm St",
-                    Email = "nguyenthanhtung@gmail.com",
-                    PhoneNumber = "0987654321",
-                    IsDeleted = false
-                },
-                new ApplicationUser
-                {
-                    Id = new Guid("fcdedd40-4b84-45ad-9d30-783264f83f61"),
-                    UserName = "Customer2",
-                    FName = "Hưng Khôi",
-                    LName = "Lê",
-                    Address = "456 Oak St",
-                    Email = "lhk@gmail.com",
-                    PhoneNumber = "1234567812",
-                    IsDeleted = false
-                },
-                new ApplicationUser
-                {
-                    Id = new Guid("42f52f54-a89a-49cf-8564-4c116987e237"),
-                    UserName = "Customer3",
-                    FName = "Long Nam",
-                    LName = "Phạm",
-                    Address = "789 Pine St",
-                    Email = "pln@gmail.com",
-                    PhoneNumber = "1234876521",
-                    IsDeleted = false
-                },
-                new ApplicationUser
-                {
-                    Id = new Guid("8da727e0-9529-49cf-a971-945791782208"),
-                    UserName = "Customer4",
-                    FName = "Phát Quang",
-                    LName = "Huỳnh",
-                    Address = "321 Maple St",
-                    Email = "hpq@gmail.com",
-                    PhoneNumber = "3218764521",
-                    IsDeleted = false
-                },
-                new ApplicationUser
-                {
-                    Id = Guid.NewGuid(),
-                    UserName = "Shipper1",
-                    FName = "Sơn Tài",
-                    LName = "Phan",
-                    Email = "pst@gmail.com",
-                    Address = "123 Phan St",
-                    PhoneNumber = "1234567890",
-                    IsDeleted = false
-                },
-                new ApplicationUser
-                {
-                    Id = Guid.NewGuid(),
-                    UserName = "Shipper2",
-                    FName = "Bích Diễm",
-                    LName = "Vũ",
-                    Email = "bdv@gmail.com",
-                    Address = "456 Vũ St",
-                    PhoneNumber = "2345678901",
-                    IsDeleted = false
-                },
-                new ApplicationUser
-                {
-                    Id = Guid.NewGuid(),
-                    UserName = "Shipper3",
-                    FName = "Tiến Vĩ",
-                    LName = "Đặng",
-                    Email = "hld@gmail.com",
-                    Address = "789 Đặng St",
-                    PhoneNumber = "3456789012",
-                    IsDeleted = false
-                },
-                new ApplicationUser
-                {
-                    Id = Guid.NewGuid(),
-                    UserName = "Shipper4",
-                    FName = "Tiến Dụng",
-                    LName = "Bùi",
-                    Email = "hnb@gmail.com",
-                    Address = "321 Bùi St",
-                    PhoneNumber = "4567890123",
-                    IsDeleted = false
-                },
-                new ApplicationUser
-                {
-                    Id = Guid.NewGuid(),
-                    UserName = "Shipper5",
-                    FName = "Văn Hào",
-                    LName = "Đỗ",
-                    Email = "ptd@gmail.com",
-                    Address = "654 Đỗ St",
-                    PhoneNumber = "5678901234",
-                    IsDeleted = false
-                },
-                new ApplicationUser
-                {
-                    Id = Guid.NewGuid(),
-                    UserName = "manager1",
-                    FName = "Thanh Trúc",
-                    LName = "Hồ",
-                    Address = "123 Main St, District 1, Ho Chi Minh City",
-                    Email = "manager1@store.com",
-                    PhoneNumber = "0901234567",
-                    IsDeleted = false
-                },
-                new ApplicationUser
-                {
-                    Id = Guid.NewGuid(),
-                    UserName = "manager2",
-                    FName = "Thùy Vân",
-                    LName = "Ngô",
-                    Address = "456 Park Rd, District 2, Ho Chi Minh City",
-                    Email = "manager2@store.com",
-                    PhoneNumber = "0902345678",
-                    IsDeleted = false
-                },
-                new ApplicationUser
-                {
-                    Id = Guid.NewGuid(),
-                    UserName = "manager3",
-                    FName = "Trường Sơn",
-                    LName = "Dương",
-                    Address = "789 Central Ave, District 3, Ho Chi Minh City",
-                    Email = "manager3@store.com",
-                    PhoneNumber = "0903456789",
-                    IsDeleted = false
-                },
-                new ApplicationUser
-                {
-                    Id = Guid.NewGuid(),
-                    UserName = "manager4",
-                    FName = "Tuấn Việt",
-                    LName = "Lý",
-                    Address = "321 Lakeview St, District 4, Ho Chi Minh City",
-                    Email = "manager4@store.com",
-                    PhoneNumber = "0904567890",
-                    IsDeleted = false
-                },
-                new ApplicationUser
-                {
-                    Id = Guid.NewGuid(),
-                    UserName = "manager5",
-                    FName = "Tuấn Khôi",
-                    LName = "Phùng",
-                    Address = "654 Hilltop St, District 5, Ho Chi Minh City",
-                    Email = "manager5@store.com",
-                    PhoneNumber = "0905678901",
-                    IsDeleted = false
-                },
-                new ApplicationUser
-                {
-                    Id = new Guid("7a7c64d4-dd66-4174-af76-4f21aaa8c70b"),
-                    UserName = "Admin",
-                    FName = "Anh Bảo",
-                    LName = "Nguyễn",
-                    Address = "Admin Address",
-                    Email = "nguyenanhbao@gmail.com",
-                    PhoneNumber = "1234567890",
-                    IsDeleted = false
-                }
-            };
-*/
 
             var customers = new Customer[] {
                 new Customer
@@ -280,7 +108,7 @@ namespace MealMate.DAL.EntityFrameworkCore
                     Email = "pst@gmail.com",
                     Address = "123 Phan St",
                     PhoneNumber = "1234567890",
-                    IsDeleted = false, VehicleCapacity = 1000},
+                    IsDeleted = false, VehicleCapacity = 1100},
                 new Shipper { Id = Guid.NewGuid(),
                     UserName = "Shipper2",
                     FName = "Bích Diễm",
@@ -288,7 +116,7 @@ namespace MealMate.DAL.EntityFrameworkCore
                     Email = "bdv@gmail.com",
                     Address = "456 Vũ St",
                     PhoneNumber = "2345678901",
-                    IsDeleted = false, VehicleCapacity = 0 },
+                    IsDeleted = false, VehicleCapacity = 800 },
                 new Shipper { Id = Guid.NewGuid(),
                     UserName = "Shipper3",
                     FName = "Tiến Vĩ",
@@ -304,7 +132,7 @@ namespace MealMate.DAL.EntityFrameworkCore
                     Email = "hnb@gmail.com",
                     Address = "321 Bùi St",
                     PhoneNumber = "4567890123",
-                    IsDeleted = false, VehicleCapacity = 2200},
+                    IsDeleted = false, VehicleCapacity = 1100},
                 new Shipper { Id = Guid.NewGuid(),
                     UserName = "Shipper5",
                     FName = "Văn Hào",
@@ -312,7 +140,7 @@ namespace MealMate.DAL.EntityFrameworkCore
                     Email = "ptd@gmail.com",
                     Address = "654 Đỗ St",
                     PhoneNumber = "5678901234",
-                    IsDeleted = false, VehicleCapacity = 3000}
+                    IsDeleted = false, VehicleCapacity = 1200}
             };
 
             // Seed Stores

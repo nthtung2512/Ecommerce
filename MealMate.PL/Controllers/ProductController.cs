@@ -88,6 +88,17 @@ namespace MealMate.PL.Controllers
             return Ok(results);
         }
 
+
+        [HttpPost("chatbot")]
+        [SwaggerOperation(
+            Summary = "Get products by list of product name"
+        )]
+        public async Task<IActionResult> GetProductsByListName([FromBody] List<string> productNames)
+        {
+            var products = await _productAppService.GetProductsByListNameAsync(productNames);
+            return Ok(products);
+        }
+
         [HttpPost]
         public async Task<IActionResult> CreateProduct([FromBody] ProductCreationDto productDto)
         {

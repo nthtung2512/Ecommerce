@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  mealmate.pl:
+    image: ${DOCKER_REGISTRY-}mealmatepl
+    build:
+      context: ../  # Set the build context to the parent folder
+      dockerfile: MealMate.PL/Dockerfile

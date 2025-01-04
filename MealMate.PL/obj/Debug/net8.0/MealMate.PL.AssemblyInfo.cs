@@ -11,10 +11,11 @@
 using System;
 using System.Reflection;
 
+[assembly: Microsoft.Extensions.Configuration.UserSecrets.UserSecretsIdAttribute("eab08ad2-a10a-4e6b-ba11-62ee3fd1c480")]
 [assembly: System.Reflection.AssemblyCompanyAttribute("MealMate.PL")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d0f451028e2ec38243f338c2b8162bd8aab65a35")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4d311f9f320347a9f2a338a49f60fe13f78b3e52")]
 [assembly: System.Reflection.AssemblyProductAttribute("MealMate.PL")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MealMate.PL")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

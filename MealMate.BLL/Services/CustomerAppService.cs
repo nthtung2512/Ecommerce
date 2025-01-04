@@ -80,8 +80,11 @@ namespace MealMate.BLL.Services
             var existingCustomer = await _customerRepository.GetAsync(id) ?? throw new EntityNotFoundException("No customer found");
 
             // Update customer properties
-            existingCustomer.TotalMoneySpent += money;
             existingCustomer.FortuneChance += (int)(money / 100);
+            existingCustomer.FortuneChance += (int)((money % 100.00m + existingCustomer.TotalMoneySpent % 100.00m) / 100);
+
+            existingCustomer.TotalMoneySpent += money;
+
             await _customerRepository.UpdateAsync(existingCustomer);
 
             return Map(existingCustomer);

@@ -20,6 +20,9 @@ namespace MealMate.PL
         {
             var configuration = services.GetConfiguration();
 
+            var corsOrigins = configuration.GetValue<string>("App:CorsOrigins");
+            Console.WriteLine("Configured CORS Origins: " + corsOrigins);
+
             services.AddCors(options =>
             {
                 options.AddDefaultPolicy(policy =>
@@ -37,6 +40,16 @@ namespace MealMate.PL
                         .AllowCredentials()
                 );
             });
+
+            /* services.AddCors(options =>
+             {
+                 options.AddPolicy("AllowSpecificOrigin",
+                     policy => policy.WithOrigins("https://mealmate-seven.vercel.app", "http://localhost:5173")  // Add both frontend URLs
+                                     .AllowAnyHeader()
+                                     .AllowAnyMethod()
+                                     .AllowCredentials());
+             });*/
+
 
             services.AddControllers();
             services.AddEndpointsApiExplorer();

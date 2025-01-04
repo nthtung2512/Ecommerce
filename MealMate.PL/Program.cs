@@ -1,4 +1,5 @@
 using MealMate.Base.Extensions;
+using MealMate.BLL.Services.Hubs;
 using MealMate.DAL.Entities.Payment;
 using MealMate.DAL.EntityFrameworkCore;
 using MealMate.PL;
@@ -6,6 +7,7 @@ using MealMate.PL.Environment;
 using Microsoft.AspNetCore.Identity;
 using Serilog;
 using Serilog.Events;
+using StackExchange.Redis;
 
 Console.WriteLine("Configure Logging");
 
@@ -50,6 +52,7 @@ try
     builder.Host.UseSerilog();
     builder.AddModules<MealMateHostModule>();
     builder.Configuration.AddEnvironmentVariables();
+    builder.Configuration.AddConfiguration(config);
 
     static async Task SeedRolesAsync(IServiceProvider serviceProvider)
     {
@@ -67,6 +70,13 @@ try
         }
     }
 
+    builder.Services.AddStackExchangeRedisCache(options =>
+    {
+        string connection = builder.Configuration.GetConnectionString("Redis");
+        options.Configuration = connection;
+    });
+
+    builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(builder.Configuration.GetConnectionString("Redis")));
 
     var app = builder.Build();
     using (var scope = app.Services.CreateScope())
@@ -81,17 +91,16 @@ try
     }
 
     // Configure the HTTP request pipeline.
-    if (app.Environment.IsDevelopment())
-    {
-        app.UseSwagger();
-        app.UseSwaggerUI();
-    }
+    app.UseSwagger();
+    app.UseSwaggerUI();
 
     app.UseDefaultFiles();
     app.UseStaticFiles();
 
+    /*    app.UseCors();*/
+    // Configure the HTTP request pipeline.
+    app.UseCors("AllowSpecificOrigin");  // Apply CORS policy
     app.UseRouting();
-    app.UseCors();
     app.UseHttpsRedirection();
 
     // empty Action<Configure> for unresolve error: https://github.com/dotnet/aspnetcore/issues/51888
@@ -104,8 +113,7 @@ try
     app.MapDefaultControllerRoute();
     app.MapIdentityApi<IdentityUser>();
 
-    /*    app.MapHub<RunnerHub>("/socket/runner");
-        app.MapHub<PortalHub>("/socket/portal");*/
+    app.MapHub<ProductHub>("/hubs/product");
     app.MapFallbackToFile("/index.html");
 
     app.Run();
