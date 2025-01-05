@@ -26,19 +26,19 @@ namespace MealMate.PL
             services.AddCors(options =>
             {
                 options.AddDefaultPolicy(policy =>
-                    policy
-                        .WithOrigins(
-                            configuration
-                                .GetValue<string>("App:CorsOrigins")!
-                                .Split(";", StringSplitOptions.RemoveEmptyEntries)
-                                .Select(o => o.RemovePostFix("/"))
-                                .ToArray()
-                        )
-                        .SetIsOriginAllowedToAllowWildcardSubdomains()
+                {
+                    var origins = configuration.GetValue<string>("App:CorsOrigins")!
+                        .Split(";", StringSplitOptions.RemoveEmptyEntries)
+                        .Select(o => o.RemovePostFix("/"))
+                        .ToArray();
+
+                    Console.WriteLine("CORS Origins Being Applied: " + string.Join(", ", origins));
+
+                    policy.WithOrigins(origins)
                         .AllowAnyHeader()
                         .AllowAnyMethod()
-                        .AllowCredentials()
-                );
+                        .AllowCredentials();
+                });
             });
 
             /* services.AddCors(options =>

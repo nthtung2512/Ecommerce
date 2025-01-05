@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MealMate.Test")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4d311f9f320347a9f2a338a49f60fe13f78b3e52")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+59615502f864933aa2f3356f53cc4c0867aea21a")]
 [assembly: System.Reflection.AssemblyProductAttribute("MealMate.Test")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MealMate.Test")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

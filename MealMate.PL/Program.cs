@@ -99,7 +99,8 @@ try
 
     /*    app.UseCors();*/
     // Configure the HTTP request pipeline.
-    app.UseCors("AllowSpecificOrigin");  // Apply CORS policy
+    // app.UseCors("AllowSpecificOrigin");  // Apply CORS policy
+    app.UseCors();
     app.UseRouting();
     app.UseHttpsRedirection();
 

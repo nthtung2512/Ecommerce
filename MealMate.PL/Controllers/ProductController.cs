@@ -1,6 +1,9 @@
 ﻿using MealMate.BLL.Dtos.Product;
 using MealMate.BLL.IServices;
+using MealMate.BLL.IServices.Hubs;
+using MealMate.BLL.Services.Hubs;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace MealMate.PL.Controllers
@@ -11,11 +14,14 @@ namespace MealMate.PL.Controllers
     {
         private readonly IProductAppService _productAppService;
         private readonly IStoreAppService _storeAppService;
+        private readonly IHubContext<ProductHub, IProductHubClient> _productHubContext;
 
-        public ProductController(IProductAppService productAppService, IStoreAppService storeAppService)
+
+        public ProductController(IProductAppService productAppService, IStoreAppService storeAppService, IHubContext<ProductHub, IProductHubClient> productHubContext)
         {
             _productAppService = productAppService;
             _storeAppService = storeAppService;
+            _productHubContext = productHubContext;
         }
 
         [HttpGet("category/{category}")]
@@ -117,17 +123,12 @@ namespace MealMate.PL.Controllers
         public async Task<IActionResult> IncreaseProductAtStore(Guid productid, Guid storeid, int amount)
         {
             var result = await _storeAppService.UpdateAmountAtAsync(productid, storeid, amount);
+
+            // Notify only the specific product-store group
+            var groupName = $"{productid}_{storeid}";
+            await _productHubContext.Clients.Group(groupName).ReceiveChangeStock(productid, result.NumberAtStore);
+
             return Ok(result);
-            /*var existingProduct = await _storeAppService.GetAtByProductIDAndStoreIDAsync(productid, storeid);
-            if (existingProduct == null)
-            {
-                return Ok(await _storeAppService.CreateAtAsync(productid, storeid, amount));
-            }
-            else
-            {
-                var result = await _storeAppService.UpdateAmountAtAsync(existingProduct, amount);
-                return Ok(result);
-            }*/
         }
 
         [HttpDelete("{id}")]

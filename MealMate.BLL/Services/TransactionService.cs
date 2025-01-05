@@ -3,11 +3,15 @@ using MealMate.BLL.Dtos.Bills;
 using MealMate.BLL.Dtos.Product;
 using MealMate.BLL.Dtos.Stores;
 using MealMate.BLL.IServices;
+using MealMate.BLL.IServices.Hubs;
+using MealMate.BLL.Services.Hubs;
 using MealMate.DAL.Entities.Products;
 using MealMate.DAL.IRepositories;
+using MealMate.DAL.IRepositories.UnitOfWork;
 using MealMate.DAL.Utils.Enum;
 using MealMate.DAL.Utils.Exceptions;
 using MealMate.DAL.Utils.GuidUtil;
+using Microsoft.AspNetCore.SignalR;
 
 namespace MealMate.BLL.Services
 {
@@ -17,10 +21,12 @@ namespace MealMate.BLL.Services
         private readonly IProductRepository _productRepository;
         private readonly IAtRepository _atRepository;
         private readonly ICustomerAppService _customerAppService;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IHubContext<ProductHub, IProductHubClient> _productHubContext;
         private readonly GuidGenerator _guidGenerator;
         private readonly IMapper _mapper;
 
-        public TransactionService(ITransactionRepository transactionRepository, GuidGenerator guidGenerator, IMapper mapper, IProductRepository productRepository, ICustomerAppService customerAppService, IAtRepository atRepository)
+        public TransactionService(ITransactionRepository transactionRepository, GuidGenerator guidGenerator, IMapper mapper, IProductRepository productRepository, ICustomerAppService customerAppService, IAtRepository atRepository, IUnitOfWork unitOfWork, IHubContext<ProductHub, IProductHubClient> productHubContext)
         {
             _transactionRepository = transactionRepository;
             _guidGenerator = guidGenerator;
@@ -28,6 +34,8 @@ namespace MealMate.BLL.Services
             _productRepository = productRepository;
             _customerAppService = customerAppService;
             _atRepository = atRepository;
+            _unitOfWork = unitOfWork;
+            _productHubContext = productHubContext;
         }
 
         public async Task<List<BillDto>> GetAllBillAsync()
@@ -84,73 +92,87 @@ namespace MealMate.BLL.Services
 
         public async Task<FullBillDto> CreateBillAsync(BillCreationDto billData)
         {
-            var newId = _guidGenerator.Create();
-            var newBill = new Bill(newId)
+            await _unitOfWork.BeginTransactionAsync();
+            try
             {
-                PaymentMethod = billData.PaymentMethod,
-                DateAndTime = billData.DateAndTime,
-                CustomerID = billData.CustomerID,
-                StoreID = billData.StoreID,
-                ShipperID = null,
-                TotalPrice = billData.TotalPrice,
-                TotalWeight = billData.TotalWeight,
-                DeliveryStatus = DeliveryStatus.Pending,
-                IsDeleted = false
-            };
-
-            // Sequentially fetch each product
-            var includes = new List<Include>();
-            foreach (var includeDto in billData.Includes)
-            {
-                var product = await _productRepository.GetAsync(includeDto.ProductID)
-                    ?? throw new EntityNotFoundException("Product not found");
-
-                var at = await _atRepository.GetAtByProductIDAndStoreIDAsync(includeDto.ProductID, newBill.StoreID) ?? throw new EntityNotFoundException("No product found at store.");
-
-                at.NumberAtStore -= includeDto.NumberOfProductInBill;
-
-                await _atRepository.UpdateAsync(at);
-
-                includes.Add(new Include
+                var newId = _guidGenerator.Create();
+                var newBill = new Bill(newId)
                 {
-                    TransactionID = newId,
-                    ProductID = includeDto.ProductID,
-                    Product = product,
-                    Transaction = newBill,
-                    NumberOfProductInBill = includeDto.NumberOfProductInBill,
-                    SubTotal = includeDto.SubTotal,
+                    PaymentMethod = billData.PaymentMethod,
+                    DateAndTime = billData.DateAndTime,
+                    CustomerID = billData.CustomerID,
+                    StoreID = billData.StoreID,
+                    ShipperID = null,
+                    TotalPrice = billData.TotalPrice,
+                    TotalWeight = billData.TotalWeight,
+                    DeliveryStatus = DeliveryStatus.Pending,
                     IsDeleted = false
-                });
+                };
+
+                var includes = new List<Include>();
+                foreach (var includeDto in billData.Includes)
+                {
+                    var product = await _productRepository.GetAsync(includeDto.ProductID)
+                        ?? throw new EntityNotFoundException("Product not found");
+
+                    var at = await _atRepository.GetAtByProductIDAndStoreIDAsync(includeDto.ProductID, newBill.StoreID)
+                        ?? throw new EntityNotFoundException("No product found at store.");
+
+                    at.NumberAtStore -= includeDto.NumberOfProductInBill;
+                    await _atRepository.UpdateAsync(at);
+
+                    includes.Add(new Include
+                    {
+                        TransactionID = newId,
+                        ProductID = includeDto.ProductID,
+                        Product = product,
+                        Transaction = newBill,
+                        NumberOfProductInBill = includeDto.NumberOfProductInBill,
+                        SubTotal = includeDto.SubTotal,
+                        IsDeleted = false
+                    });
+                }
+
+                newBill.Includes.AddRange(includes);
+                await _transactionRepository.CreateAsync(newBill);
+
+                await _unitOfWork.CommitTransactionAsync();
+
+                var includesDto = newBill.Includes.Select(include => new IncludeDto
+                {
+                    TransactionID = include.TransactionID,
+                    ProductID = include.ProductID,
+                    NumberOfProductInBill = include.NumberOfProductInBill,
+                    SubTotal = include.SubTotal,
+                    Product = _mapper.Map<ProductCreationDto>(include.Product)
+                }).ToList();
+
+                foreach (var include in includes)
+                {
+                    await _productHubContext.Clients.Group($"{include.ProductID}_{billData.StoreID}").ReceiveChangeStock(include.ProductID, include.NumberOfProductInBill);
+                }
+
+                return new FullBillDto
+                {
+                    TransactionId = newBill.Id,
+                    CustomerID = newBill.CustomerID,
+                    StoreID = newBill.StoreID,
+                    ShipperID = newBill.ShipperID,
+                    PaymentMethod = newBill.PaymentMethod,
+                    DateAndTime = newBill.DateAndTime,
+                    DeliveryStatus = newBill.DeliveryStatus,
+                    TotalPrice = newBill.TotalPrice,
+                    TotalWeight = newBill.TotalWeight,
+                    Includes = includesDto
+                };
             }
-
-            newBill.Includes.AddRange(includes);
-
-            await _transactionRepository.CreateAsync(newBill);
-
-            var includesDto = newBill.Includes.Select(include => new IncludeDto
+            catch
             {
-                TransactionID = include.TransactionID,
-                ProductID = include.ProductID,
-                NumberOfProductInBill = include.NumberOfProductInBill,
-                SubTotal = include.SubTotal,
-                Product = _mapper.Map<ProductCreationDto>(include.Product)
-            }).ToList();
-
-            var fullBillDto = new FullBillDto
-            {
-                TransactionId = newBill.Id,
-                CustomerID = newBill.CustomerID,
-                StoreID = newBill.StoreID,
-                ShipperID = newBill.ShipperID,
-                PaymentMethod = newBill.PaymentMethod,
-                DateAndTime = newBill.DateAndTime,
-                DeliveryStatus = newBill.DeliveryStatus,
-                TotalPrice = newBill.TotalPrice,
-                TotalWeight = newBill.TotalWeight,
-                Includes = includesDto
-            };
-            return fullBillDto;
+                await _unitOfWork.RollbackTransactionAsync();
+                throw;
+            }
         }
+
 
         public async Task<BillDto> AssignShipperToBillAsync(Guid transactionId, Guid shipperId)
         {

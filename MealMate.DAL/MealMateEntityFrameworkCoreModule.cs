@@ -4,8 +4,10 @@ using MealMate.DAL.Entities.ApplicationUser;
 using MealMate.DAL.EntityFrameworkCore;
 using MealMate.DAL.IRepositories;
 using MealMate.DAL.IRepositories.auth;
+using MealMate.DAL.IRepositories.UnitOfWork;
 using MealMate.DAL.Repositories;
 using MealMate.DAL.Repositories.auth;
+using MealMate.DAL.Repositories.UnitOfWork;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -33,6 +35,8 @@ namespace MealMate.DAL
             services.AddScoped<IStoreRepository, StoreRepository>();
             services.AddScoped<IAtRepository, AtRepository>();
             services.AddScoped<IShipperRepository, ShipperRepository>();
+
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             services.AddScoped<PasswordHasher<ApplicationUser>>();
 

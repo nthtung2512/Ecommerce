@@ -1,62 +1,49 @@
 ﻿using MealMate.BLL.IServices.Hubs;
-using MealMate.DAL.Entities.ApplicationUser;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
-using System.Security.Claims;
 
 namespace MealMate.BLL.Services.Hubs
 {
     public class ProductHub : Hub<IProductHubClient>
     {
-        private readonly UserManager<ApplicationUser> _userManager;
+        // No authentication or user manager dependency required
 
-        public ProductHub(UserManager<ApplicationUser> userManager)
+        // Override OnConnectedAsync if you want to log or handle connection logic
+        public override Task OnConnectedAsync()
         {
-            _userManager = userManager;
-        }
-
-        public override async Task<Task> OnConnectedAsync()
-        {
-            var user = Context.User;
-
-            if (user == null || !user.Identity.IsAuthenticated)
-            {
-                Context.Abort();
-                return Task.CompletedTask;
-            }
-
-            // Retrieve the user ID from claims
-            var userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(userId))
-            {
-                Context.Abort();
-                return Task.CompletedTask;
-            }
-
-            // Check if the user has the "Customer" role
-            var applicationUser = await _userManager.FindByIdAsync(userId);
-            if (applicationUser == null || !(await _userManager.IsInRoleAsync(applicationUser, "Customer")))
-            {
-                Context.Abort(); // Disconnect non-customers
-                return Task.CompletedTask;
-            }
-
-            // Add the customer to the "Customers" group
-            await Groups.AddToGroupAsync(Context.ConnectionId, "Customers");
+            Console.WriteLine($"Client connected: {Context.ConnectionId}");
             return base.OnConnectedAsync();
         }
 
-        public override async Task<Task> OnDisconnectedAsync(Exception? exception)
+        // Override OnDisconnectedAsync to log or handle disconnection logic
+        public override Task OnDisconnectedAsync(Exception? exception)
         {
-            // Remove the customer from the "Customers" group
-            await Groups.RemoveFromGroupAsync(Context.ConnectionId, "Customers");
+            Console.WriteLine($"Client disconnected: {Context.ConnectionId}");
             return base.OnDisconnectedAsync(exception);
         }
 
-        public async Task ChangeStock(Guid productId, int newStock)
+        // Method for clients to join specific product-store groups
+        public async Task JoinProductStoreGroup(Guid productId, Guid storeId)
         {
-            // Broadcast to the "Customers" group only
-            await Clients.Group("Customers").ReceiveChangeStock(productId, newStock);
+            var groupName = $"{productId}_{storeId}";
+            await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
+            Console.WriteLine($"Client {Context.ConnectionId} joined group {groupName}");
+        }
+
+        // Method for clients to leave specific product-store groups
+        public async Task LeaveProductStoreGroup(Guid productId, Guid storeId)
+        {
+            var groupName = $"{productId}_{storeId}";
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, groupName);
+            Console.WriteLine($"Client {Context.ConnectionId} left group {groupName}");
+        }
+
+        // Method to notify specific groups about stock changes
+        public async Task ChangeStock(Guid productId, Guid storeId, int newStock)
+        {
+            var groupName = $"{productId}_{storeId}";
+            await Clients.Group(groupName).ReceiveChangeStock(productId, newStock);
+            Console.WriteLine($"Stock updated for group {groupName}: {newStock}");
         }
     }
+
 }
