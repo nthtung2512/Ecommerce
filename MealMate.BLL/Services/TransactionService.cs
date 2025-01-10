@@ -4,9 +4,11 @@ using MealMate.BLL.Dtos.Product;
 using MealMate.BLL.Dtos.Stores;
 using MealMate.BLL.IServices;
 using MealMate.BLL.IServices.Hubs;
+using MealMate.BLL.IServices.Redis;
 using MealMate.BLL.Services.Hubs;
 using MealMate.DAL.Entities.Products;
 using MealMate.DAL.IRepositories;
+using MealMate.DAL.IRepositories.CartRedis;
 using MealMate.DAL.IRepositories.UnitOfWork;
 using MealMate.DAL.Utils.Enum;
 using MealMate.DAL.Utils.Exceptions;
@@ -21,12 +23,15 @@ namespace MealMate.BLL.Services
         private readonly IProductRepository _productRepository;
         private readonly IAtRepository _atRepository;
         private readonly ICustomerAppService _customerAppService;
+        private readonly IReserveCartCacheService _reserveCartCacheService;
+        private readonly ICartService _cartService;
+        private readonly ICartRepository _cartRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IHubContext<ProductHub, IProductHubClient> _productHubContext;
         private readonly GuidGenerator _guidGenerator;
         private readonly IMapper _mapper;
 
-        public TransactionService(ITransactionRepository transactionRepository, GuidGenerator guidGenerator, IMapper mapper, IProductRepository productRepository, ICustomerAppService customerAppService, IAtRepository atRepository, IUnitOfWork unitOfWork, IHubContext<ProductHub, IProductHubClient> productHubContext)
+        public TransactionService(ITransactionRepository transactionRepository, GuidGenerator guidGenerator, IMapper mapper, IProductRepository productRepository, ICustomerAppService customerAppService, IAtRepository atRepository, IUnitOfWork unitOfWork, IHubContext<ProductHub, IProductHubClient> productHubContext, IReserveCartCacheService reserveCartCacheService, ICartService cartService, ICartRepository cartRepository)
         {
             _transactionRepository = transactionRepository;
             _guidGenerator = guidGenerator;
@@ -36,6 +41,9 @@ namespace MealMate.BLL.Services
             _atRepository = atRepository;
             _unitOfWork = unitOfWork;
             _productHubContext = productHubContext;
+            _reserveCartCacheService = reserveCartCacheService;
+            _cartService = cartService;
+            _cartRepository = cartRepository;
         }
 
         public async Task<List<BillDto>> GetAllBillAsync()
@@ -136,8 +144,6 @@ namespace MealMate.BLL.Services
                 newBill.Includes.AddRange(includes);
                 await _transactionRepository.CreateAsync(newBill);
 
-                await _unitOfWork.CommitTransactionAsync();
-
                 var includesDto = newBill.Includes.Select(include => new IncludeDto
                 {
                     TransactionID = include.TransactionID,
@@ -146,6 +152,11 @@ namespace MealMate.BLL.Services
                     SubTotal = include.SubTotal,
                     Product = _mapper.Map<ProductCreationDto>(include.Product)
                 }).ToList();
+
+                await _reserveCartCacheService.RemoveReserveCartAsync(billData.CustomerID);
+                await _cartService.ClearCartAsync(billData.CustomerID);
+
+                await _unitOfWork.CommitTransactionAsync();
 
                 foreach (var include in includes)
                 {

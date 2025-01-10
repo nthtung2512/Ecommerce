@@ -1,6 +1,7 @@
 ﻿using MealMate.BLL.Dtos.Product;
 using MealMate.BLL.IServices;
 using MealMate.BLL.IServices.Hubs;
+using MealMate.BLL.IServices.Redis;
 using MealMate.BLL.Services.Hubs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
@@ -14,14 +15,16 @@ namespace MealMate.PL.Controllers
     {
         private readonly IProductAppService _productAppService;
         private readonly IStoreAppService _storeAppService;
+        private readonly IReserveCartCacheService _reserveCartCacheService;
         private readonly IHubContext<ProductHub, IProductHubClient> _productHubContext;
 
 
-        public ProductController(IProductAppService productAppService, IStoreAppService storeAppService, IHubContext<ProductHub, IProductHubClient> productHubContext)
+        public ProductController(IProductAppService productAppService, IStoreAppService storeAppService, IHubContext<ProductHub, IProductHubClient> productHubContext, IReserveCartCacheService reserveCartCacheService)
         {
             _productAppService = productAppService;
             _storeAppService = storeAppService;
             _productHubContext = productHubContext;
+            _reserveCartCacheService = reserveCartCacheService;
         }
 
         [HttpGet("category/{category}")]
@@ -65,7 +68,7 @@ namespace MealMate.PL.Controllers
         )]
         public async Task<IActionResult> GetProductInformationAtStoreByID(Guid productid)
         {
-            var productsAtStore = await _storeAppService.GetAtByProductIDAsync(productid);
+            var productsAtStore = await _reserveCartCacheService.GetAtByProductIDAsync(productid);
             return Ok(productsAtStore);
         }
 
@@ -75,8 +78,18 @@ namespace MealMate.PL.Controllers
         )]
         public async Task<IActionResult> GetProductInformationAtStore(Guid storeid)
         {
-            var productsAtStore = await _storeAppService.GetAtByStoreIdAsync(storeid);
+            var productsAtStore = await _reserveCartCacheService.GetAtByStoreIdAsync(storeid);
             return Ok(productsAtStore);
+        }
+
+        [HttpGet("atstore/{productid}/{storeid}")]
+        [SwaggerOperation(
+           Summary = "Get product at store"
+       )]
+        public async Task<IActionResult> GetProductAtStoreByIDs(Guid productid, Guid storeid)
+        {
+            var productAtStore = await _reserveCartCacheService.GetAtByProductIDAndStoreIDAsync(productid, storeid);
+            return Ok(productAtStore);
         }
 
         [HttpGet("transaction/{transactionId}")]

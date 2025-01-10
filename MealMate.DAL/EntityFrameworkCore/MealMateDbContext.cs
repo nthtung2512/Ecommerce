@@ -28,6 +28,7 @@ namespace MealMate.DAL.EntityFrameworkCore
         public DbSet<Bill> Bills { get; set; }
         public DbSet<Include> Includes { get; set; }
         public DbSet<Product> Products { get; set; }
+        public DbSet<CartItem> CartItems { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -211,6 +212,11 @@ namespace MealMate.DAL.EntityFrameworkCore
             builder.Entity<Product>(b =>
             {
                 b.ToTable(PortalConst.DbTablePrefix + "product", PortalConst.DbSchema);
+            });
+
+            builder.Entity<CartItem>(b =>
+            {
+                b.ToTable(PortalConst.DbTablePrefix + "cart_item", PortalConst.DbSchema).HasKey(i => i.CartItemID);
             });
         }
     }

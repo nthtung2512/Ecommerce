@@ -1,7 +1,7 @@
 ﻿using MealMate.BLL.Dtos.Product;
 using MealMate.BLL.Dtos.Promotion;
 using MealMate.BLL.IServices;
-using MealMate.BLL.IServices.Redis;
+using MealMate.BLL.IServices.Utility;
 using MealMate.DAL.Entities.Promotion;
 using MealMate.DAL.IRepositories;
 using MealMate.DAL.Utils.Exceptions;
@@ -12,18 +12,16 @@ namespace MealMate.BLL.Services
     internal class ProductPromotionAppService : IProductPromotionAppService
     {
         private readonly IProductPromotionRepository _productPromotionRepository;
-        private readonly IProductAppService _productAppService;
+        private readonly IMapProductService _productAppService;
         private readonly IProductRepository _productRepository;
-        private readonly ICartService _cartService;
         private readonly GuidGenerator _guidGenerator;
 
-        public ProductPromotionAppService(IProductPromotionRepository productPromotionRepository, IProductRepository productRepository, GuidGenerator guidGenerator, IProductAppService productAppService, ICartService cartService)
+        public ProductPromotionAppService(IProductPromotionRepository productPromotionRepository, IProductRepository productRepository, GuidGenerator guidGenerator, IMapProductService productAppService)
         {
             _productPromotionRepository = productPromotionRepository;
             _productRepository = productRepository;
             _guidGenerator = guidGenerator;
             _productAppService = productAppService;
-            _cartService = cartService;
         }
 
         public async Task<ProductPromotionDto> CreateProductPromotionByProductIdAsync(ProductPromotionCreationDto promotionData)
@@ -70,7 +68,7 @@ namespace MealMate.BLL.Services
 
             await _productPromotionRepository.CreateAsync(newPromotion);
 
-            await _cartService.RevalidateCartsWithProductIdsAsync(promotionData.ProductIdList.ToList());
+            /*            await _cartService.RevalidateCartsWithProductIdsAsync(promotionData.ProductIdList.ToList());*/
 
             return result;
         }

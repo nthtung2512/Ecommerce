@@ -17,7 +17,7 @@ namespace MealMate.DAL.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.10")
+                .HasAnnotation("ProductVersion", "8.0.11")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -419,6 +419,29 @@ namespace MealMate.DAL.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("store", (string)null);
+                });
+
+            modelBuilder.Entity("MealMate.DAL.Entities.Transactions.CartItem", b =>
+                {
+                    b.Property<Guid>("CartItemID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("CustomerId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ProductID")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("StoreID")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("CartItemID");
+
+                    b.ToTable("cart_item", (string)null);
                 });
 
             modelBuilder.Entity("MealMate.DAL.Entities.Transactions.Product", b =>

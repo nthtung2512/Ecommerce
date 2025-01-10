@@ -1,8 +1,7 @@
 ﻿using FluentValidation;
 using MealMate.BLL.Dtos.Product;
 using MealMate.BLL.IServices;
-using MealMate.BLL.IServices.Redis;
-using MealMate.DAL.Entities.Promotion;
+using MealMate.BLL.IServices.Utility;
 using MealMate.DAL.Entities.Transactions;
 using MealMate.DAL.IRepositories;
 using MealMate.DAL.Utils.Exceptions;
@@ -14,46 +13,17 @@ namespace MealMate.BLL.Services
     {
         private readonly IProductRepository _productRepository;
         private readonly ITransactionRepository _transactionRepository;
-        private readonly IProductPromotionRepository _productPromotionRepository;
-        private readonly ICategoryPromotionRepository _categoryPromotionRepository;
-        private readonly ICartService _cartService;
+        private readonly IMapProductService _mapProductService;
         private readonly IValidator<Product> _productValidator;
         private readonly GuidGenerator _guidGenerator;
 
-        public ProductAppService(IProductRepository productRepository, GuidGenerator guidGenerator, IValidator<Product> productValidator, ITransactionRepository transactionRepository, IProductPromotionRepository productPromotionRepository, ICategoryPromotionRepository categoryPromotionRepository, ICartService cartService)
+        public ProductAppService(IProductRepository productRepository, GuidGenerator guidGenerator, IValidator<Product> productValidator, ITransactionRepository transactionRepository, IMapProductService mapProductService)
         {
             _productRepository = productRepository;
             _guidGenerator = guidGenerator;
             _productValidator = productValidator;
             _transactionRepository = transactionRepository;
-            _productPromotionRepository = productPromotionRepository;
-            _categoryPromotionRepository = categoryPromotionRepository;
-            _cartService = cartService;
-            _cartService = cartService;
-        }
-
-        public async Task<ProductDto> MapProductDto(Product product)
-        {
-            var productPromotions = await _productPromotionRepository.GetPromotionByProductIdAsync(product.Id);
-            var productCategoryPromotions = await _categoryPromotionRepository.GetCategoryPromotionByCategoryAsync(product.Category);
-
-            var totalDiscount = CalculateTotalDiscount(productPromotions, productCategoryPromotions);
-
-            var discountedPrice = CalculateProductDiscountedPrice(product.Price, totalDiscount) == 0 ? product.Price : CalculateProductDiscountedPrice(product.Price, totalDiscount);
-
-            var productDto = new ProductDto
-            {
-                ProductID = product.Id,
-                Category = product.Category,
-                Description = product.Description,
-                PName = product.PName,
-                Price = product.Price,
-                Discount = totalDiscount,
-                DiscountedPrice = Math.Round(discountedPrice, 2),
-                Weight = product.Weight,
-                ImageURL = product.ImageURL
-            };
-            return productDto;
+            _mapProductService = mapProductService;
         }
 
         public async Task<List<ProductDto>> GetAllItemsByBillIdAsync(Guid transactionId)
@@ -95,7 +65,7 @@ namespace MealMate.BLL.Services
 
             foreach (var product in products)
             {
-                var productDto = await MapProductDto(product);
+                var productDto = await _mapProductService.MapProductDto(product);
                 productDtos.Add(productDto);
             }
             return productDtos;
@@ -112,7 +82,7 @@ namespace MealMate.BLL.Services
 
             foreach (var product in products)
             {
-                var productDto = await MapProductDto(product);
+                var productDto = await _mapProductService.MapProductDto(product);
                 productDtos.Add(productDto);
             }
             return productDtos;
@@ -128,7 +98,7 @@ namespace MealMate.BLL.Services
             var productDtos = new List<ProductDto>();
             foreach (var product in products)
             {
-                var productDto = await MapProductDto(product);
+                var productDto = await _mapProductService.MapProductDto(product);
                 productDtos.Add(productDto);
             }
             return productDtos;
@@ -144,7 +114,7 @@ namespace MealMate.BLL.Services
             var productDtos = new List<ProductDto>();
             foreach (var product in products)
             {
-                var productDto = await MapProductDto(product);
+                var productDto = await _mapProductService.MapProductDto(product);
                 productDtos.Add(productDto);
             }
             return productDtos;
@@ -154,7 +124,7 @@ namespace MealMate.BLL.Services
         {
             var product = await _productRepository.GetAsync(productId) ?? throw new EntityNotFoundException("Product not found");
 
-            return await MapProductDto(product);
+            return await _mapProductService.MapProductDto(product);
         }
 
         public async Task<List<TempTop5Product>> GetTempTop5ProductsAsync(int year)
@@ -177,7 +147,7 @@ namespace MealMate.BLL.Services
             var productDtos = new List<ProductDto>();
             foreach (var product in products)
             {
-                var productDto = await MapProductDto(product);
+                var productDto = await _mapProductService.MapProductDto(product);
                 productDtos.Add(productDto);
             }
 
@@ -195,7 +165,7 @@ namespace MealMate.BLL.Services
                     $"Validation exception when creating new product: {string.Join(", ", validationResult.Errors)}"
                 );
             }
-            var newProductDto = await MapProductDto(newProduct);
+            var newProductDto = await _mapProductService.MapProductDto(newProduct);
             await _productRepository.CreateAsync(newProduct);
             return newProductDto;
         }
@@ -223,32 +193,11 @@ namespace MealMate.BLL.Services
                     $"Validation exception when updating product: {string.Join(", ", validationResult.Errors)}"
                 );
             }
-            var productDto = await MapProductDto(product);
+            var productDto = await _mapProductService.MapProductDto(product);
             await _productRepository.UpdateAsync(product);
 
-            await _cartService.RevalidateCartsWithProductIdsAsync([id]);
+            /*            await _cartService.RevalidateCartsWithProductIdsAsync([id]);*/
             return productDto;
-        }
-
-        public double ShortCutCalculateProductDiscountedPrice(List<ProductPromotion> productPromotions, List<ProductCategoryPromotion> productCategoryPromotions, double price)
-        {
-            var discount = CalculateTotalDiscount(productPromotions, productCategoryPromotions);
-            return CalculateProductDiscountedPrice(price, discount);
-        }
-
-        public decimal CalculateTotalDiscount(List<ProductPromotion> productPromotions, List<ProductCategoryPromotion> productCategoryPromotions)
-        {
-            var totalDiscount = 0.00m;
-            totalDiscount += productPromotions.Sum(promotion => promotion.Discount);
-            totalDiscount += productCategoryPromotions.Sum(promotion => promotion.Discount);
-
-            // Ensure the total discount does not exceed 0.99
-            return Math.Min(totalDiscount, 0.99m);
-        }
-
-        public double CalculateProductDiscountedPrice(double price, decimal discount)
-        {
-            return price * (1 - (double)discount);
         }
 
         public async Task DeleteProductAtStoreAsync(Guid productId, Guid storeId)

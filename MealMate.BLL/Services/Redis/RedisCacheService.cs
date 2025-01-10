@@ -25,11 +25,11 @@ namespace MealMate.BLL.Services.Redis
             return System.Text.Json.JsonSerializer.Deserialize<T>(data);
         }
 
-        public async Task SetDataAsync<T>(string key, T data)
+        public virtual async Task SetDataAsync<T>(string key, T data, TimeSpan? ttl = null)
         {
             var options = new DistributedCacheEntryOptions
             {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(12)
+                AbsoluteExpirationRelativeToNow = ttl ?? TimeSpan.FromHours(3) // Default to 3 hours
             };
 
             await _distributedCache.SetStringAsync(key, System.Text.Json.JsonSerializer.Serialize(data), options);

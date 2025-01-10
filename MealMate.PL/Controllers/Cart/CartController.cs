@@ -1,4 +1,5 @@
-﻿using MealMate.BLL.IServices.Redis;
+﻿using MealMate.BLL.Dtos.Cart;
+using MealMate.BLL.IServices.Redis;
 using MealMate.DAL.Entities.Transactions;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,10 +11,12 @@ namespace MealMate.PL.Controllers.Cart
     public class CartController : ControllerBase
     {
         private readonly ICartService _cartService;
+        private readonly IReserveCartCacheService _reserveCartCacheService;
 
-        public CartController(ICartService cartService)
+        public CartController(ICartService cartService, IReserveCartCacheService reserveCartCacheService)
         {
             _cartService = cartService;
+            _reserveCartCacheService = reserveCartCacheService;
         }
 
         [HttpGet("{customerId}")]
@@ -23,39 +26,46 @@ namespace MealMate.PL.Controllers.Cart
             return Ok(cart);
         }
 
-        [HttpPost("{customerId}/add")]
+        [HttpGet("checkout/{customerId}")]
+        public async Task<IActionResult> CheckIfCustomerCheckout(Guid customerId)
+        {
+            var check = await _reserveCartCacheService.CheckIfCustomerCheckoutAsync(customerId);
+            return Ok(check);
+        }
+
+        [HttpPost("add/{customerId}")]
         public async Task<IActionResult> AddProductToCart(Guid customerId, [FromBody] CartItem item)
         {
-            var cart = await _cartService.AddProductToCartAsync(customerId, item);
-            return Ok(cart);
+            await _cartService.AddProductToCartAsync(customerId, item);
+            return Ok(new { Message = "Product added to cart successfully." });
         }
 
-        [HttpPost("{customerId}/revalidate")]
-        public async Task<IActionResult> RevalidateCart(Guid customerId)
+        [HttpPost("revalidate")]
+        public async Task<IActionResult> RevalidateCart([FromBody] CartReturnDto clientCart)
         {
-            var cart = await _cartService.RevalidateCartWithCustomerIdAsync(customerId);
-            return Ok(cart);
+            var validatedCart = await _cartService.RevalidateCartWithCustomerIdAsync(clientCart);
+            return Ok(validatedCart);
         }
 
-        [HttpPatch("{customerId}/update/{productId}")]
-        public async Task<IActionResult> UpdateProductQuantity(Guid customerId, Guid productId, [FromBody] int quantity)
+        /*        [HttpPatch("{customerId}/update/{productId}")]
+                public async Task<IActionResult> UpdateProductQuantity(Guid customerId, Guid productId, [FromBody] int quantity)
+                {
+                    var cart = await _cartService.UpdateProductQuantityAsync(customerId, productId, quantity);
+                    return Ok(cart);
+                }*/
+
+        [HttpDelete("remove/{customerId}/{productId}/{storeId}/{discountedPrice}/{quantity}")]
+        public async Task<IActionResult> RemoveProductFromCart(Guid customerId, Guid productId, Guid storeId, double discountedPrice, int quantity)
         {
-            var cart = await _cartService.UpdateProductQuantityAsync(customerId, productId, quantity);
-            return Ok(cart);
+            await _cartService.RemoveProductFromCartAsync(customerId, productId, storeId, discountedPrice, quantity);
+            return Ok(new { Message = "Product removed from cart successfully." });
         }
 
-        [HttpDelete("{customerId}/remove/{productId}")]
-        public async Task<IActionResult> RemoveProductFromCart(Guid customerId, Guid productId)
-        {
-            var cart = await _cartService.RemoveProductFromCartAsync(customerId, productId);
-            return Ok(cart);
-        }
-
-        [HttpDelete("{customerId}/clear")]
+        [HttpDelete("clear/{customerId}")]
         public async Task<IActionResult> ClearCart(Guid customerId)
         {
-            var cart = await _cartService.ClearCartAsync(customerId);
-            return Ok(cart);
+            await _cartService.ClearCartAsync(customerId);
+            return Ok(new { Message = "Product cleared from cart successfully." });
         }
     }
 }
