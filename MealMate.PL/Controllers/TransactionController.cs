@@ -1,7 +1,5 @@
 ﻿using MealMate.BLL.Dtos.Bills;
-using MealMate.BLL.Dtos.Cart;
 using MealMate.BLL.IServices;
-using MealMate.BLL.IServices.Redis;
 using MealMate.DAL.Utils.Enum;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,12 +8,10 @@ using Microsoft.AspNetCore.Mvc;
 public class TransactionController : ControllerBase
 {
     private readonly ITransactionService _transactionService;
-    private readonly IReserveCartCacheService _reserveCartCacheService;
 
-    public TransactionController(ITransactionService transactionService, IReserveCartCacheService reserveCartCacheService)
+    public TransactionController(ITransactionService transactionService)
     {
         _transactionService = transactionService;
-        _reserveCartCacheService = reserveCartCacheService;
     }
 
     [HttpGet]
@@ -58,20 +54,6 @@ public class TransactionController : ControllerBase
     {
         var newBillId = await _transactionService.CreateBillAsync(billData);
         return Ok(new { new_bill = newBillId });
-    }
-
-    [HttpPost("checkout")]
-    public async Task<IActionResult> Checkout([FromBody] CartReturnDto cart)
-    {
-        await _reserveCartCacheService.CheckoutCartAsync(cart);
-        return Ok(new { Message = "Checkout successfully." });
-    }
-
-    [HttpPost("backtocart")]
-    public async Task<IActionResult> BackToCart(Guid customerId)
-    {
-        await _reserveCartCacheService.RemoveReserveCartAsync(customerId);
-        return Ok(new { Message = "Back to cart successfully." });
     }
 
     [HttpPatch("status/{transactionId}/{status}")]

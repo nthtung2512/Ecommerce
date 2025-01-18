@@ -120,7 +120,7 @@ namespace MealMate.BLL.Services
             var promotions = await _customerPromotionRepository.GetDiscountByProductIdListAsync(productIdList);
             if (promotions.Count == 0)
             {
-                throw new EntityNotFoundException("No customer promotions found");
+                return [];
             }
             var promotionDtos = new List<CustomerPromotionDto>();
             foreach (var promotion in promotions)
@@ -188,7 +188,7 @@ namespace MealMate.BLL.Services
             var promotions = await _customerPromotionRepository.GetListByCustomerIdAsync(customerId);
             if (promotions.Count == 0)
             {
-                throw new EntityNotFoundException("No customer promotions found");
+                return [];
             }
             var promotionDtos = new List<CustomerPromotionDto>();
             foreach (var promotion in promotions)

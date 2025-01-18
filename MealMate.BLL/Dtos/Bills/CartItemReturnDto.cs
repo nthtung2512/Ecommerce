@@ -2,7 +2,7 @@
 {
     public class CartItemReturnDto
     {
-        public Guid CartItemId { get; set; }
+        public Guid CartItemId { get; set; } = default;
         public Guid ProductID { get; set; }
         public required string PName { get; set; }
         public int Quantity { get; set; }

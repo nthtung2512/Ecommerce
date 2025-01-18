@@ -33,8 +33,8 @@ namespace MealMate.BLL.Services.Payment
                 $"&amount={amountInVND}" +
                 $"&orderId={model.OrderId}" +
                 $"&orderInfo={model.OrderInformation}" +
-                $"&returnUrl=https://mealmate-seven.vercel.app/Checkout/PaymentCallBack" +
-                $"&notifyUrl=https://mealmate-seven.vercel.app/Checkout/PaymentCallBack" +
+                $"&returnUrl=http://localhost:5173/Checkout/PaymentCallBack" +
+                $"&notifyUrl=http://localhost:5173/Checkout/PaymentCallBack" +
                 $"&extraData=";
 
             // Encrypt raw data when transacting
@@ -52,8 +52,8 @@ namespace MealMate.BLL.Services.Payment
                 accessKey = "F8BBA842ECF85",
                 partnerCode = "MOMO",
                 requestType = "captureMoMoWallet", // or payWithATM
-                notifyUrl = "https://mealmate-seven.vercel.app/Checkout/PaymentCallBack",
-                returnUrl = "https://mealmate-seven.vercel.app/Checkout/PaymentCallBack",
+                notifyUrl = "http://localhost:5173/Checkout/PaymentCallBack",
+                returnUrl = "http://localhost:5173/Checkout/PaymentCallBack",
                 orderId = model.OrderId,
                 amount = amountInVND.ToString(),
                 orderInfo = model.OrderInformation,

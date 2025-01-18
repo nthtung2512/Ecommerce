@@ -88,8 +88,6 @@ namespace MealMate.BLL.Services
                     Product = productDto
                 };
             }
-
-
         }
     }
 }

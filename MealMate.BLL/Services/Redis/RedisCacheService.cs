@@ -15,6 +15,11 @@ namespace MealMate.BLL.Services.Redis
             _connectionMultiplexer = connectionMultiplexer;
         }
 
+        public IDatabase GetDatabase()
+        {
+            return _connectionMultiplexer.GetDatabase();
+        }
+
         public async Task<T?> GetDataAsync<T>(string key)
         {
             var data = await _distributedCache.GetStringAsync(key);

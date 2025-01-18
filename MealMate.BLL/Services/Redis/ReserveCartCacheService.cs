@@ -1,12 +1,16 @@
 ﻿using MealMate.BLL.Dtos.Bills;
 using MealMate.BLL.Dtos.Cart;
+using MealMate.BLL.Dtos.Promotion;
 using MealMate.BLL.Dtos.Stores;
+using MealMate.BLL.IServices.Hubs;
 using MealMate.BLL.IServices.Redis;
 using MealMate.BLL.IServices.Utility;
+using MealMate.BLL.Services.Hubs;
 using MealMate.DAL.Entities.Transactions;
 using MealMate.DAL.IRepositories;
 using MealMate.DAL.IRepositories.CartRedis;
 using MealMate.DAL.Utils.Exceptions;
+using Microsoft.AspNetCore.SignalR;
 
 namespace MealMate.BLL.Services.Redis
 {
@@ -18,8 +22,9 @@ namespace MealMate.BLL.Services.Redis
         private readonly IReserveCartItemCacheService _reserveCartItemCacheService;
         private readonly IMapProductService _mapProductAppService;
         private readonly ICartRepository _cartRepository;
+        private readonly IHubContext<ProductHub, IProductHubClient> _productHubContext;
 
-        public ReserveCartCacheService(IRedisCacheService redisCacheService, IAtRepository atRepository, IMapProductService productAppService, IProductRepository productRepository, IReserveCartItemCacheService reserveCartItemCacheService, ICartRepository cartRepository)
+        public ReserveCartCacheService(IRedisCacheService redisCacheService, IAtRepository atRepository, IMapProductService productAppService, IProductRepository productRepository, IReserveCartItemCacheService reserveCartItemCacheService, ICartRepository cartRepository, IHubContext<ProductHub, IProductHubClient> productHubContext)
         {
             _redisCacheService = redisCacheService;
             _atRepository = atRepository;
@@ -27,6 +32,7 @@ namespace MealMate.BLL.Services.Redis
             _productRepository = productRepository;
             _reserveCartItemCacheService = reserveCartItemCacheService;
             _cartRepository = cartRepository;
+            _productHubContext = productHubContext;
         }
 
         public async Task HandleExpiredCartAsync(string customerId)
@@ -81,13 +87,36 @@ namespace MealMate.BLL.Services.Redis
             Console.WriteLine($"Handled expiration for ReserveCart:{customerId}");
         }
 
-        public async Task CheckoutCartAsync(CartReturnDto cart)
+        public async Task CheckoutCartAsync(CartReturnDto cart, List<CustomerPromotionDto> customerPromotions)
         {
             var key = $"ReserveCart:{cart.CustomerId}";
 
             foreach (var item in cart.CartItems)
             {
                 await _reserveCartItemCacheService.AddCartItemToRedis(item);
+            }
+
+            var promotionKey = $"SelectedPromotion:{cart.CustomerId}";
+            var currentCustomerPromotions = await _redisCacheService.GetDataAsync<SelectedPromotionListDto>(promotionKey);
+
+            if (currentCustomerPromotions != null)
+            {
+                var redisDatabase = _redisCacheService.GetDatabase();
+
+                // Get the current TTL
+                var currentTTL = await redisDatabase.KeyTimeToLiveAsync(promotionKey);
+
+                // Add 15 minutes to the existing TTL if it exists
+                if (currentTTL.HasValue)
+                {
+                    var newTTL = currentTTL.Value + TimeSpan.FromMinutes(15);
+                    await redisDatabase.KeyExpireAsync(promotionKey, newTTL);
+                }
+                else
+                {
+                    // If the key doesn't have an expiry, set it to 15 minutes from now
+                    await redisDatabase.KeyExpireAsync(promotionKey, TimeSpan.FromMinutes(15));
+                }
             }
 
             await _redisCacheService.SetDataAsync(key, cart, TimeSpan.FromMinutes(15));
@@ -101,6 +130,37 @@ namespace MealMate.BLL.Services.Redis
                  var groupname = $"{item.ProductID}-{item.StoreID}";
                  await _productHubClient.Clients.Group(groupname).ReceiveChangeStock(item.ProductID, item.Quantity);
              }*/
+        }
+
+        public async Task<CheckoutRequestDto> GetCheckoutDataAsync(Guid customerId)
+        {
+            var key = $"ReserveCart:{customerId}";
+            var reserveCart = await _redisCacheService.GetDataAsync<CartReturnDto>(key) ?? throw new EntityNotFoundException("No cart found");
+
+            var promotionKey = $"SelectedPromotion:{customerId}";
+            var customerPromotions = await _redisCacheService.GetDataAsync<SelectedPromotionListDto>(promotionKey);
+
+            return new CheckoutRequestDto
+            {
+                Cart = reserveCart,
+                Promotions = customerPromotions?.CustomerPromotions ?? []
+            };
+        }
+
+        public async Task ReduceStockOnCheckoutAsync(CartReturnDto cart)
+        {
+            foreach (var item in cart.CartItems)
+            {
+                await _productHubContext.Clients.Group($"{item.ProductID}_{item.StoreID}").ReceiveChangeStock(item.ProductID, item.Quantity);
+            }
+        }
+
+        public async Task AddStockOnNoPurchaseAsync(CartReturnDto cart)
+        {
+            foreach (var item in cart.CartItems)
+            {
+                await _productHubContext.Clients.Group($"{item.ProductID}_{item.StoreID}").ReceiveChangeStock(item.ProductID, -item.Quantity);
+            }
         }
 
         public async Task RemoveReserveCartAsync(Guid customerId)
@@ -136,6 +196,7 @@ namespace MealMate.BLL.Services.Redis
                     }
                 }
             }
+            await AddStockOnNoPurchaseAsync(reserveCart);
             /*var keyPattern = $"CartItemReserve:{customerId}-*";
             var cartItemKeys = _redisCacheService.ScanKeys(keyPattern);
             foreach (var key in cartItemKeys)
@@ -143,6 +204,8 @@ namespace MealMate.BLL.Services.Redis
                 await _redisCacheService.RemoveDataAsync(key);
             }*/
         }
+
+
 
         public async Task<bool> CheckIfCustomerCheckoutAsync(Guid customerId)
         {
@@ -235,6 +298,23 @@ namespace MealMate.BLL.Services.Redis
                 });
             }
             return atDtos;
+        }
+
+        public async Task<int?> GetCartTimerAsync(Guid customerId)
+        {
+            var key = $"ReserveCart:{customerId}";
+            var redisDatabase = _redisCacheService.GetDatabase();
+
+            // Get the current TTL
+            var timer = await redisDatabase.KeyTimeToLiveAsync(key);
+            if (timer.HasValue)
+            {
+                return (int)timer.Value.TotalSeconds;
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }

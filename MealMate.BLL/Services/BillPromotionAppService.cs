@@ -35,6 +35,7 @@ namespace MealMate.BLL.Services
                 BillPromotion = billPromotion
             };
             billPromotion.PromoteBills.Add(promoteBill);
+            billPromotion.PromotionChance -= 1;
             await _billPromotionRepository.UpdateAsync(billPromotion);
 
             return billPromotion.PromotionChance;

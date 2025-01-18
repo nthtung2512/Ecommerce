@@ -22,7 +22,7 @@ namespace MealMate.BLL.Services.Payment
 
             var orderId = _guidGenerator.Create().ToString();
             var pay = new VnPayLibrary();
-            var urlCallBack = "https://mealmate-seven.vercel.app/Checkout/PaymentCallBack"; // Direct callback URL
+            var urlCallBack = "http://localhost:5173/Checkout/PaymentCallBack"; // Direct callback URL
 
             pay.AddRequestData("vnp_Version", "2.1.0"); // Direct version value
             pay.AddRequestData("vnp_Command", "pay"); // Direct command value

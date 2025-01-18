@@ -1,5 +1,6 @@
 ﻿using MealMate.BLL.Dtos.Bills;
 using MealMate.BLL.Dtos.Cart;
+using MealMate.BLL.Dtos.Promotion;
 using MealMate.BLL.IServices.Redis;
 using MealMate.BLL.IServices.Utility;
 using MealMate.DAL.Entities.Transactions;
@@ -150,7 +151,7 @@ namespace MealMate.BLL.Services.Redis
                 if (product == null)
                 {
                     cart.CartItems.RemoveAt(i);
-                    cart.TotalPrice -= item.DiscountedPrice * item.Quantity;
+                    /*                    cart.TotalPrice -= item.DiscountedPrice * item.Quantity;*/
                     revalidateReturnDto.ProductsNotAvailable.Add(item);
                     continue;
                 }
@@ -168,7 +169,7 @@ namespace MealMate.BLL.Services.Redis
                 if (productAtStore == null)
                 {
                     cart.CartItems.RemoveAt(i);
-                    cart.TotalPrice -= item.DiscountedPrice * item.Quantity;
+                    /*                    cart.TotalPrice -= item.DiscountedPrice * item.Quantity;*/
                     revalidateReturnDto.ProductsNotAvailable.Add(item);
                     continue;
                 }
@@ -256,7 +257,7 @@ namespace MealMate.BLL.Services.Redis
             }
 
             var returnCart = new List<CartItemReturnDto>();
-            double totalPrice = 0.0;
+            /*            double totalPrice = 0.0;*/
             for (int i = dbCart.Count - 1; i >= 0; i--)
             {
                 var item = dbCart[i];
@@ -267,14 +268,14 @@ namespace MealMate.BLL.Services.Redis
                     continue;
                 }
                 returnCart.Add(returnCartItem);
-                totalPrice += returnCartItem.DiscountedPrice * returnCartItem.Quantity;
+                /*                totalPrice += returnCartItem.DiscountedPrice * returnCartItem.Quantity;*/
             }
 
             var returnCartDto = new CartReturnDto
             {
                 CustomerId = customerId,
                 CartItems = returnCart,
-                TotalPrice = totalPrice
+                /*                TotalPrice = totalPrice*/
             };
 
             // Cache the cart in Redis
@@ -283,7 +284,51 @@ namespace MealMate.BLL.Services.Redis
             return returnCartDto;
         }
 
-        public async Task AddProductToCartAsync(Guid customerId, CartItem item)
+        public async Task<List<CustomerPromotionDto>> SelectCustomerPromotion(Guid customerId, CustomerPromotionDto customerPromotion)
+        {
+            var key = $"SelectedPromotion:{customerId}";
+            var currentCustomerPromotions = await _redisCacheService.GetDataAsync<SelectedPromotionListDto>(key);
+            if (currentCustomerPromotions == null)
+            {
+                currentCustomerPromotions = new SelectedPromotionListDto
+                {
+                    CustomerId = customerId,
+                    CustomerPromotions = []
+                };
+            }
+            currentCustomerPromotions.CustomerPromotions.Add(customerPromotion);
+            await _redisCacheService.SetDataAsync(key, currentCustomerPromotions);
+            return currentCustomerPromotions.CustomerPromotions;
+        }
+
+        public async Task<List<CustomerPromotionDto>> UnSelectCustomerPromotion(Guid customerId, List<CustomerPromotionDto> promotions)
+        {
+            var key = $"SelectedPromotion:{customerId}";
+            var currentCustomerPromotions = await _redisCacheService.GetDataAsync<SelectedPromotionListDto>(key);
+            if (currentCustomerPromotions == null)
+            {
+                return [];
+            }
+            foreach (var promotion in promotions)
+            {
+                currentCustomerPromotions.CustomerPromotions.RemoveAll(p => p.PromotionId == promotion.PromotionId);
+            }
+            await _redisCacheService.RemoveDataAsync(key);
+            return currentCustomerPromotions.CustomerPromotions;
+        }
+
+        public async Task<List<CustomerPromotionDto>> GetSelectedPromotionAsync(Guid customerId)
+        {
+            var key = $"SelectedPromotion:{customerId}";
+            var selectedPromotions = await _redisCacheService.GetDataAsync<SelectedPromotionListDto>(key);
+            if (selectedPromotions == null)
+            {
+                return [];
+            }
+            return selectedPromotions.CustomerPromotions;
+        }
+
+        public async Task AddProductToCartAsync(Guid customerId, CartItemReturnDto item)
         {
             var key = $"Cart:{customerId}";
 
@@ -297,16 +342,14 @@ namespace MealMate.BLL.Services.Redis
                 if (existingItem != null)
                 {
                     existingItem.Quantity += item.Quantity;
-                    cachedCart.TotalPrice += existingItem.DiscountedPrice * item.Quantity;
+                    /*cachedCart.TotalPrice += existingItem.DiscountedPrice * item.Quantity;*/
                 }
                 else
                 {
-                    var newReturnItem = await MapCartItemReturnDto(item);
-                    if (newReturnItem != null)
-                    {
-                        cachedCart.CartItems.Add(newReturnItem);
-                        cachedCart.TotalPrice += newReturnItem.DiscountedPrice * item.Quantity;
-                    }
+                    /*var newReturnItem = await MapCartItemReturnDto(item);*/
+                    item.CartItemId = _guidGenerator.Create();
+                    cachedCart.CartItems.Add(item);
+                    /*cachedCart.TotalPrice += item.DiscountedPrice * item.Quantity;*/
                 }
                 await _redisCacheService.SetDataAsync(key, cachedCart);
             }
@@ -358,8 +401,15 @@ namespace MealMate.BLL.Services.Redis
             if (cart != null)
             {
                 cart.CartItems.RemoveAll(p => p.ProductID == productId && p.StoreID == storeId);
-                cart.TotalPrice -= discountedPrice * quantity;
-                await _redisCacheService.SetDataAsync(key, cart);
+                /*cart.TotalPrice -= discountedPrice * quantity;*/
+                if (cart.CartItems.Count == 0)
+                {
+                    await _redisCacheService.RemoveDataAsync(key);
+                }
+                else
+                {
+                    await _redisCacheService.SetDataAsync(key, cart);
+                }
             }
 
             // Not found in Redis, update the database
@@ -375,7 +425,11 @@ namespace MealMate.BLL.Services.Redis
         {
             var key = $"Cart:{customerId}";
             await _redisCacheService.RemoveDataAsync(key);
+
             await _cartRepository.DeleteCartAsync(customerId);
+
+            var promotionKey = $"SelectedPromotion:{customerId}";
+            await _redisCacheService.RemoveDataAsync(promotionKey);
         }
     }
 }

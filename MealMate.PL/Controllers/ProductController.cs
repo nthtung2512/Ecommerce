@@ -139,7 +139,7 @@ namespace MealMate.PL.Controllers
 
             // Notify only the specific product-store group
             var groupName = $"{productid}_{storeid}";
-            await _productHubContext.Clients.Group(groupName).ReceiveChangeStock(productid, result.NumberAtStore);
+            await _productHubContext.Clients.Group(groupName).ReceiveChangeStock(productid, -amount);
 
             return Ok(result);
         }

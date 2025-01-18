@@ -6,6 +6,7 @@ namespace MealMate.BLL.Dtos.Cart
     {
         public Guid CustomerId { get; set; }
         public List<CartItemReturnDto> CartItems { get; set; } = [];
-        public double TotalPrice { get; set; }
+        /*public List<CustomerPromotionDto> CartItemPromotions { get; set; } = [];*/
+        /*        public double TotalPrice { get; set; }*/
     }
 }
