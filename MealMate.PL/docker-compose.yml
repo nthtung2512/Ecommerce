@@ -1,6 +1,8 @@
 ﻿services:
   redis:
-    image: redis:latest
+    image: redislabs/redisearch:latest
     ports:
       - "6379:6379"
-    command: ["redis-server", "--notify-keyspace-events", "Ex"]
+    command: ["redis-server", "--loadmodule", "/usr/lib/redis/modules/redisearch.so"]
+    environment:
+      - REDIS_ARGS=--loadmodule /usr/lib/redis/modules/redisearch.so

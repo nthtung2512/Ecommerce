@@ -60,6 +60,25 @@
           }
         }
       },
+      "Elastic.Clients.Elasticsearch/8.17.1": {
+        "dependencies": {
+          "Elastic.Transport": "0.5.7"
+        },
+        "runtime": {
+          "lib/net8.0/Elastic.Clients.Elasticsearch.dll": {
+            "assemblyVersion": "8.0.0.0",
+            "fileVersion": "8.17.1.0"
+          }
+        }
+      },
+      "Elastic.Transport/0.5.7": {
+        "runtime": {
+          "lib/net8.0/Elastic.Transport.dll": {
+            "assemblyVersion": "0.0.0.0",
+            "fileVersion": "0.5.7.0"
+          }
+        }
+      },
       "FluentValidation/11.10.0": {
         "runtime": {
           "lib/net8.0/FluentValidation.dll": {
@@ -1617,6 +1636,7 @@
       "MealMate.BLL/1.0.0": {
         "dependencies": {
           "AutoMapper": "13.0.1",
+          "Elastic.Clients.Elasticsearch": "8.17.1",
           "MailKit": "4.8.0",
           "MealMate.DAL": "1.0.0",
           "Microsoft.AspNet.WebApi.Core": "5.3.0",
@@ -1680,6 +1700,20 @@
       "sha512": "sha512-o4SqUVCq0pqHF/HYsZk6k22XGIVmvsDVo+Dy7l0ubq9uQ45JkXswrMRJmYvhGLXWFYF0M5OupMonytB+0zvpGQ==",
       "path": "dotnetenv/3.1.1",
       "hashPath": "dotnetenv.3.1.1.nupkg.sha512"
+    },
+    "Elastic.Clients.Elasticsearch/8.17.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-H1TI5dMB/si8GzoEy17sgjzr8frO+nURIjfgoHFg3AOGugbvPwm4FzCNLk+R++vdPOmsQ3wS0NZPH3VufP4HcQ==",
+      "path": "elastic.clients.elasticsearch/8.17.1",
+      "hashPath": "elastic.clients.elasticsearch.8.17.1.nupkg.sha512"
+    },
+    "Elastic.Transport/0.5.7": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-0VQhS6RauOqydF1bUs7nqpk9u8X2Sa2O7djiioD5b/jWf/cX6S7GcmlWzqvm2j1a+np1Q79B2SwEFOI2zMkcbw==",
+      "path": "elastic.transport/0.5.7",
+      "hashPath": "elastic.transport.0.5.7.nupkg.sha512"
     },
     "FluentValidation/11.10.0": {
       "type": "package",

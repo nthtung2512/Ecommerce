@@ -4,6 +4,7 @@ namespace MealMate.DAL.IRepositories
 {
     public interface IProductRepository : IRepository<Product, Guid>
     {
+        Task<List<Product>> GetAllAsync();
         Task<List<Product>> GetListProductByStoreIDAsync(Guid storeId);
         Task<List<Product>> GetListProductByCategoryAsync(string category);
         Task<List<Product>> GetListProductHavePromotionAsync();

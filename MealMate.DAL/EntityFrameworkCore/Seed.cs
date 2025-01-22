@@ -146,9 +146,9 @@ namespace MealMate.DAL.EntityFrameworkCore
             // Seed Stores
             var stores = new Store[]
             {
-                new Store (Guid.NewGuid()) { Name = "Store One", OpeningDate = new DateTime(2020, 1, 1).ToUniversalTime(), ContactInfo = "contact1@store.com", Location = "102 Dương Bá Trạc, Phường 1, Quận 8, Thành phố Hồ Chí Minh", Latitude = 10.7442071m, Longitude = 106.6889035m},
-                new Store (Guid.NewGuid()) { Name = "Store Two", OpeningDate = new DateTime(2020, 2, 1).ToUniversalTime(), ContactInfo = "contact2@store.com", Location = "23 Pasteur, Phường Bến Nghé, Quận 1, Thành phố Hồ Chí Minh", Latitude = 10.7800885m, Longitude = 106.6963455m },
-                new Store (Guid.NewGuid()) { Name = "Store Three", OpeningDate = new DateTime(2020, 3, 1).ToUniversalTime(), ContactInfo = "contact3@store.com", Location = "88 Tô Hiến Thành, Phường 15, Quận 10, Thành phố Hồ Chí Minh", Latitude = 10.7780660m, Longitude = 106.6658002m },
+                new Store (Guid.NewGuid()) { Name = "Store One", OpeningDate = new DateTime(2020, 1, 1).ToUniversalTime(), ContactInfo = "contact1@store.com", Location = "102 Dương Bá Trạc, Phường 2, Quận 8, Thành phố Hồ Chí Minh", Latitude = 10.7442071m, Longitude = 106.6889035m},
+                new Store (Guid.NewGuid()) { Name = "Store Two", OpeningDate = new DateTime(2020, 2, 1).ToUniversalTime(), ContactInfo = "contact2@store.com", Location = "23 Pasteur, Phường Nguyễn Thái Bình, Quận 1, Hồ Chí Minh, Việt Nam", Latitude = 10.7800885m, Longitude = 106.6963455m },
+                new Store (Guid.NewGuid()) { Name = "Store Three", OpeningDate = new DateTime(2020, 3, 1).ToUniversalTime(), ContactInfo = "contact3@store.com", Location = "88 Đ. Tô Hiến Thành, Phường 15, Quận 10, Hồ Chí Minh, Việt Nam", Latitude = 10.7780660m, Longitude = 106.6658002m },
                 new Store (Guid.NewGuid()) { Name = "Store Four", OpeningDate = new DateTime(2020, 4, 1).ToUniversalTime(), ContactInfo = "contact4@store.com", Location = "98 Võ Văn Tần, Phường 6, Quận 3, Thành phố Hồ Chí Minh", Latitude = 10.7758044m, Longitude = 106.6893163m },
                 new Store (Guid.NewGuid()) { Name = "Store Five", OpeningDate = new DateTime(2020, 5, 1).ToUniversalTime(), ContactInfo = "contact5@store.com", Location = "45 Điện Biên Phủ, Phường 15, Quận Bình Thạnh, Thành phố Hồ Chí Minh", Latitude = 10.7950647m, Longitude = 106.7012004m }
             };

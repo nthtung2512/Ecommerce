@@ -125,6 +125,10 @@
               "target": "Package",
               "version": "[13.0.1, )"
             },
+            "Elastic.Clients.Elasticsearch": {
+              "target": "Package",
+              "version": "[8.17.1, )"
+            },
             "MailKit": {
               "target": "Package",
               "version": "[4.8.0, )"

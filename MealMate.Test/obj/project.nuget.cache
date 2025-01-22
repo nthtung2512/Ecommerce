@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "ukFUH3LDDw0=",
+  "dgSpecHash": "WA3rUeMtEwg=",
   "success": true,
   "projectFilePath": "D:\\HK241\\DACN_Ecommerce\\code\\MealMate\\MealMate.Test\\MealMate.Test.csproj",
   "expectedPackageFiles": [
@@ -9,6 +9,8 @@
     "C:\\Users\\Admin\\.nuget\\packages\\castle.core\\5.1.1\\castle.core.5.1.1.nupkg.sha512",
     "C:\\Users\\Admin\\.nuget\\packages\\coverlet.collector\\6.0.0\\coverlet.collector.6.0.0.nupkg.sha512",
     "C:\\Users\\Admin\\.nuget\\packages\\dotnetenv\\3.1.1\\dotnetenv.3.1.1.nupkg.sha512",
+    "C:\\Users\\Admin\\.nuget\\packages\\elastic.clients.elasticsearch\\8.17.1\\elastic.clients.elasticsearch.8.17.1.nupkg.sha512",
+    "C:\\Users\\Admin\\.nuget\\packages\\elastic.transport\\0.5.7\\elastic.transport.0.5.7.nupkg.sha512",
     "C:\\Users\\Admin\\.nuget\\packages\\fluentvalidation\\11.10.0\\fluentvalidation.11.10.0.nupkg.sha512",
     "C:\\Users\\Admin\\.nuget\\packages\\mailkit\\4.8.0\\mailkit.4.8.0.nupkg.sha512",
     "C:\\Users\\Admin\\.nuget\\packages\\microsoft.aspnet.webapi.client\\6.0.0\\microsoft.aspnet.webapi.client.6.0.0.nupkg.sha512",

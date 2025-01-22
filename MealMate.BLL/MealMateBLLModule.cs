@@ -9,6 +9,7 @@ using MealMate.BLL.IServices.Delivery;
 using MealMate.BLL.IServices.Hubs;
 using MealMate.BLL.IServices.Payment;
 using MealMate.BLL.IServices.Redis;
+using MealMate.BLL.IServices.Search;
 using MealMate.BLL.IServices.Utility;
 using MealMate.BLL.Services;
 using MealMate.BLL.Services.auth;
@@ -16,6 +17,7 @@ using MealMate.BLL.Services.Delivery;
 using MealMate.BLL.Services.Hubs;
 using MealMate.BLL.Services.Payment;
 using MealMate.BLL.Services.Redis;
+using MealMate.BLL.Services.Search;
 using MealMate.BLL.Services.Utility;
 using MealMate.DAL.Utils.GuidUtil;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -62,6 +64,8 @@ namespace MealMate.BLL
             services.AddSignalR();
 
             services.AddTransient<IHubContextWrapper<IProductHubClient>, ProductHubWrapper>();
+
+            services.AddScoped<IElasticSearchService, ElasticSearchService>();
 
             services.AddHostedService<RedisExpirationSubscriber>();
 

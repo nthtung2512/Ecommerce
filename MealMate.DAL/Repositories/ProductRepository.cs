@@ -80,5 +80,10 @@ namespace MealMate.DAL.Repositories
                 await _context.SaveChangesAsync();
             }
         }
+
+        public async Task<List<Product>> GetAllAsync()
+        {
+            return await Query.ToListAsync();
+        }
     }
 }

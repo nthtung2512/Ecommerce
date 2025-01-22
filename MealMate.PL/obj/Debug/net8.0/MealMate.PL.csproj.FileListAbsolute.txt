@@ -100,3 +100,5 @@ D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.PL\obj\Debug\net8.0\refint\MealMa
 D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.PL\obj\Debug\net8.0\MealMate.PL.pdb
 D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.PL\obj\Debug\net8.0\MealMate.PL.genruntimeconfig.cache
 D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.PL\obj\Debug\net8.0\ref\MealMate.PL.dll
+D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.PL\bin\Debug\net8.0\Elastic.Clients.Elasticsearch.dll
+D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.PL\bin\Debug\net8.0\Elastic.Transport.dll

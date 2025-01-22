@@ -31,6 +31,35 @@
           }
         }
       },
+      "Elastic.Clients.Elasticsearch/8.17.1": {
+        "type": "package",
+        "dependencies": {
+          "Elastic.Transport": "0.5.7"
+        },
+        "compile": {
+          "lib/net8.0/Elastic.Clients.Elasticsearch.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/Elastic.Clients.Elasticsearch.dll": {
+            "related": ".xml"
+          }
+        }
+      },
+      "Elastic.Transport/0.5.7": {
+        "type": "package",
+        "compile": {
+          "lib/net8.0/Elastic.Transport.dll": {
+            "related": ".pdb;.xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/Elastic.Transport.dll": {
+            "related": ".pdb;.xml"
+          }
+        }
+      },
       "FluentValidation/11.10.0": {
         "type": "package",
         "compile": {
@@ -1432,6 +1461,53 @@
         "lib/netstandard2.0/BouncyCastle.Cryptography.dll",
         "lib/netstandard2.0/BouncyCastle.Cryptography.xml",
         "packageIcon.png"
+      ]
+    },
+    "Elastic.Clients.Elasticsearch/8.17.1": {
+      "sha512": "H1TI5dMB/si8GzoEy17sgjzr8frO+nURIjfgoHFg3AOGugbvPwm4FzCNLk+R++vdPOmsQ3wS0NZPH3VufP4HcQ==",
+      "type": "package",
+      "path": "elastic.clients.elasticsearch/8.17.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE.txt",
+        "README.md",
+        "elastic.clients.elasticsearch.8.17.1.nupkg.sha512",
+        "elastic.clients.elasticsearch.nuspec",
+        "lib/net462/Elastic.Clients.Elasticsearch.dll",
+        "lib/net462/Elastic.Clients.Elasticsearch.xml",
+        "lib/net8.0/Elastic.Clients.Elasticsearch.dll",
+        "lib/net8.0/Elastic.Clients.Elasticsearch.xml",
+        "lib/netstandard2.0/Elastic.Clients.Elasticsearch.dll",
+        "lib/netstandard2.0/Elastic.Clients.Elasticsearch.xml",
+        "lib/netstandard2.1/Elastic.Clients.Elasticsearch.dll",
+        "lib/netstandard2.1/Elastic.Clients.Elasticsearch.xml",
+        "nuget-icon.png"
+      ]
+    },
+    "Elastic.Transport/0.5.7": {
+      "sha512": "0VQhS6RauOqydF1bUs7nqpk9u8X2Sa2O7djiioD5b/jWf/cX6S7GcmlWzqvm2j1a+np1Q79B2SwEFOI2zMkcbw==",
+      "type": "package",
+      "path": "elastic.transport/0.5.7",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "elastic.transport.0.5.7.nupkg.sha512",
+        "elastic.transport.nuspec",
+        "lib/net462/Elastic.Transport.dll",
+        "lib/net462/Elastic.Transport.pdb",
+        "lib/net462/Elastic.Transport.xml",
+        "lib/net8.0/Elastic.Transport.dll",
+        "lib/net8.0/Elastic.Transport.pdb",
+        "lib/net8.0/Elastic.Transport.xml",
+        "lib/netstandard2.0/Elastic.Transport.dll",
+        "lib/netstandard2.0/Elastic.Transport.pdb",
+        "lib/netstandard2.0/Elastic.Transport.xml",
+        "lib/netstandard2.1/Elastic.Transport.dll",
+        "lib/netstandard2.1/Elastic.Transport.pdb",
+        "lib/netstandard2.1/Elastic.Transport.xml",
+        "license.txt",
+        "nuget-icon.png"
       ]
     },
     "FluentValidation/11.10.0": {
@@ -3497,6 +3573,7 @@
   "projectFileDependencyGroups": {
     "net8.0": [
       "AutoMapper >= 13.0.1",
+      "Elastic.Clients.Elasticsearch >= 8.17.1",
       "MailKit >= 4.8.0",
       "MealMate.DAL >= 1.0.0",
       "Microsoft.AspNet.WebApi.Core >= 5.3.0",
@@ -3559,6 +3636,10 @@
           "AutoMapper": {
             "target": "Package",
             "version": "[13.0.1, )"
+          },
+          "Elastic.Clients.Elasticsearch": {
+            "target": "Package",
+            "version": "[8.17.1, )"
           },
           "MailKit": {
             "target": "Package",
