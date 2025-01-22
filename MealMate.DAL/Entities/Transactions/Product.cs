@@ -19,6 +19,17 @@ namespace MealMate.DAL.Entities.Transactions
         public required double Price { get; set; }
 
         public required int Weight { get; set; }
+        /*
+        Price = UnitPrice * Quantity
+        Quantity = Weight / UnitWeight
+        Consistency can be used for converting
+        public required int Quantity { get; set; }
+        public string Unit { get; set; }
+        public required double UnitPrice { get; set; }
+        public required int UnitWeight { get; set; }
+        public required string Consistency { get; set; } = string.Empty;
+        */
+
         public required string ImageURL { get; set; }
         public ICollection<PromoteProduct> PromoteProducts { get; } = [];
         public ICollection<PromoteCategory> PromoteCategories { get; } = [];

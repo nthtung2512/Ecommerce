@@ -1,0 +1,64 @@
+2025-01-21 11:10:00.520 +07:00 [INF] Starting web host.
+2025-01-21 11:10:18.773 +07:00 [INF] User profile is available. Using 'C:\Users\Admin\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2025-01-21 11:10:23.561 +07:00 [INF] Email: 21
+2025-01-21 11:10:23.563 +07:00 [INF] Password: 19
+2025-01-21 11:10:23.634 +07:00 [WRN] The WebRootPath was not found: D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.PL\wwwroot. Static files may be unavailable.
+2025-01-21 11:10:24.041 +07:00 [WRN] The WebRootPath was not found: D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.PL\wwwroot. Static files may be unavailable.
+2025-01-21 11:10:24.454 +07:00 [INF] Now listening on: https://localhost:7288
+2025-01-21 11:10:24.456 +07:00 [INF] Now listening on: http://localhost:5200
+2025-01-21 11:10:24.459 +07:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-01-21 11:10:24.460 +07:00 [INF] Hosting environment: Development
+2025-01-21 11:10:24.462 +07:00 [INF] Content root path: D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.PL
+2025-01-21 11:10:25.384 +07:00 [INF] Request starting HTTP/2 GET https://localhost:7288/swagger/index.html - null null
+2025-01-21 11:10:25.815 +07:00 [INF] Request finished HTTP/2 GET https://localhost:7288/swagger/index.html - 200 null text/html;charset=utf-8 451.8466ms
+2025-01-21 11:10:25.850 +07:00 [INF] Request starting HTTP/2 GET https://localhost:7288/_framework/aspnetcore-browser-refresh.js - null null
+2025-01-21 11:10:25.850 +07:00 [INF] Request starting HTTP/2 GET https://localhost:7288/_vs/browserLink - null null
+2025-01-21 11:10:25.869 +07:00 [INF] Request finished HTTP/2 GET https://localhost:7288/_framework/aspnetcore-browser-refresh.js - 200 13758 application/javascript; charset=utf-8 18.8118ms
+2025-01-21 11:10:25.981 +07:00 [INF] Request finished HTTP/2 GET https://localhost:7288/_vs/browserLink - 200 null text/javascript; charset=UTF-8 131.5146ms
+2025-01-21 11:10:26.212 +07:00 [INF] Request starting HTTP/2 GET https://localhost:7288/swagger/v1/swagger.json - null null
+2025-01-21 11:10:26.627 +07:00 [INF] Request finished HTTP/2 GET https://localhost:7288/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 415.6831ms
+2025-01-21 11:10:29.440 +07:00 [ERR] BackgroundService failed
+StackExchange.Redis.RedisConnectionException: The message timed out in the backlog attempting to send because no connection became available (5000ms) - Last Connection Exception: It was not possible to connect to the redis server(s). ConnectTimeout, command=PSUBSCRIBE, timeout: 5000, inst: 0, qu: 0, qs: 0, aw: False, bw: CheckingForTimeout, rs: NotStarted, ws: Idle, in: 0, last-in: 0, cur-in: 0, sync-ops: 0, async-ops: 1, serverEndpoint: localhost:6379, conn-sec: n/a, aoc: 0, mc: 1/1/0, mgr: 10 of 10 available, clientName: LAPTOP-VH1SKIEH(SE.Redis-v2.8.24.3255), IOCP: (Busy=0,Free=1000,Min=1,Max=1000), WORKER: (Busy=1,Free=32766,Min=16,Max=32767), POOL: (Threads=6,QueuedItems=0,CompletedItems=1749,Timers=7), v: 2.8.24.3255 (Please take a look at this article for some common client-side issues that can cause timeouts: https://stackexchange.github.io/StackExchange.Redis/Timeouts)
+ ---> StackExchange.Redis.RedisConnectionException: It was not possible to connect to the redis server(s). ConnectTimeout
+   --- End of inner exception stack trace ---
+   at MealMate.BLL.IServices.Redis.RedisExpirationSubscriber.ExecuteAsync(CancellationToken stoppingToken) in D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.BLL\IServices\Redis\RedisExpirationSubscriber.cs:line 25
+   at Microsoft.Extensions.Hosting.Internal.Host.TryExecuteBackgroundServiceAsync(BackgroundService backgroundService)
+2025-01-21 11:10:29.515 +07:00 [FTL] The HostOptions.BackgroundServiceExceptionBehavior is configured to StopHost. A BackgroundService has thrown an unhandled exception, and the IHost instance is stopping. To avoid this behavior, configure this to Ignore; however the BackgroundService will not be restarted.
+StackExchange.Redis.RedisConnectionException: The message timed out in the backlog attempting to send because no connection became available (5000ms) - Last Connection Exception: It was not possible to connect to the redis server(s). ConnectTimeout, command=PSUBSCRIBE, timeout: 5000, inst: 0, qu: 0, qs: 0, aw: False, bw: CheckingForTimeout, rs: NotStarted, ws: Idle, in: 0, last-in: 0, cur-in: 0, sync-ops: 0, async-ops: 1, serverEndpoint: localhost:6379, conn-sec: n/a, aoc: 0, mc: 1/1/0, mgr: 10 of 10 available, clientName: LAPTOP-VH1SKIEH(SE.Redis-v2.8.24.3255), IOCP: (Busy=0,Free=1000,Min=1,Max=1000), WORKER: (Busy=1,Free=32766,Min=16,Max=32767), POOL: (Threads=6,QueuedItems=0,CompletedItems=1749,Timers=7), v: 2.8.24.3255 (Please take a look at this article for some common client-side issues that can cause timeouts: https://stackexchange.github.io/StackExchange.Redis/Timeouts)
+ ---> StackExchange.Redis.RedisConnectionException: It was not possible to connect to the redis server(s). ConnectTimeout
+   --- End of inner exception stack trace ---
+   at MealMate.BLL.IServices.Redis.RedisExpirationSubscriber.ExecuteAsync(CancellationToken stoppingToken) in D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.BLL\IServices\Redis\RedisExpirationSubscriber.cs:line 25
+   at Microsoft.Extensions.Hosting.Internal.Host.TryExecuteBackgroundServiceAsync(BackgroundService backgroundService)
+2025-01-21 11:10:29.520 +07:00 [INF] Application is shutting down...
+2025-01-21 11:10:54.654 +07:00 [INF] Starting web host.
+2025-01-21 11:11:07.164 +07:00 [INF] User profile is available. Using 'C:\Users\Admin\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2025-01-21 11:11:07.960 +07:00 [INF] Email: 21
+2025-01-21 11:11:07.963 +07:00 [INF] Password: 19
+2025-01-21 11:11:08.020 +07:00 [WRN] The WebRootPath was not found: D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.PL\wwwroot. Static files may be unavailable.
+2025-01-21 11:11:08.268 +07:00 [WRN] The WebRootPath was not found: D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.PL\wwwroot. Static files may be unavailable.
+2025-01-21 11:11:08.474 +07:00 [INF] Now listening on: https://localhost:7288
+2025-01-21 11:11:08.476 +07:00 [INF] Now listening on: http://localhost:5200
+2025-01-21 11:11:08.478 +07:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-01-21 11:11:08.479 +07:00 [INF] Hosting environment: Development
+2025-01-21 11:11:08.481 +07:00 [INF] Content root path: D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.PL
+2025-01-21 11:11:09.362 +07:00 [INF] Request starting HTTP/2 GET https://localhost:7288/swagger/index.html - null null
+2025-01-21 11:11:09.719 +07:00 [INF] Request finished HTTP/2 GET https://localhost:7288/swagger/index.html - 200 null text/html;charset=utf-8 370.4897ms
+2025-01-21 11:11:09.719 +07:00 [INF] Request starting HTTP/2 GET https://localhost:7288/_framework/aspnetcore-browser-refresh.js - null null
+2025-01-21 11:11:09.725 +07:00 [INF] Request starting HTTP/2 GET https://localhost:7288/_vs/browserLink - null null
+2025-01-21 11:11:09.739 +07:00 [INF] Request finished HTTP/2 GET https://localhost:7288/_framework/aspnetcore-browser-refresh.js - 200 13758 application/javascript; charset=utf-8 20.3795ms
+2025-01-21 11:11:09.807 +07:00 [INF] Request finished HTTP/2 GET https://localhost:7288/_vs/browserLink - 200 null text/javascript; charset=UTF-8 83.0823ms
+2025-01-21 11:11:10.034 +07:00 [INF] Request starting HTTP/2 GET https://localhost:7288/swagger/v1/swagger.json - null null
+2025-01-21 11:11:10.424 +07:00 [INF] Request finished HTTP/2 GET https://localhost:7288/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 390.4896ms
+2025-01-21 11:11:14.074 +07:00 [ERR] BackgroundService failed
+StackExchange.Redis.RedisConnectionException: The message timed out in the backlog attempting to send because no connection became available (5000ms) - Last Connection Exception: It was not possible to connect to the redis server(s). ConnectTimeout, command=PSUBSCRIBE, timeout: 5000, inst: 0, qu: 0, qs: 0, aw: False, bw: CheckingForTimeout, rs: NotStarted, ws: Initializing, in: 0, last-in: 0, cur-in: 0, sync-ops: 0, async-ops: 1, serverEndpoint: localhost:6379, conn-sec: n/a, aoc: 0, mc: 1/1/0, mgr: 10 of 10 available, clientName: LAPTOP-VH1SKIEH(SE.Redis-v2.8.24.3255), IOCP: (Busy=0,Free=1000,Min=1,Max=1000), WORKER: (Busy=1,Free=32766,Min=16,Max=32767), POOL: (Threads=7,QueuedItems=0,CompletedItems=359,Timers=8), v: 2.8.24.3255 (Please take a look at this article for some common client-side issues that can cause timeouts: https://stackexchange.github.io/StackExchange.Redis/Timeouts)
+ ---> StackExchange.Redis.RedisConnectionException: It was not possible to connect to the redis server(s). ConnectTimeout
+   --- End of inner exception stack trace ---
+   at MealMate.BLL.IServices.Redis.RedisExpirationSubscriber.ExecuteAsync(CancellationToken stoppingToken) in D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.BLL\IServices\Redis\RedisExpirationSubscriber.cs:line 25
+   at Microsoft.Extensions.Hosting.Internal.Host.TryExecuteBackgroundServiceAsync(BackgroundService backgroundService)
+2025-01-21 11:11:14.137 +07:00 [FTL] The HostOptions.BackgroundServiceExceptionBehavior is configured to StopHost. A BackgroundService has thrown an unhandled exception, and the IHost instance is stopping. To avoid this behavior, configure this to Ignore; however the BackgroundService will not be restarted.
+StackExchange.Redis.RedisConnectionException: The message timed out in the backlog attempting to send because no connection became available (5000ms) - Last Connection Exception: It was not possible to connect to the redis server(s). ConnectTimeout, command=PSUBSCRIBE, timeout: 5000, inst: 0, qu: 0, qs: 0, aw: False, bw: CheckingForTimeout, rs: NotStarted, ws: Initializing, in: 0, last-in: 0, cur-in: 0, sync-ops: 0, async-ops: 1, serverEndpoint: localhost:6379, conn-sec: n/a, aoc: 0, mc: 1/1/0, mgr: 10 of 10 available, clientName: LAPTOP-VH1SKIEH(SE.Redis-v2.8.24.3255), IOCP: (Busy=0,Free=1000,Min=1,Max=1000), WORKER: (Busy=1,Free=32766,Min=16,Max=32767), POOL: (Threads=7,QueuedItems=0,CompletedItems=359,Timers=8), v: 2.8.24.3255 (Please take a look at this article for some common client-side issues that can cause timeouts: https://stackexchange.github.io/StackExchange.Redis/Timeouts)
+ ---> StackExchange.Redis.RedisConnectionException: It was not possible to connect to the redis server(s). ConnectTimeout
+   --- End of inner exception stack trace ---
+   at MealMate.BLL.IServices.Redis.RedisExpirationSubscriber.ExecuteAsync(CancellationToken stoppingToken) in D:\HK241\DACN_Ecommerce\code\MealMate\MealMate.BLL\IServices\Redis\RedisExpirationSubscriber.cs:line 25
+   at Microsoft.Extensions.Hosting.Internal.Host.TryExecuteBackgroundServiceAsync(BackgroundService backgroundService)
+2025-01-21 11:11:14.143 +07:00 [INF] Application is shutting down...

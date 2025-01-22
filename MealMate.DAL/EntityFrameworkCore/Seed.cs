@@ -50,7 +50,7 @@ namespace MealMate.DAL.EntityFrameworkCore
                     UserName = "Customer1",
                     FName = "Cường Dũng",
                     LName = "Trần",
-                    Address = "123 Elm St",
+                    Address = "436 Đ. Nguyễn Thị Minh Khai, Phường 5, Quận 3, Hồ Chí Minh, Việt Nam",
                     Email = "nguyenthanhtung@gmail.com",
                     PhoneNumber = "0987654321",
                     IsDeleted = false,
@@ -63,7 +63,7 @@ namespace MealMate.DAL.EntityFrameworkCore
                     UserName = "Customer2",
                     FName = "Hưng Khôi",
                     LName = "Lê",
-                    Address = "456 Oak St",
+                    Address = "268 Lý Thường Kiệt, Phường 14, Quận 10, Hồ Chí Minh, Việt Nam",
                     Email = "lhk@gmail.com",
                     PhoneNumber = "1234567812",
                     IsDeleted = false,
@@ -76,7 +76,7 @@ namespace MealMate.DAL.EntityFrameworkCore
                     UserName = "Customer3",
                     FName = "Long Nam",
                     LName = "Phạm",
-                    Address = "789 Pine St",
+                    Address = "14 Trần Quang Diệu, Phường 14, Quận 3, Hồ Chí Minh, Việt Nam",
                     Email = "pln@gmail.com",
                     PhoneNumber = "1234876521",
                     IsDeleted = false,
@@ -89,7 +89,7 @@ namespace MealMate.DAL.EntityFrameworkCore
                     UserName = "Customer4",
                     FName = "Phát Quang",
                     LName = "Huỳnh",
-                    Address = "321 Maple St",
+                    Address = "Đường số 4, phường 26, Bình Thạnh, Hồ Chí Minh, Việt Nam",
                     Email = "hpq@gmail.com",
                     PhoneNumber = "3218764521",
                     IsDeleted = false,
@@ -146,11 +146,11 @@ namespace MealMate.DAL.EntityFrameworkCore
             // Seed Stores
             var stores = new Store[]
             {
-                new Store (Guid.NewGuid()) { Name = "Store One", OpeningDate = new DateTime(2020, 1, 1).ToUniversalTime(), ContactInfo = "contact1@store.com", Location = "23 Pasteur, Phường Bến Nghé, Quận 1, Thành phố Hồ Chí Minh" },
-                new Store (Guid.NewGuid()) { Name = "Store Two", OpeningDate = new DateTime(2020, 2, 1).ToUniversalTime(), ContactInfo = "contact2@store.com", Location = "88 Tô Hiến Thành, Phường 15, Quận 10, Thành phố Hồ Chí Minh" },
-                new Store (Guid.NewGuid()) { Name = "Store Three", OpeningDate = new DateTime(2020, 3, 1).ToUniversalTime(), ContactInfo = "contact3@store.com", Location = "102 Dương Bá Trạc, Phường 1, Quận 8, Thành phố Hồ Chí Minh" },
-                new Store (Guid.NewGuid()) { Name = "Store Four", OpeningDate = new DateTime(2020, 4, 1).ToUniversalTime(), ContactInfo = "contact4@store.com", Location = "98 Võ Văn Tần, Phường 6, Quận 3, Thành phố Hồ Chí Minh" },
-                new Store (Guid.NewGuid()) { Name = "Store Five", OpeningDate = new DateTime(2020, 5, 1).ToUniversalTime(), ContactInfo = "contact5@store.com", Location = "45 Điện Biên Phủ, Phường 15, Quận Bình Thạnh, Thành phố Hồ Chí Minh", }
+                new Store (Guid.NewGuid()) { Name = "Store One", OpeningDate = new DateTime(2020, 1, 1).ToUniversalTime(), ContactInfo = "contact1@store.com", Location = "102 Dương Bá Trạc, Phường 1, Quận 8, Thành phố Hồ Chí Minh", Latitude = 10.7442071m, Longitude = 106.6889035m},
+                new Store (Guid.NewGuid()) { Name = "Store Two", OpeningDate = new DateTime(2020, 2, 1).ToUniversalTime(), ContactInfo = "contact2@store.com", Location = "23 Pasteur, Phường Bến Nghé, Quận 1, Thành phố Hồ Chí Minh", Latitude = 10.7800885m, Longitude = 106.6963455m },
+                new Store (Guid.NewGuid()) { Name = "Store Three", OpeningDate = new DateTime(2020, 3, 1).ToUniversalTime(), ContactInfo = "contact3@store.com", Location = "88 Tô Hiến Thành, Phường 15, Quận 10, Thành phố Hồ Chí Minh", Latitude = 10.7780660m, Longitude = 106.6658002m },
+                new Store (Guid.NewGuid()) { Name = "Store Four", OpeningDate = new DateTime(2020, 4, 1).ToUniversalTime(), ContactInfo = "contact4@store.com", Location = "98 Võ Văn Tần, Phường 6, Quận 3, Thành phố Hồ Chí Minh", Latitude = 10.7758044m, Longitude = 106.6893163m },
+                new Store (Guid.NewGuid()) { Name = "Store Five", OpeningDate = new DateTime(2020, 5, 1).ToUniversalTime(), ContactInfo = "contact5@store.com", Location = "45 Điện Biên Phủ, Phường 15, Quận Bình Thạnh, Thành phố Hồ Chí Minh", Latitude = 10.7950647m, Longitude = 106.7012004m }
             };
 
             // Seed Store managers
@@ -316,67 +316,67 @@ namespace MealMate.DAL.EntityFrameworkCore
             var products = new Product[]
             {
                 // Pork
-                new Product(Guid.NewGuid()) { Category = "Pork", PName = "Pork Belly", Price = 15.99, Weight = 1000, ImageURL = "pork_belly_url", Description = "Rich and flavorful pork belly, perfect for slow cooking.", IsDeleted = false },
-                new Product(Guid.NewGuid()) { Category = "Pork", PName = "Pork Loin", Price = 12.99, Weight = 1000, ImageURL = "pork_loin_url", Description = "Lean and tender pork loin, ideal for roasting.", IsDeleted = false },
-                new Product(Guid.NewGuid()) { Category = "Pork", PName = "Pork Chops", Price = 13.49, Weight = 800, ImageURL = "pork_chops_url", Description = "Juicy pork chops, great for grilling or pan-frying.", IsDeleted = false },
-                new Product(Guid.NewGuid()) { Category = "Pork", PName = "Pork Ribs", Price = 18.99, Weight = 1200, ImageURL = "pork_ribs_url", Description = "Tender pork ribs, excellent for BBQ.", IsDeleted = false },
-                new Product(Guid.NewGuid()) { Category = "Pork", PName = "Ground Pork", Price = 10.99, Weight = 500, ImageURL = "ground_pork_url", Description = "Versatile ground pork, perfect for patties or stir-fry.", IsDeleted = false },
+                new Product(Guid.NewGuid()) { Category = "Pork", PName = "Pork Belly", Price = 15.99, Weight = 1360, ImageURL = "https://img.spoonacular.com/ingredients_500x500/pork-belly.jpg", Description = "Rich and flavorful pork belly, perfect for slow cooking.", IsDeleted = false },
+                new Product(Guid.NewGuid()) { Category = "Pork", PName = "Pork Loin", Price = 12.99, Weight = 1000, ImageURL = "https://img.spoonacular.com/ingredients_500x500/pork-loin.jpg", Description = "Lean and tender pork loin, ideal for roasting.", IsDeleted = false },
+                new Product(Guid.NewGuid()) { Category = "Pork", PName = "Pork Chops", Price = 12.49, Weight = 1000, ImageURL = "https://img.spoonacular.com/ingredients_500x500/pork-chops.jpg", Description = "Juicy pork chops, great for grilling or pan-frying.", IsDeleted = false },
+                new Product(Guid.NewGuid()) { Category = "Pork", PName = "Pork Ribs", Price = 18.99, Weight = 1200, ImageURL = "https://img.spoonacular.com/ingredients_500x500/raw-pork-ribs.jpg", Description = "Tender pork ribs, excellent for BBQ.", IsDeleted = false },
+                new Product(Guid.NewGuid()) { Category = "Pork", PName = "Ground Pork", Price = 10.99, Weight = 500, ImageURL = "https://img.spoonacular.com/ingredients_500x500/pork-tenderloin-raw.png", Description = "Versatile ground pork, perfect for patties or stir-fry.", IsDeleted = false },
 
                 // Beef
-                new Product(Guid.NewGuid()) { Category = "Beef", PName = "Ground Beef", Price = 11.99, Weight = 500, ImageURL = "ground_beef_url", Description = "Lean ground beef, ideal for burgers or pasta sauce.", IsDeleted = false },
-                new Product(Guid.NewGuid()) { Category = "Beef", PName = "Beef Brisket", Price = 20.99, Weight = 1200, ImageURL = "beef_brisket_url", Description = "Slow-cooking beef brisket, rich in flavor.", IsDeleted = false },
-                new Product(Guid.NewGuid()) { Category = "Beef", PName = "Beef Ribeye", Price = 24.99, Weight = 1000, ImageURL = "beef_ribeye_url", Description = "Succulent beef ribeye, perfect for grilling.", IsDeleted = false },
-                new Product(Guid.NewGuid()) { Category = "Beef", PName = "Beef Tenderloin", Price = 35.99, Weight = 800, ImageURL = "beef_tenderloin_url", Description = "Premium beef tenderloin, melt-in-your-mouth texture.", IsDeleted = false },
-                new Product(Guid.NewGuid()) { Category = "Beef", PName = "Beef Stew Meat", Price = 10.99, Weight = 500, ImageURL = "beef_stew_meat_url", Description = "Tender beef stew meat, great for slow cooking.", IsDeleted = false },
+                new Product(Guid.NewGuid()) { Category = "Beef", PName = "Ground Beef", Price = 11.99, Weight = 500, ImageURL = "https://img.spoonacular.com/ingredients_500x500/fresh-ground-beef.jpg", Description = "Lean ground beef, ideal for burgers or pasta sauce.", IsDeleted = false },
+                new Product(Guid.NewGuid()) { Category = "Beef", PName = "Beef Brisket", Price = 20.99, Weight = 1200, ImageURL = "https://img.spoonacular.com/ingredients_500x500/beef-brisket.png", Description = "Slow-cooking beef brisket, rich in flavor.", IsDeleted = false },
+                new Product(Guid.NewGuid()) { Category = "Beef", PName = "Beef Ribeye", Price = 24.99, Weight = 1000, ImageURL = "https://img.spoonacular.com/ingredients_500x500/ribeye-raw.jpg", Description = "Succulent beef ribeye, perfect for grilling.", IsDeleted = false },
+                new Product(Guid.NewGuid()) { Category = "Beef", PName = "Beef Tenderloin", Price = 35.99, Weight = 800, ImageURL = "https://img.spoonacular.com/ingredients_500x500/pork-tenderloin-raw.png", Description = "Premium beef tenderloin, melt-in-your-mouth texture.", IsDeleted = false },
+                new Product(Guid.NewGuid()) { Category = "Beef", PName = "Beef Stew Meat", Price = 10.99, Weight = 500, ImageURL = "https://img.spoonacular.com/ingredients_500x500/beef-roast.png", Description = "Tender beef stew meat, great for slow cooking.", IsDeleted = false },
 
                 // Seafood
-                new Product(Guid.NewGuid()) { Category = "Seafood", PName = "Salmon Fillet", Price = 25.99, Weight = 1000, ImageURL = "salmon_fillet_url", Description = "Fresh salmon fillet, perfect for baking or grilling.", IsDeleted = false },
-                new Product(Guid.NewGuid()) { Category = "Seafood", PName = "Shrimp", Price = 18.99, Weight = 500, ImageURL = "shrimp_url", Description = "Juicy shrimp, perfect for stir-frying or grilling.", IsDeleted = false },
-                new Product(Guid.NewGuid()) { Category = "Seafood", PName = "Scallops", Price = 28.99, Weight = 400, ImageURL = "scallops_url", Description = "Delicate scallops, ideal for pan-searing.", IsDeleted = false },
-                new Product(Guid.NewGuid()) { Category = "Seafood", PName = "Cod", Price = 14.99, Weight = 1000, ImageURL = "cod_url", Description = "Mild and flaky cod, perfect for frying or baking.", IsDeleted = false },
-                new Product(Guid.NewGuid()) { Category = "Seafood", PName = "Crab Legs", Price = 39.99, Weight = 800, ImageURL = "crab_legs_url", Description = "Delicious crab legs, ideal for special occasions.", IsDeleted = false },
+                new Product(Guid.NewGuid()) { Category = "Seafood", PName = "Salmon Fillet", Price = 25.99, Weight = 1000, ImageURL = "https://img.spoonacular.com/ingredients_500x500/salmon-caviar.png", Description = "Fresh salmon fillet, perfect for baking or grilling.", IsDeleted = false },
+                new Product(Guid.NewGuid()) { Category = "Seafood", PName = "Shrimp", Price = 18.99, Weight = 500, ImageURL = "https://img.spoonacular.com/ingredients_500x500/shrimp.png", Description = "Juicy shrimp, perfect for stir-frying or grilling.", IsDeleted = false },
+                new Product(Guid.NewGuid()) { Category = "Seafood", PName = "Scallops", Price = 28.99, Weight = 400, ImageURL = "https://img.spoonacular.com/ingredients_500x500/scallops.jpg", Description = "Delicate scallops, ideal for pan-searing.", IsDeleted = false },
+                new Product(Guid.NewGuid()) { Category = "Seafood", PName = "Cod", Price = 14.99, Weight = 1000, ImageURL = "https://img.spoonacular.com/ingredients_500x500/cod-fillet.jpg", Description = "Mild and flaky cod, perfect for frying or baking.", IsDeleted = false },
+                new Product(Guid.NewGuid()) { Category = "Seafood", PName = "Crab Legs", Price = 39.99, Weight = 800, ImageURL = "https://img.spoonacular.com/ingredients_500x500/crabmeat.jpg", Description = "Delicious crab legs, ideal for special occasions.", IsDeleted = false },
 
                 // Milk
-                new Product(Guid.NewGuid()) { Category = "Milk", PName = "Whole Milk", Price = 3.99, Weight = 1000, ImageURL = "whole_milk_url", Description = "Creamy whole milk, perfect for drinking or baking.", IsDeleted = false },
-                new Product(Guid.NewGuid()) { Category = "Milk", PName = "Skim Milk", Price = 3.49, Weight = 1000, ImageURL = "skim_milk_url", Description = "Low-fat skim milk, ideal for a lighter option.", IsDeleted = false },
-                new Product(Guid.NewGuid()) { Category = "Milk", PName = "Almond Milk", Price = 4.99, Weight = 1000, ImageURL = "almond_milk_url", Description = "Smooth almond milk, dairy-free and nutritious.", IsDeleted = false },
-                new Product(Guid.NewGuid()) { Category = "Milk", PName = "Soy Milk", Price = 4.49, Weight = 1000, ImageURL = "soy_milk_url", Description = "Healthy soy milk, rich in protein.", IsDeleted = false },
-                new Product(Guid.NewGuid()) { Category = "Milk", PName = "Coconut Milk", Price = 5.49, Weight = 1000, ImageURL = "coconut_milk_url", Description = "Rich coconut milk, perfect for cooking or drinking.", IsDeleted = false },
+                new Product(Guid.NewGuid()) { Category = "Milk", PName = "Whole Milk", Price = 3.99, Weight = 1000, ImageURL = "https://img.spoonacular.com/ingredients_500x500/milk.png", Description = "Creamy whole milk, perfect for drinking or baking.", IsDeleted = false },
+                new Product(Guid.NewGuid()) { Category = "Milk", PName = "Skim Milk", Price = 3.49, Weight = 1000, ImageURL = "https://img.spoonacular.com/ingredients_500x500/milk.png", Description = "Low-fat skim milk, ideal for a lighter option.", IsDeleted = false },
+                new Product(Guid.NewGuid()) { Category = "Milk", PName = "Almond Milk", Price = 4.99, Weight = 1000, ImageURL = "https://img.spoonacular.com/ingredients_500x500/almond-milk.jpg", Description = "Smooth almond milk, dairy-free and nutritious.", IsDeleted = false },
+                new Product(Guid.NewGuid()) { Category = "Milk", PName = "Soy Milk", Price = 4.49, Weight = 1000, ImageURL = "https://img.spoonacular.com/ingredients_500x500/soy-milk.jpg", Description = "Healthy soy milk, rich in protein.", IsDeleted = false },
+                new Product(Guid.NewGuid()) { Category = "Milk", PName = "Coconut Milk", Price = 5.49, Weight = 1000, ImageURL = "https://img.spoonacular.com/ingredients_500x500/coconut-milk.png", Description = "Rich coconut milk, perfect for cooking or drinking.", IsDeleted = false },
 
                 // Spice
-                new Product(Guid.NewGuid()) { Category = "Spice", PName = "Black Pepper", Price = 2.99, Weight = 100, ImageURL = "black_pepper_url", Description = "Ground black pepper, adds a hint of spice to any dish.", IsDeleted = false },
-                new Product(Guid.NewGuid()) { Category = "Spice", PName = "Cinnamon", Price = 3.99, Weight = 100, ImageURL = "cinnamon_url", Description = "Warm cinnamon, perfect for baking and cooking.", IsDeleted = false },
-                new Product(Guid.NewGuid()) { Category = "Spice", PName = "Paprika", Price = 2.49, Weight = 100, ImageURL = "paprika_url", Description = "Smoky paprika, adds depth to savory dishes.", IsDeleted = false },
-                new Product(Guid.NewGuid()) { Category = "Spice", PName = "Turmeric", Price = 3.49, Weight = 100, ImageURL = "turmeric_url", Description = "Golden turmeric, adds color and flavor.", IsDeleted = false },
-                new Product(Guid.NewGuid()) { Category = "Spice", PName = "Cumin", Price = 2.99, Weight = 100, ImageURL = "cumin_url", Description = "Earthy cumin, essential in various cuisines.", IsDeleted = false },
+                new Product(Guid.NewGuid()) { Category = "Spice", PName = "Black Pepper", Price = 2.99, Weight = 100, ImageURL = "https://img.spoonacular.com/ingredients_500x500/pepper.jpg", Description = "Ground black pepper, adds a hint of spice to any dish.", IsDeleted = false },
+                new Product(Guid.NewGuid()) { Category = "Spice", PName = "Cinnamon", Price = 3.99, Weight = 100, ImageURL = "https://img.spoonacular.com/ingredients_500x500/cinnamon.jpg", Description = "Warm cinnamon, perfect for baking and cooking.", IsDeleted = false },
+                new Product(Guid.NewGuid()) { Category = "Spice", PName = "Paprika", Price = 2.49, Weight = 100, ImageURL = "https://img.spoonacular.com/ingredients_500x500/paprika.jpg", Description = "Smoky paprika, adds depth to savory dishes.", IsDeleted = false },
+                new Product(Guid.NewGuid()) { Category = "Spice", PName = "Turmeric", Price = 3.49, Weight = 100, ImageURL = "https://img.spoonacular.com/ingredients_500x500/turmeric.jpg", Description = "Golden turmeric, adds color and flavor.", IsDeleted = false },
+                new Product(Guid.NewGuid()) { Category = "Spice", PName = "Cumin", Price = 2.99, Weight = 100, ImageURL = "https://img.spoonacular.com/ingredients_500x500/ground-cumin.jpg", Description = "Earthy cumin, essential in various cuisines.", IsDeleted = false },
 
                 // Vegetable
-                new Product(Guid.NewGuid()) { Category = "Vegetable", PName = "Spinach", Price = 1.99, Weight = 500, ImageURL = "spinach_url", Description = "Fresh spinach, great for salads or smoothies.", IsDeleted = false },
-                new Product(Guid.NewGuid()) { Category = "Vegetable", PName = "Carrots", Price = 1.49, Weight = 500, ImageURL = "carrots_url", Description = "Crisp carrots, perfect for snacking or cooking.", IsDeleted = false },
-                new Product(Guid.NewGuid()) { Category = "Vegetable", PName = "Broccoli", Price = 2.49, Weight = 500, ImageURL = "broccoli_url", Description = "Nutrient-rich broccoli, ideal for steaming.", IsDeleted = false },
-                new Product(Guid.NewGuid()) { Category = "Vegetable", PName = "Bell Peppers", Price = 2.99, Weight = 500, ImageURL = "bell_peppers_url", Description = "Colorful bell peppers, great for salads or stir-fry.", IsDeleted = false },
-                new Product(Guid.NewGuid()) { Category = "Vegetable", PName = "Tomatoes", Price = 1.79, Weight = 500, ImageURL = "tomatoes_url", Description = "Juicy tomatoes, perfect for salads or sauces.", IsDeleted = false },
+                new Product(Guid.NewGuid()) { Category = "Vegetable", PName = "Spinach", Price = 1.99, Weight = 500, ImageURL = "https://img.spoonacular.com/ingredients_500x500/spinach.jpg", Description = "Fresh spinach, great for salads or smoothies.", IsDeleted = false },
+                new Product(Guid.NewGuid()) { Category = "Vegetable", PName = "Carrots", Price = 1.49, Weight = 500, ImageURL = "https://img.spoonacular.com/ingredients_500x500/baby-carrots.jpg", Description = "Crisp carrots, perfect for snacking or cooking.", IsDeleted = false },
+                new Product(Guid.NewGuid()) { Category = "Vegetable", PName = "Broccoli", Price = 2.49, Weight = 500, ImageURL = "https://img.spoonacular.com/ingredients_500x500/broccoli.jpg", Description = "Nutrient-rich broccoli, ideal for steaming.", IsDeleted = false },
+                new Product(Guid.NewGuid()) { Category = "Vegetable", PName = "Bell Peppers", Price = 2.99, Weight = 500, ImageURL = "https://img.spoonacular.com/ingredients_500x500/yellow-bell-pepper.jpg", Description = "Colorful bell peppers, great for salads or stir-fry.", IsDeleted = false },
+                new Product(Guid.NewGuid()) { Category = "Vegetable", PName = "Tomatoes", Price = 1.79, Weight = 500, ImageURL = "https://img.spoonacular.com/ingredients_500x500/tomato.png", Description = "Juicy tomatoes, perfect for salads or sauces.", IsDeleted = false },
 
                 // Sauce
-                new Product(Guid.NewGuid()) { Category = "Sauce", PName = "Tomato Sauce", Price = 2.99, Weight = 500, ImageURL = "tomato_sauce_url", Description = "Smooth tomato sauce, ideal for pasta and pizza.", IsDeleted = false },
-                new Product(Guid.NewGuid()) { Category = "Sauce", PName = "Soy Sauce", Price = 2.49, Weight = 500, ImageURL = "soy_sauce_url", Description = "Savory soy sauce, a must for Asian dishes.", IsDeleted = false },
-                new Product(Guid.NewGuid()) { Category = "Sauce", PName = "Hot Sauce", Price = 3.99, Weight = 300, ImageURL = "hot_sauce_url", Description = "Spicy hot sauce, adds a kick to any meal.", IsDeleted = false },
-                new Product(Guid.NewGuid()) { Category = "Sauce", PName = "BBQ Sauce", Price = 4.49, Weight = 500, ImageURL = "bbq_sauce_url", Description = "Smoky BBQ sauce, perfect for grilling.", IsDeleted = false },
-                new Product(Guid.NewGuid()) { Category = "Sauce", PName = "Fish Sauce", Price = 3.49, Weight = 500, ImageURL = "fish_sauce_url", Description = "Savory fish sauce, adds depth to Asian dishes.", IsDeleted = false },
+                new Product(Guid.NewGuid()) { Category = "Sauce", PName = "Tomato Sauce", Price = 2.99, Weight = 500, ImageURL = "https://img.spoonacular.com/ingredients_500x500/tomato-sauce-or-pasta-sauce.jpg", Description = "Smooth tomato sauce, ideal for pasta and pizza.", IsDeleted = false },
+                new Product(Guid.NewGuid()) { Category = "Sauce", PName = "Soy Sauce", Price = 2.49, Weight = 500, ImageURL = "https://img.spoonacular.com/ingredients_500x500/soy-sauce.jpg", Description = "Savory soy sauce, a must for Asian dishes.", IsDeleted = false },
+                new Product(Guid.NewGuid()) { Category = "Sauce", PName = "Hot Sauce", Price = 3.99, Weight = 300, ImageURL = "https://img.spoonacular.com/ingredients_500x500/hot-sauce-or-tabasco.png", Description = "Spicy hot sauce, adds a kick to any meal.", IsDeleted = false },
+                new Product(Guid.NewGuid()) { Category = "Sauce", PName = "BBQ Sauce", Price = 4.49, Weight = 500, ImageURL = "https://img.spoonacular.com/ingredients_500x500/barbecue-sauce.jpg", Description = "Smoky BBQ sauce, perfect for grilling.", IsDeleted = false },
+                new Product(Guid.NewGuid()) { Category = "Sauce", PName = "Fish Sauce", Price = 3.49, Weight = 500, ImageURL = "https://img.spoonacular.com/ingredients_500x500/fish-sauce.jpg", Description = "Savory fish sauce, adds depth to Asian dishes.", IsDeleted = false },
 
                 // Fruit
-                new Product(Guid.NewGuid()) { Category = "Fruit", PName = "Apples", Price = 1.99, Weight = 1000, ImageURL = "apples_url", Description = "Crisp and sweet apples, perfect for snacking.", IsDeleted = false },
-                new Product(Guid.NewGuid()) { Category = "Fruit", PName = "Bananas", Price = 1.29, Weight = 1000, ImageURL = "bananas_url", Description = "Fresh bananas, great for snacks or smoothies.", IsDeleted = false },
-                new Product(Guid.NewGuid()) { Category = "Fruit", PName = "Oranges", Price = 2.49, Weight = 1000, ImageURL = "oranges_url", Description = "Juicy oranges, rich in vitamin C.", IsDeleted = false },
-                new Product(Guid.NewGuid()) { Category = "Fruit", PName = "Grapes", Price = 3.49, Weight = 500, ImageURL = "grapes_url", Description = "Sweet and juicy grapes, perfect for snacking.", IsDeleted = false },
-                new Product(Guid.NewGuid()) { Category = "Fruit", PName = "Strawberries", Price = 4.99, Weight = 500, ImageURL = "strawberries_url", Description = "Fresh strawberries, ideal for desserts.", IsDeleted = false },
+                new Product(Guid.NewGuid()) { Category = "Fruit", PName = "Apples", Price = 1.99, Weight = 1000, ImageURL = "https://img.spoonacular.com/ingredients_500x500/red-delicious-apples.png", Description = "Crisp and sweet apples, perfect for snacking.", IsDeleted = false },
+                new Product(Guid.NewGuid()) { Category = "Fruit", PName = "Bananas", Price = 1.29, Weight = 1000, ImageURL = "https://img.spoonacular.com/ingredients_500x500/bananas.jpg", Description = "Fresh bananas, great for snacks or smoothies.", IsDeleted = false },
+                new Product(Guid.NewGuid()) { Category = "Fruit", PName = "Oranges", Price = 2.49, Weight = 1000, ImageURL = "https://img.spoonacular.com/ingredients_500x500/oranges.jpg", Description = "Juicy oranges, rich in vitamin C.", IsDeleted = false },
+                new Product(Guid.NewGuid()) { Category = "Fruit", PName = "Grapes", Price = 3.49, Weight = 500, ImageURL = "https://img.spoonacular.com/ingredients_500x500/grapes.jpg", Description = "Sweet and juicy grapes, perfect for snacking.", IsDeleted = false },
+                new Product(Guid.NewGuid()) { Category = "Fruit", PName = "Strawberries", Price = 4.99, Weight = 500, ImageURL = "https://img.spoonacular.com/ingredients_500x500/strawberries.jpg", Description = "Fresh strawberries, ideal for desserts.", IsDeleted = false },
 
                 // Grain
-                new Product(Guid.NewGuid()) { Category = "Grain", PName = "Rice", Price = 5.99, Weight = 1000, ImageURL = "rice_url", Description = "White rice, versatile and easy to cook.", IsDeleted = false },
-                new Product(Guid.NewGuid()) { Category = "Grain", PName = "Quinoa", Price = 7.99, Weight = 500, ImageURL = "quinoa_url", Description = "Nutritious quinoa, great for salads or side dishes.", IsDeleted = false },
-                new Product(Guid.NewGuid()) { Category = "Grain", PName = "Barley", Price = 4.99, Weight = 500, ImageURL = "barley_url", Description = "Whole grain barley, ideal for soups or stews.", IsDeleted = false },
-                new Product(Guid.NewGuid()) { Category = "Grain", PName = "Oats", Price = 3.99, Weight = 500, ImageURL = "oats_url", Description = "Whole oats, perfect for breakfast.", IsDeleted = false },
-                new Product(Guid.NewGuid()) { Category = "Grain", PName = "Wheat Flour", Price = 2.99, Weight = 1000, ImageURL = "wheat_flour_url", Description = "Whole wheat flour, essential for baking.", IsDeleted = false }
+                new Product(Guid.NewGuid()) { Category = "Grain", PName = "Rice", Price = 5.99, Weight = 1000, ImageURL = "https://img.spoonacular.com/ingredients_500x500/uncooked-white-rice.png", Description = "White rice, versatile and easy to cook.", IsDeleted = false },
+                new Product(Guid.NewGuid()) { Category = "Grain", PName = "Quinoa", Price = 7.99, Weight = 500, ImageURL = "https://img.spoonacular.com/ingredients_500x500/uncooked-quinoa.png", Description = "Nutritious quinoa, great for salads or side dishes.", IsDeleted = false },
+                new Product(Guid.NewGuid()) { Category = "Grain", PName = "Barley", Price = 4.99, Weight = 500, ImageURL = "https://img.spoonacular.com/ingredients_500x500/pearl-barley.png", Description = "Whole grain barley, ideal for soups or stews.", IsDeleted = false },
+                new Product(Guid.NewGuid()) { Category = "Grain", PName = "Oats", Price = 3.99, Weight = 500, ImageURL = "https://img.spoonacular.com/ingredients_500x500/steel-cut-oats.png", Description = "Whole oats, perfect for breakfast.", IsDeleted = false },
+                new Product(Guid.NewGuid()) { Category = "Grain", PName = "Wheat Flour", Price = 2.99, Weight = 1000, ImageURL = "https://img.spoonacular.com/ingredients_500x500/flour.png", Description = "Whole wheat flour, essential for baking.", IsDeleted = false }
             };
 
             // Seed ATs
@@ -450,6 +450,7 @@ namespace MealMate.DAL.EntityFrameworkCore
                     TotalPrice = 0, // Total will be calculated based on Includes
                     TotalWeight = 0, // Total weight will be calculated based on Includes
                     DeliveryStatus = (DeliveryStatus)random.Next(1, Enum.GetValues(typeof(DeliveryStatus)).Length), // Random status
+                    ShippingAddress = customer.Address,
                     IsDeleted = false
                 };
                 if (i != 9)
@@ -516,7 +517,7 @@ namespace MealMate.DAL.EntityFrameworkCore
                     Name = "Summer Sale",
                     Description = "Enjoy summer feast with 15% off",
                     StartDay = new DateTime(2024, 11, 01).ToUniversalTime(),
-                    EndDay = new DateTime(2024, 12, 30).ToUniversalTime()
+                    EndDay = new DateTime(2025, 12, 30).ToUniversalTime()
                },
                 new ProductPromotion(Guid.NewGuid())
                 {
@@ -524,15 +525,15 @@ namespace MealMate.DAL.EntityFrameworkCore
                     Name = "Winter Clearance",
                     Description = "Hot stew in winter with 10% off",
                     StartDay = new DateTime(2024, 11, 01).ToUniversalTime(),
-                    EndDay = new DateTime(2024, 12, 30).ToUniversalTime()
+                    EndDay = new DateTime(2025, 12, 30).ToUniversalTime()
                 },
                 new ProductPromotion(Guid.NewGuid())
                 {
                     Discount = 0.20m,
                     Name = "Holiday Special",
                     Description = "Have fun with your family with 20% off",
-                    StartDay = new DateTime(2024, 11, 01).ToUniversalTime(),
-                    EndDay = new DateTime(2024, 12, 30).ToUniversalTime()
+                    StartDay = new DateTime(2025, 01, 01).ToUniversalTime(),
+                    EndDay = new DateTime(2025, 02, 20).ToUniversalTime()
                 },
                 new ProductPromotion(Guid.NewGuid())
                 {
@@ -580,7 +581,7 @@ namespace MealMate.DAL.EntityFrameworkCore
                     Name = "Cashback Offer",
                     Description = "10% cashback on all purchases over $100",
                     StartDay = new DateTime(2024, 11, 01).ToUniversalTime(),
-                    EndDay = new DateTime(2024, 12, 30).ToUniversalTime(),
+                    EndDay = new DateTime(2025, 12, 30).ToUniversalTime(),
                     ApplyPrice = 100,
                     PromotionChance = 50
                 },
@@ -590,7 +591,7 @@ namespace MealMate.DAL.EntityFrameworkCore
                     Name = "Weekend Special",
                     Description = "5% off for bills over $50",
                     StartDay = new DateTime(2024, 11, 01).ToUniversalTime(),
-                    EndDay = new DateTime(2024, 12, 30).ToUniversalTime(),
+                    EndDay = new DateTime(2025, 12, 30).ToUniversalTime(),
                     ApplyPrice = 50,
                     PromotionChance = 30
                 },
@@ -609,8 +610,8 @@ namespace MealMate.DAL.EntityFrameworkCore
                     Discount = 0.10m,
                     Name = "VIP Discount",
                     Description = "10% off for bills over $300",
-                    StartDay = new DateTime(2024, 01, 01).ToUniversalTime(),
-                    EndDay = new DateTime(2024, 01, 30).ToUniversalTime(),
+                    StartDay = new DateTime(2025, 01, 01).ToUniversalTime(),
+                    EndDay = new DateTime(2025, 02, 20).ToUniversalTime(),
                     ApplyPrice = 200,
                     PromotionChance = 20
                 }
@@ -657,7 +658,7 @@ namespace MealMate.DAL.EntityFrameworkCore
                     Name = "New Beef Ribeye try out",
                     Description = "25% off for Beef Ribeye",
                     StartDay = new DateTime(2024, 11, 01).ToUniversalTime(),
-                    EndDay = new DateTime(2024, 11, 30).ToUniversalTime(),
+                    EndDay = new DateTime(2025, 11, 30).ToUniversalTime(),
                     ProductId = products[7].Id
                 },
                 new CustomerPromotion(Guid.NewGuid())
@@ -666,7 +667,7 @@ namespace MealMate.DAL.EntityFrameworkCore
                     Name = "Whole Milk discount",
                     Description = "30% off on Whole Milk",
                     StartDay = new DateTime(2024, 11, 01).ToUniversalTime(),
-                    EndDay = new DateTime(2024, 11, 30).ToUniversalTime(),
+                    EndDay = new DateTime(2025, 11, 30).ToUniversalTime(),
                     ProductId = products[15].Id
                 },
                 new CustomerPromotion(Guid.NewGuid())
@@ -675,7 +676,7 @@ namespace MealMate.DAL.EntityFrameworkCore
                     Name = "Pork Belly discount",
                     Description = "50% off on Pork Belly",
                     StartDay = new DateTime(2024, 11, 01).ToUniversalTime(),
-                    EndDay = new DateTime(2024, 11, 30).ToUniversalTime(),
+                    EndDay = new DateTime(2025, 11, 30).ToUniversalTime(),
                     ProductId = products[0].Id
                 }
             };

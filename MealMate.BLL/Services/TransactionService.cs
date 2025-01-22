@@ -114,6 +114,7 @@ namespace MealMate.BLL.Services
                     TotalPrice = billData.TotalPrice,
                     TotalWeight = billData.TotalWeight,
                     DeliveryStatus = DeliveryStatus.Pending,
+                    ShippingAddress = billData.ShippingAddress,
                     IsDeleted = false
                 };
 

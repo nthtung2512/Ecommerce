@@ -134,6 +134,10 @@ namespace MealMate.DAL.Migrations
                     b.Property<Guid?>("ShipperID")
                         .HasColumnType("uuid");
 
+                    b.Property<string>("ShippingAddress")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<Guid>("StoreID")
                         .HasColumnType("uuid");
 
@@ -405,9 +409,17 @@ namespace MealMate.DAL.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
+                    b.Property<decimal>("Latitude")
+                        .HasPrecision(10, 7)
+                        .HasColumnType("numeric(10,7)");
+
                     b.Property<string>("Location")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<decimal>("Longitude")
+                        .HasPrecision(10, 7)
+                        .HasColumnType("numeric(10,7)");
 
                     b.Property<string>("Name")
                         .IsRequired()

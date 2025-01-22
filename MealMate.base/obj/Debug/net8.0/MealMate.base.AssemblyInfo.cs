@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MealMate.base")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+631a6b390991b194dcae060ce3c60dffee162796")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f8040c1ba76baa2da5c8d2a5c48294737c643289")]
 [assembly: System.Reflection.AssemblyProductAttribute("MealMate.base")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MealMate.base")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
