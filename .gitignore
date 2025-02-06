@@ -1,2 +1,35 @@
+# Build artifacts
+bin/
+obj/
+
+# User-specific files
 .vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Environment variables
 .env
+.env.local
+
+# Logs
+logs/
+*.log
+
+# Package dependencies
+packages/
+node_modules/
+
+# OS-specific files
+Thumbs.db
+.DS_Store
+
+# Rider / JetBrains IDE
+.idea/
+
+# macOS .DS_Store
+.DS_Store
+
+# Others
+*.swp

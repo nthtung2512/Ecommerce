@@ -10,10 +10,12 @@ namespace MealMate.PL.Controllers
     public class CustomerController : ControllerBase
     {
         private readonly ICustomerAppService _customerAppService;
+        private readonly ITransactionService _transactionService;
 
-        public CustomerController(ICustomerAppService customerAppService)
+        public CustomerController(ICustomerAppService customerAppService, ITransactionService transactionService)
         {
             _customerAppService = customerAppService;
+            _transactionService = transactionService;
         }
 
         [HttpGet]

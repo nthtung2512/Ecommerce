@@ -6,7 +6,9 @@
         Prepared,
         Accepted,
         OnDelivery,
-        Delivered
+        Delivered,
+        Cancelled,
+        Ghost,
     }
 
 }

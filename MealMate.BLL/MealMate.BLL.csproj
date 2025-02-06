@@ -28,4 +28,8 @@
     <ProjectReference Include="..\MealMate.DAL\MealMate.DAL.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="MealMate.Test" />
+  </ItemGroup>
+
 </Project>

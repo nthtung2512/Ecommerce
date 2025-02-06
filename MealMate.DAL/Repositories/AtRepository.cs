@@ -35,5 +35,12 @@ namespace MealMate.DAL.Repositories
             await context.ATs.AddAsync(at);
             await context.SaveChangesAsync();
         }
+
+        public async Task<List<AT>> GetAtForProductsAsync(List<Guid> productIds, Guid storeId)
+        {
+            return await context.ATs
+                .Where(s => productIds.Contains(s.ProductID) && s.StoreID == storeId)
+                .ToListAsync();
+        }
     }
 }

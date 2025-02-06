@@ -1,6 +1,9 @@
 ﻿using MealMate.BLL.Dtos.Shipper;
 using MealMate.BLL.IServices;
+using MealMate.DAL.IRepositories.UnitOfWork;
+using MealMate.DAL.Utils.Enum;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace MealMate.PL.Controllers
 {
@@ -10,10 +13,14 @@ namespace MealMate.PL.Controllers
     {
         private readonly IShipperAppService _shipperAppService;
         private readonly ITransactionService _transactionService;
-        public ShipperController(IShipperAppService shipperAppService, ITransactionService transactionService)
+
+        private readonly IUnitOfWork _unitOfWork;
+
+        public ShipperController(IShipperAppService shipperAppService, ITransactionService transactionService, IUnitOfWork unitOfWork)
         {
             _shipperAppService = shipperAppService;
             _transactionService = transactionService;
+            _unitOfWork = unitOfWork;
         }
 
         [HttpGet()]
@@ -35,6 +42,66 @@ namespace MealMate.PL.Controllers
         {
             var shipper = await _shipperAppService.GetShipperByPhoneNumberAsync(phoneno);
             return Ok(shipper);
+        }
+
+        [HttpPost("cancel-order/{billId}/{shipperId}")]
+        public async Task<IActionResult> CancelOrder(Guid billId, Guid shipperId)
+        {
+            await _unitOfWork.BeginTransactionAsync();
+            try
+            {
+                var result = await _transactionService.CancelOrderAsync(billId, DeliveryStatus.Prepared);
+                await _shipperAppService.UpdateShipperCapacityAsync(shipperId, -result.TotalWeight);
+
+                await _unitOfWork.CommitTransactionAsync();
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                await _unitOfWork.RollbackTransactionAsync();
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+
+        [HttpPost("get-bombed/{billId}/{shipperId}")]
+        public async Task<IActionResult> GetBombed(Guid billId, Guid shipperId)
+        {
+            await _unitOfWork.BeginTransactionAsync();
+            try
+            {
+                var result = await _transactionService.CancelOrderAsync(billId, DeliveryStatus.Ghost);
+                var updatedShipper = await _shipperAppService.UpdateShipperCapacityAsync(shipperId, -result.TotalWeight);
+                await _unitOfWork.CommitTransactionAsync();
+                return Ok(updatedShipper);
+            }
+            catch (Exception ex)
+            {
+                await _unitOfWork.RollbackTransactionAsync();
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpPost("customer-cancel-order/{billId}/{shipperId}")]
+        [SwaggerOperation(
+           Summary = "Customer cancel order",
+           Description = "Return void"
+        )]
+        public async Task<IActionResult> CancelOrderByCustomer(Guid billId, Guid shipperId)
+        {
+            await _unitOfWork.BeginTransactionAsync();
+            try
+            {
+                var result = await _transactionService.CancelOrderAsync(billId, DeliveryStatus.Cancelled);
+                var updatedShipper = await _shipperAppService.UpdateShipperCapacityAsync(shipperId, -result.TotalWeight);
+                await _unitOfWork.CommitTransactionAsync();
+                return Ok(updatedShipper);
+            }
+            catch (Exception ex)
+            {
+                await _unitOfWork.RollbackTransactionAsync();
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         [HttpPatch("{shipperId}")]

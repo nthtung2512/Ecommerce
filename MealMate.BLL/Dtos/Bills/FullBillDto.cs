@@ -14,6 +14,7 @@ namespace MealMate.BLL.Dtos.Bills
         public required DeliveryStatus DeliveryStatus { get; init; }
         public required double TotalPrice { get; init; }
         public required int TotalWeight { get; init; }
+        public required string ShippingAddress { get; init; }
         public ICollection<IncludeDto> Includes { get; set; } = [];
     }
 }

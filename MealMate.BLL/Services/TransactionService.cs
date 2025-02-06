@@ -8,7 +8,6 @@ using MealMate.BLL.IServices.Redis;
 using MealMate.BLL.Services.Hubs;
 using MealMate.DAL.Entities.Products;
 using MealMate.DAL.IRepositories;
-using MealMate.DAL.IRepositories.CartRedis;
 using MealMate.DAL.IRepositories.UnitOfWork;
 using MealMate.DAL.Utils.Enum;
 using MealMate.DAL.Utils.Exceptions;
@@ -25,13 +24,12 @@ namespace MealMate.BLL.Services
         private readonly ICustomerAppService _customerAppService;
         private readonly IReserveCartCacheService _reserveCartCacheService;
         private readonly ICartService _cartService;
-        private readonly ICartRepository _cartRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IHubContext<ProductHub, IProductHubClient> _productHubContext;
         private readonly GuidGenerator _guidGenerator;
         private readonly IMapper _mapper;
 
-        public TransactionService(ITransactionRepository transactionRepository, GuidGenerator guidGenerator, IMapper mapper, IProductRepository productRepository, ICustomerAppService customerAppService, IAtRepository atRepository, IUnitOfWork unitOfWork, IHubContext<ProductHub, IProductHubClient> productHubContext, IReserveCartCacheService reserveCartCacheService, ICartService cartService, ICartRepository cartRepository)
+        public TransactionService(ITransactionRepository transactionRepository, GuidGenerator guidGenerator, IMapper mapper, IProductRepository productRepository, ICustomerAppService customerAppService, IAtRepository atRepository, IUnitOfWork unitOfWork, IHubContext<ProductHub, IProductHubClient> productHubContext, IReserveCartCacheService reserveCartCacheService, ICartService cartService)
         {
             _transactionRepository = transactionRepository;
             _guidGenerator = guidGenerator;
@@ -43,7 +41,6 @@ namespace MealMate.BLL.Services
             _productHubContext = productHubContext;
             _reserveCartCacheService = reserveCartCacheService;
             _cartService = cartService;
-            _cartRepository = cartRepository;
         }
 
         public async Task<List<BillDto>> GetAllBillAsync()
@@ -84,6 +81,7 @@ namespace MealMate.BLL.Services
                 DeliveryStatus = bill.DeliveryStatus,
                 TotalPrice = bill.TotalPrice,
                 TotalWeight = bill.TotalWeight,
+                ShippingAddress = bill.ShippingAddress,
                 Includes = includesDto
             };
             return fullBillDto;
@@ -175,6 +173,7 @@ namespace MealMate.BLL.Services
                     DeliveryStatus = newBill.DeliveryStatus,
                     TotalPrice = newBill.TotalPrice,
                     TotalWeight = newBill.TotalWeight,
+                    ShippingAddress = newBill.ShippingAddress,
                     Includes = includesDto
                 };
             }
@@ -237,12 +236,46 @@ namespace MealMate.BLL.Services
                     DeliveryStatus = bill.DeliveryStatus,
                     TotalPrice = bill.TotalPrice,
                     TotalWeight = bill.TotalWeight,
+                    ShippingAddress = bill.ShippingAddress,
                     Includes = includesDto
                 };
                 fullBillDtos.Add(fullBillDto);
             }
 
             return fullBillDtos;
+        }
+
+        public async Task<BillDto> CancelOrderAsync(Guid billId, DeliveryStatus deliveryStatus)
+        {
+            var bill = await _transactionRepository.GetAsync(billId)
+                    ?? throw new EntityNotFoundException("Bill not found");
+
+            bill.DeliveryStatus = deliveryStatus;
+            bill.ShipperID = null;
+            bill.Shipper = null;
+            await _transactionRepository.UpdateAsync(bill);
+
+            if (deliveryStatus == DeliveryStatus.Cancelled)
+            {
+                var storeId = bill.StoreID;
+                var productIds = bill.Includes.Select(i => i.ProductID).ToList();
+
+                var ats = await _atRepository.GetAtForProductsAsync(productIds, storeId);
+
+                foreach (var include in bill.Includes)
+                {
+                    var stock = ats.FirstOrDefault(s => s.ProductID == include.ProductID)
+                        ?? throw new EntityNotFoundException($"Product {include.ProductID} not found at store {storeId}.");
+
+                    stock.NumberAtStore += include.NumberOfProductInBill;
+                    await _atRepository.UpdateAsync(stock);
+
+                    var groupName = $"{include.ProductID}_{storeId}";
+                    await _productHubContext.Clients.Group(groupName)
+                        .ReceiveChangeStock(include.ProductID, -include.NumberOfProductInBill);
+                }
+            }
+            return _mapper.Map<BillDto>(bill);
         }
     }
 }
