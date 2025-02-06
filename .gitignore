@@ -33,3 +33,7 @@ Thumbs.db
 
 # Others
 *.swp
+
+
+**/bin/
+**/obj/
