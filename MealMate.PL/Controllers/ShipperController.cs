@@ -44,14 +44,14 @@ namespace MealMate.PL.Controllers
             return Ok(shipper);
         }
 
-        [HttpPost("cancel-order/{billId}/{shipperId}")]
-        public async Task<IActionResult> CancelOrder(Guid billId, Guid shipperId)
+        [HttpPost("cancel-order/{billId}")]
+        public async Task<IActionResult> CancelOrder(Guid billId)
         {
             await _unitOfWork.BeginTransactionAsync();
             try
             {
                 var result = await _transactionService.CancelOrderAsync(billId, DeliveryStatus.Prepared);
-                await _shipperAppService.UpdateShipperCapacityAsync(shipperId, -result.TotalWeight);
+                await _shipperAppService.UpdateShipperCapacityAsync(result.OldShipperId, -result.Bill.TotalWeight);
 
                 await _unitOfWork.CommitTransactionAsync();
                 return Ok(result);
@@ -64,14 +64,14 @@ namespace MealMate.PL.Controllers
         }
 
 
-        [HttpPost("get-bombed/{billId}/{shipperId}")]
-        public async Task<IActionResult> GetBombed(Guid billId, Guid shipperId)
+        [HttpPost("get-bombed/{billId}")]
+        public async Task<IActionResult> GetBombed(Guid billId)
         {
             await _unitOfWork.BeginTransactionAsync();
             try
             {
                 var result = await _transactionService.CancelOrderAsync(billId, DeliveryStatus.Ghost);
-                var updatedShipper = await _shipperAppService.UpdateShipperCapacityAsync(shipperId, -result.TotalWeight);
+                var updatedShipper = await _shipperAppService.UpdateShipperCapacityAsync(result.OldShipperId, -result.Bill.TotalWeight);
                 await _unitOfWork.CommitTransactionAsync();
                 return Ok(updatedShipper);
             }
@@ -82,20 +82,19 @@ namespace MealMate.PL.Controllers
             }
         }
 
-        [HttpPost("customer-cancel-order/{billId}/{shipperId}")]
+        [HttpPost("customer-cancel-order/{billId}")]
         [SwaggerOperation(
            Summary = "Customer cancel order",
            Description = "Return void"
         )]
-        public async Task<IActionResult> CancelOrderByCustomer(Guid billId, Guid shipperId)
+        public async Task<IActionResult> CancelOrderByCustomer(Guid billId)
         {
             await _unitOfWork.BeginTransactionAsync();
             try
             {
                 var result = await _transactionService.CancelOrderAsync(billId, DeliveryStatus.Cancelled);
-                var updatedShipper = await _shipperAppService.UpdateShipperCapacityAsync(shipperId, -result.TotalWeight);
                 await _unitOfWork.CommitTransactionAsync();
-                return Ok(updatedShipper);
+                return Ok(result);
             }
             catch (Exception ex)
             {

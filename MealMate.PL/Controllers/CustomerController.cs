@@ -20,7 +20,7 @@ namespace MealMate.PL.Controllers
 
         [HttpGet]
         [SwaggerOperation(
-            Summary = "Get all customers",
+            Summary = "Get all customers info",
             Description = "Return: Guid Id; string Address; string FName; string LName; string PhoneNumber; string Email; decimal TotalMoneySpent; int FortuneChance"
         )]
         public async Task<IActionResult> GetCustomerList()

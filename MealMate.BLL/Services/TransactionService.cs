@@ -245,17 +245,18 @@ namespace MealMate.BLL.Services
             return fullBillDtos;
         }
 
-        public async Task<BillDto> CancelOrderAsync(Guid billId, DeliveryStatus deliveryStatus)
+        public async Task<CancelOrderDto> CancelOrderAsync(Guid billId, DeliveryStatus deliveryStatus)
         {
             var bill = await _transactionRepository.GetAsync(billId)
                     ?? throw new EntityNotFoundException("Bill not found");
+            var oldShipperId = bill.ShipperID ?? Guid.Empty;
 
             bill.DeliveryStatus = deliveryStatus;
             bill.ShipperID = null;
             bill.Shipper = null;
             await _transactionRepository.UpdateAsync(bill);
 
-            if (deliveryStatus == DeliveryStatus.Cancelled)
+            if (deliveryStatus == DeliveryStatus.Cancelled || deliveryStatus == DeliveryStatus.Ghost)
             {
                 var storeId = bill.StoreID;
                 var productIds = bill.Includes.Select(i => i.ProductID).ToList();
@@ -275,7 +276,12 @@ namespace MealMate.BLL.Services
                         .ReceiveChangeStock(include.ProductID, -include.NumberOfProductInBill);
                 }
             }
-            return _mapper.Map<BillDto>(bill);
+            var billDto = _mapper.Map<BillDto>(bill);
+            return new CancelOrderDto
+            {
+                Bill = billDto,
+                OldShipperId = oldShipperId
+            };
         }
     }
 }
