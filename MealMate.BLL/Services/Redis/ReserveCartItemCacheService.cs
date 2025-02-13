@@ -23,11 +23,12 @@ namespace MealMate.BLL.Services.Redis
             var key = $"CartItemReserve:{item.ProductID}-{item.StoreID}";
 
             var cartItem = await GetCartItemCache(item.ProductID, item.StoreID);
+
             if (cartItem != null)
             {
-                item.Quantity += cartItem.Quantity;
+                cartItem.Quantity += item.Quantity;
             }
-            await _redisCacheService.SetDataAsync(key, item, TimeSpan.FromMinutes(15));
+            await _redisCacheService.SetDataAsync(key, cartItem, TimeSpan.FromMinutes(15));
         }
 
         public async Task RemoveCartItemFromRedis(Guid productId, Guid storeId)

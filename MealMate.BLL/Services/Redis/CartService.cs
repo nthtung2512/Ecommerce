@@ -152,7 +152,14 @@ namespace MealMate.BLL.Services.Redis
                 {
                     cart.CartItems.RemoveAt(i);
                     /*                    cart.TotalPrice -= item.DiscountedPrice * item.Quantity;*/
-                    revalidateReturnDto.ProductsNotAvailable.Add(item);
+                    var productNotAvailable = new ProductsNotAvailableDto
+                    {
+                        ProductId = item.ProductID,
+                        StoreName = item.StoreName,
+                        ProductName = item.PName,
+                        ProductImage = item.ImageURL
+                    };
+                    revalidateReturnDto.ProductsNotAvailable.Add(productNotAvailable);
                     continue;
                 }
 
@@ -170,42 +177,52 @@ namespace MealMate.BLL.Services.Redis
                 {
                     cart.CartItems.RemoveAt(i);
                     /*                    cart.TotalPrice -= item.DiscountedPrice * item.Quantity;*/
-                    revalidateReturnDto.ProductsNotAvailable.Add(item);
+                    var productNotAvailable = new ProductsNotAvailableDto
+                    {
+                        ProductId = item.ProductID,
+                        StoreName = item.StoreName,
+                        ProductName = item.PName,
+                        ProductImage = item.ImageURL
+                    };
+                    revalidateReturnDto.ProductsNotAvailable.Add(productNotAvailable);
                     continue;
                 }
 
-                bool hasStock = item.Quantity <= productAtStore.NumberAtStore;
+                var amountInCache = await _reserveCartCacheService.GetQuantityFromCache(item.ProductID, item.StoreID);
+                var currentStock = productAtStore.NumberAtStore - amountInCache;
+                bool hasStock = item.Quantity <= currentStock;
+
+
                 if (!hasStock)
                 {
-                    revalidateReturnDto.OutOfStockCartItem.Add(item);
+                    var outOfStockItem = new OutOfStockCartItemDto
+                    {
+                        ProductId = item.ProductID,
+                        StoreId = item.StoreID,
+                        StoreName = item.StoreName,
+                        ProductName = item.PName,
+                        AvailableQuantity = currentStock,
+                        ProductImage = item.ImageURL
+                    };
+                    revalidateReturnDto.OutOfStockCartItem.Add(outOfStockItem);
                 }
 
                 // Update the product details in the cart item
-                if (item.PName != product.PName)
+                if (item.PName != product.PName || item.Price != product.Price || item.Discount != totalDiscount || item.Weight != product.Weight)
                 {
-                    item.PName = product.PName;
-                    revalidateReturnDto.ProductUpdated.Add(item);
-                }
-                if (item.Price != product.Price)
-                {
-                    item.Price = product.Price;
-                    revalidateReturnDto.ProductUpdated.Add(item);
-                }
-                if (item.Discount != totalDiscount)
-                {
-                    item.Discount = totalDiscount;
-                    item.DiscountedPrice = discountedPrice;
-                    revalidateReturnDto.ProductUpdated.Add(item);
-                }
-                if (item.Weight != product.Weight)
-                {
-                    item.Weight = product.Weight;
-                    revalidateReturnDto.ProductUpdated.Add(item);
-                }
-                if (item.ImageURL != product.ImageURL)
-                {
-                    item.ImageURL = product.ImageURL;
-                    revalidateReturnDto.ProductUpdated.Add(item);
+                    var productUpdate = new ProductUpdatedDto
+                    {
+                        ProductID = item.ProductID,
+                        StoreName = item.StoreName,
+                        ProductName = item.PName,
+                        ProductImage = item.ImageURL,
+                        NameUpdate = (item.PName != product.PName) ? (item.PName, product.PName) : null,
+                        DiscountUpdate = (item.Discount != totalDiscount) ? (item.Discount, totalDiscount) : null,
+                        PriceUpdate = (item.Price != product.Price) ? (item.Price, product.Price) : null,
+                        WeightUpdate = (item.Weight != product.Weight) ? (item.Weight, product.Weight) : null
+                    };
+
+                    revalidateReturnDto.ProductUpdated.Add(productUpdate);
                 }
             }
             revalidateReturnDto.Cart = cart;
