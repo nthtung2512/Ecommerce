@@ -27,8 +27,9 @@ namespace MealMate.BLL.Services.Redis
             if (cartItem != null)
             {
                 cartItem.Quantity += item.Quantity;
+                await _redisCacheService.SetDataAsync(key, cartItem, TimeSpan.FromMinutes(15));
             }
-            await _redisCacheService.SetDataAsync(key, cartItem, TimeSpan.FromMinutes(15));
+            await _redisCacheService.SetDataAsync(key, item, TimeSpan.FromMinutes(15));
         }
 
         public async Task RemoveCartItemFromRedis(Guid productId, Guid storeId)
