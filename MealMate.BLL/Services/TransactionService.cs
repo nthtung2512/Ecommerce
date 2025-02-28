@@ -87,6 +87,16 @@ namespace MealMate.BLL.Services
             return fullBillDto;
         }
 
+        public async Task<List<BillDto>> GetBillListByStatusAsync(DeliveryStatus status)
+        {
+            var bills = await _transactionRepository.GetBillListByStatusAsync(status);
+            if (bills.Count == 0)
+            {
+                throw new EntityNotFoundException("No bills found");
+            }
+            return _mapper.Map<List<BillDto>>(bills);
+        }
+
         public async Task<Guid> GetLastBillIdAsync(Guid customerId)
         {
             var bills = await _transactionRepository.GetBillListAsync(customerId) ?? throw new EntityNotFoundException("No bills found for the customer.");
