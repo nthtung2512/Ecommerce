@@ -10,32 +10,21 @@ namespace MealMate.DAL.Entities.Transactions
 {
     public class Product(Guid id) : Entity<Guid>(id), IDeletableEntity
     {
-        public required string Category { get; set; }
-
-        public string Description { get; set; } = string.Empty;
-
-        public required string PName { get; init; }
-
+        public required string Image { get; set; }
+        public required string Consistency { get; set; }
+        public required string Name { get; set; }
+        public required string NameClean { get; set; }
+        public required string OriginalName { get; set; }
+        public required int Amount { get; set; }
+        public string Unit { get; set; } = string.Empty;
         public required double Price { get; set; }
-
-        public required int Weight { get; set; }
-        /*
-        Price = UnitPrice * Quantity
-        Quantity = Weight / UnitWeight
-        Consistency can be used for converting
-        public required int Quantity { get; set; }
-        public string Unit { get; set; }
-        public required double UnitPrice { get; set; }
-        public required int UnitWeight { get; set; }
-        public required string Consistency { get; set; } = string.Empty;
-        */
-
-        public required string ImageURL { get; set; }
+        public required string Aisle { get; set; }
+        public string Description { get; set; } = "Fresh food from MealMate";
+        public bool IsDeleted { get; set; }
         public ICollection<PromoteProduct> PromoteProducts { get; } = [];
         public ICollection<PromoteCategory> PromoteCategories { get; } = [];
         public ICollection<AT> ATs { get; } = [];
         public ICollection<Include> Includes { get; } = [];
-        public bool IsDeleted { get; set; }
     }
 
     internal class ProductValidator : AbstractValidator<Product>
@@ -49,12 +38,12 @@ namespace MealMate.DAL.Entities.Transactions
                 .GreaterThan(0.0)
                 .WithMessage("Price must be greater than 0");
 
-            RuleFor(product => product.Weight)
+            RuleFor(product => product.Amount)
                 .GreaterThan(0)
-                .WithMessage("Weight must be greater than 0");
+                .WithMessage("Amount must be greater than 0");
 
             RuleFor(product => product)
-                .MustAsync((product, token) => IsProductNameUnique(product.PName, product.Id, token))
+                .MustAsync((product, token) => IsProductNameUnique(product.Name, product.Id, token))
                 .WithMessage("Product name must be unique");
 
         }

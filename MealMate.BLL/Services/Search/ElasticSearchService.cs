@@ -30,23 +30,20 @@ namespace MealMate.BLL.Services.Search
             }
         }
 
-        // Batch Index Products for better performance
+        // Index Products individually
         public async Task IndexProductsAsync()
         {
             var products = await _productRepository.GetAllAsync();
-            var batch = _db.CreateBatch();
 
             foreach (var product in products)
             {
                 var key = $"product:{product.Id}";
                 var hashEntries = new HashEntry[]
                 {
-                    new("name", product.PName),
+                new("name", product.Name),
                 };
-                await batch.HashSetAsync(key, hashEntries);
+                await _db.HashSetAsync(key, hashEntries);
             }
-
-            batch.Execute();
         }
 
         // Optimized Search Products

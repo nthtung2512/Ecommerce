@@ -10,7 +10,7 @@ namespace MealMate.DAL.Repositories
     {
         public async Task<List<Product>> GetListProductByCategoryAsync(string category)
         {
-            return await Query.Where(p => p.Category == category).ToListAsync();
+            return await Query.Where(p => p.Aisle == category).ToListAsync();
         }
 
         public async Task<List<Product>> GetListProductByStoreIDAsync(Guid storeId)
@@ -29,18 +29,18 @@ namespace MealMate.DAL.Repositories
 
         public Task<Product?> GetProductByNameAsync(string productName)
         {
-            return Query.FirstOrDefaultAsync(p => p.PName == productName);
+            return Query.FirstOrDefaultAsync(p => p.Name == productName);
         }
 
         public async Task<List<TempTop5Product>> GetTempTop5ProductsAsync(int year)
         {
             var topProducts = await _context.Includes
                 .Where(i => i.Transaction.DateAndTime.Year == year && !i.Product.IsDeleted)
-                .GroupBy(i => new { i.ProductID, i.Product.PName })
+                .GroupBy(i => new { i.ProductID, i.Product.Name })
                 .Select(g => new TempTop5Product
                 {
                     ProductID = g.Key.ProductID,
-                    Name = g.Key.PName,
+                    Name = g.Key.Name,
                     Revenue = g.Sum(i => i.SubTotal)
                 })
                 .OrderByDescending(p => p.Revenue)
@@ -52,7 +52,7 @@ namespace MealMate.DAL.Repositories
 
         public async Task<List<Product>> GetProductsByListNameAsync(List<string> productNames)
         {
-            return await Query.Where(p => productNames.Contains(p.PName)).ToListAsync();
+            return await Query.Where(p => productNames.Contains(p.Name)).ToListAsync();
         }
 
         public override async Task DeleteAsync(Product entity)

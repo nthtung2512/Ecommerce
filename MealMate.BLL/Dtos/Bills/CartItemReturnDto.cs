@@ -11,8 +11,8 @@
         public bool HasStock { get; set; } = true;
         public required string StoreName { get; set; }
         public decimal Discount { get; set; }
+        public string Unit { get; set; } = string.Empty;
         public double DiscountedPrice { get; set; }
-        public int Weight { get; set; }
         public string ImageURL { get; set; } = string.Empty;
     }
 }

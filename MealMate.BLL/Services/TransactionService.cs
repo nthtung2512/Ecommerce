@@ -80,7 +80,6 @@ namespace MealMate.BLL.Services
                 DateAndTime = bill.DateAndTime,
                 DeliveryStatus = bill.DeliveryStatus,
                 TotalPrice = bill.TotalPrice,
-                TotalWeight = bill.TotalWeight,
                 ShippingAddress = bill.ShippingAddress,
                 Includes = includesDto
             };
@@ -110,7 +109,6 @@ namespace MealMate.BLL.Services
                     StoreID = billData.StoreID,
                     ShipperID = null,
                     TotalPrice = billData.TotalPrice,
-                    TotalWeight = billData.TotalWeight,
                     DeliveryStatus = DeliveryStatus.Pending,
                     ShippingAddress = billData.ShippingAddress,
                     IsDeleted = false
@@ -172,7 +170,6 @@ namespace MealMate.BLL.Services
                     DateAndTime = newBill.DateAndTime,
                     DeliveryStatus = newBill.DeliveryStatus,
                     TotalPrice = newBill.TotalPrice,
-                    TotalWeight = newBill.TotalWeight,
                     ShippingAddress = newBill.ShippingAddress,
                     Includes = includesDto
                 };
@@ -235,7 +232,6 @@ namespace MealMate.BLL.Services
                     DateAndTime = bill.DateAndTime,
                     DeliveryStatus = bill.DeliveryStatus,
                     TotalPrice = bill.TotalPrice,
-                    TotalWeight = bill.TotalWeight,
                     ShippingAddress = bill.ShippingAddress,
                     Includes = includesDto
                 };

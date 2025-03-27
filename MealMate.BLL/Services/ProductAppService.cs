@@ -41,13 +41,17 @@ namespace MealMate.BLL.Services
                 var productDto = new ProductDto
                 {
                     ProductID = item.Product.Id,
-                    Category = item.Product.Category,
-                    Description = item.Product.Description,
-                    PName = item.Product.PName,
+                    Image = item.Product.Image,
+                    Consistency = item.Product.Consistency,
+                    Name = item.Product.Name,
+                    NameClean = item.Product.NameClean,
+                    OriginalName = item.Product.OriginalName,
+                    Amount = item.Product.Amount,
+                    Unit = item.Product.Unit,
                     Price = item.Product.Price,
+                    Aisle = item.Product.Aisle,
+                    Description = item.Product.Description,
                     DiscountedPrice = (double)(item.SubTotal / item.NumberOfProductInBill),
-                    Weight = item.Product.Weight,
-                    ImageURL = item.Product.ImageURL
                 };
                 productDtos.Add(productDto);
             }
@@ -156,7 +160,7 @@ namespace MealMate.BLL.Services
 
         public async Task<ProductDto> CreateProductAsync(ProductCreationDto createData)
         {
-            var newProduct = new Product(_guidGenerator.Create()) { Category = createData.Category, Description = createData.Description, PName = createData.PName, Price = createData.Price, Weight = createData.Weight, ImageURL = createData.ImageURL, IsDeleted = false };
+            var newProduct = new Product(_guidGenerator.Create()) { Aisle = createData.Aisle, Amount = createData.Amount, Consistency = createData.Consistency, Description = createData.Description, Image = createData.Image, Name = createData.Name, NameClean = createData.NameClean, OriginalName = createData.OriginalName, Price = createData.Price, Unit = createData.Unit };
 
             var validationResult = await _productValidator.ValidateAsync(newProduct);
             if (!validationResult.IsValid)
@@ -180,11 +184,11 @@ namespace MealMate.BLL.Services
         {
             var product = await _productRepository.GetAsync(id) ?? throw new EntityNotFoundException("Product not found");
 
-            product.Category = updateData.Category ?? product.Category;
+            product.Name = updateData.Name ?? product.Name;
+            product.Amount = updateData.Amount ?? product.Amount;
+            product.Image = updateData.Image ?? product.Image;
             product.Description = updateData.Description ?? product.Description;
             product.Price = updateData.Price ?? product.Price;
-            product.Weight = updateData.Weight ?? product.Weight;
-            product.ImageURL = updateData.ImageURL ?? product.ImageURL;
 
             var validationResult = await _productValidator.ValidateAsync(product);
             if (!validationResult.IsValid)

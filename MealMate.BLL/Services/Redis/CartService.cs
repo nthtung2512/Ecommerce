@@ -123,15 +123,14 @@ namespace MealMate.BLL.Services.Redis
             {
                 CartItemId = cartItem.CartItemID,
                 ProductID = cartItem.ProductID,
-                PName = product.PName,
+                PName = product.Name,
                 Quantity = cartItem.Quantity,
                 Price = product.Price,
                 StoreID = cartItem.StoreID,
                 StoreName = store.Name,
                 Discount = totalDiscount,
                 DiscountedPrice = discountedPrice,
-                Weight = product.Weight,
-                ImageURL = product.ImageURL,
+                ImageURL = product.Image,
                 HasStock = cartItem.Quantity <= amount
             };
 
@@ -208,7 +207,7 @@ namespace MealMate.BLL.Services.Redis
                 }
 
                 // Update the product details in the cart item
-                if (item.PName != product.PName || item.Price != product.Price || item.Discount != totalDiscount || item.Weight != product.Weight)
+                if (item.PName != product.Name || item.Price != product.Price || item.Discount != totalDiscount)
                 {
                     var productUpdate = new ProductUpdatedDto
                     {
@@ -216,10 +215,9 @@ namespace MealMate.BLL.Services.Redis
                         StoreName = item.StoreName,
                         ProductName = item.PName,
                         ProductImage = item.ImageURL,
-                        NameUpdate = (item.PName != product.PName) ? (item.PName, product.PName) : null,
+                        NameUpdate = (item.PName != product.Name) ? (item.PName, product.Name) : null,
                         DiscountUpdate = (item.Discount != totalDiscount) ? (item.Discount, totalDiscount) : null,
                         PriceUpdate = (item.Price != product.Price) ? (item.Price, product.Price) : null,
-                        WeightUpdate = (item.Weight != product.Weight) ? (item.Weight, product.Weight) : null
                     };
 
                     revalidateReturnDto.ProductUpdated.Add(productUpdate);

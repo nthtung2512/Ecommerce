@@ -57,8 +57,6 @@ namespace MealMate.BLL.Services
         {
             var shipper = await _shipperRepository.GetAsync(shipperId) ?? throw new EntityNotFoundException("No shipper found");
 
-            shipper.VehicleCapacity += capacity;
-
             await _shipperRepository.UpdateAsync(shipper);
 
             return _mapper.Map<ShipperDto>(shipper);

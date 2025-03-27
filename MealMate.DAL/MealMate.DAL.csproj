@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Bogus" Version="35.6.2" />
     <PackageReference Include="FluentValidation" Version="11.10.0" />
     <PackageReference Include="MailKit" Version="4.8.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.11" />
@@ -43,6 +44,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MealMate.base\MealMate.base.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="EntityFrameworkCore\cleaned_data_nometa.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

@@ -20,7 +20,6 @@ namespace MealMate.DAL.Entities.Products
         public List<Include> Includes { get; } = [];
         public PromoteBill? PromoteBill { get; set; }
         public double TotalPrice { get; set; }
-        public int TotalWeight { get; set; }
         public required DeliveryStatus DeliveryStatus { get; set; }
         public required string ShippingAddress { get; set; }
         public bool IsDeleted { get; set; }

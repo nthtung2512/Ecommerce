@@ -2,19 +2,19 @@
 {
     public class ProductUpdateDto
     {
-        public string? Category { get; init; }
+        public string? Image { get; init; }
+        public string? Name { get; init; }
+        public int? Amount { get; init; }
+        public double? Price { get; init; }
         public string? Description { get; init; }
-        public double? Price { get; set; }
-        public int? Weight { get; init; }
-        public string? ImageURL { get; init; }
 
-        public void Deconstruct(out string? category, out string? description, out double? price, out int? weight, out string? imageURL)
+        public void Deconstruct(out string? image, out string? name, out int? amount, out double? price, out string? description)
         {
-            category = Category;
-            description = Description;
+            image = Image;
+            name = Name;
+            amount = Amount;
             price = Price;
-            weight = Weight;
-            imageURL = ImageURL;
+            description = Description;
         }
     }
 }

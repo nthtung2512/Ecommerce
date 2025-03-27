@@ -40,14 +40,18 @@ namespace MealMate.BLL.Services.Utility
             var productDto = new ProductDto
             {
                 ProductID = product.Id,
-                Category = product.Category,
+                Aisle = product.Aisle,
+                Consistency = product.Consistency,
                 Description = product.Description,
-                PName = product.PName,
+                Name = product.Name,
+                NameClean = product.NameClean,
+                OriginalName = product.OriginalName,
+                Amount = product.Amount,
                 Price = product.Price,
                 Discount = totalDiscount,
-                DiscountedPrice = Math.Round(discountedPrice, 2),
-                Weight = product.Weight,
-                ImageURL = product.ImageURL
+                DiscountedPrice = discountedPrice,
+                Image = product.Image,
+                Unit = product.Unit
             };
             return productDto;
         }

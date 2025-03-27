@@ -63,12 +63,15 @@ namespace MealMate.BLL.Services
                 Product = new ProductCreationDto
                 {
                     ProductId = promotion.ProductId,
-                    PName = product.PName,
+                    Name = product.Name,
+                    NameClean = product.NameClean,
+                    OriginalName = product.OriginalName,
+                    Amount = product.Amount,
                     Description = product.Description,
                     Price = product.Price,
-                    Category = product.Category,
-                    Weight = product.Weight,
-                    ImageURL = product.ImageURL,
+                    Aisle = product.Aisle,
+                    Image = product.Image,
+                    Consistency = product.Consistency
                 }
             };
         }
@@ -105,12 +108,15 @@ namespace MealMate.BLL.Services
                 Product = new ProductCreationDto
                 {
                     ProductId = promotion.ProductId,
-                    PName = product.PName,
+                    Name = product.Name,
+                    NameClean = product.NameClean,
+                    OriginalName = product.OriginalName,
+                    Amount = product.Amount,
                     Description = product.Description,
                     Price = product.Price,
-                    Category = product.Category,
-                    Weight = product.Weight,
-                    ImageURL = product.ImageURL,
+                    Aisle = product.Aisle,
+                    Image = product.Image,
+                    Consistency = product.Consistency
                 }
             };
         }
@@ -136,13 +142,16 @@ namespace MealMate.BLL.Services
                     EndDay = promotion.EndDay,
                     Product = new ProductCreationDto
                     {
-                        ProductId = promotion.ProductId,
-                        PName = product.PName,
+                        ProductId = product.Id,
+                        Name = product.Name,
+                        NameClean = product.NameClean,
+                        OriginalName = product.OriginalName,
+                        Amount = product.Amount,
                         Description = product.Description,
                         Price = product.Price,
-                        Category = product.Category,
-                        Weight = product.Weight,
-                        ImageURL = product.ImageURL,
+                        Aisle = product.Aisle,
+                        Image = product.Image,
+                        Consistency = product.Consistency
                     }
                 });
             }
@@ -170,13 +179,16 @@ namespace MealMate.BLL.Services
                     EndDay = promotion.EndDay,
                     Product = new ProductCreationDto
                     {
-                        ProductId = promotion.ProductId,
-                        PName = product.PName,
+                        ProductId = product.Id,
+                        Name = product.Name,
+                        NameClean = product.NameClean,
+                        OriginalName = product.OriginalName,
+                        Amount = product.Amount,
                         Description = product.Description,
                         Price = product.Price,
-                        Category = product.Category,
-                        Weight = product.Weight,
-                        ImageURL = product.ImageURL,
+                        Aisle = product.Aisle,
+                        Image = product.Image,
+                        Consistency = product.Consistency
                     }
                 });
             }
@@ -204,13 +216,16 @@ namespace MealMate.BLL.Services
                     EndDay = promotion.EndDay,
                     Product = new ProductCreationDto
                     {
-                        ProductId = promotion.ProductId,
-                        PName = product.PName,
+                        ProductId = product.Id,
+                        Name = product.Name,
+                        NameClean = product.NameClean,
+                        OriginalName = product.OriginalName,
+                        Amount = product.Amount,
                         Description = product.Description,
                         Price = product.Price,
-                        Category = product.Category,
-                        Weight = product.Weight,
-                        ImageURL = product.ImageURL,
+                        Aisle = product.Aisle,
+                        Image = product.Image,
+                        Consistency = product.Consistency
                     },
                     CustomerId = customerId
                 });

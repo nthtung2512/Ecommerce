@@ -1,4 +1,5 @@
-﻿using MealMate.DAL.Entities.ApplicationUser;
+﻿using Bogus;
+using MealMate.DAL.Entities.ApplicationUser;
 using MealMate.DAL.Entities.Products;
 using MealMate.DAL.Entities.Promotion;
 using MealMate.DAL.Entities.Stores;
@@ -6,6 +7,7 @@ using MealMate.DAL.Entities.Transactions;
 using MealMate.DAL.Utils.Enum;
 using MealMate.PL.Environment;
 using Microsoft.AspNetCore.Identity;
+using System.Text.Json;
 
 namespace MealMate.DAL.EntityFrameworkCore
 {
@@ -34,69 +36,104 @@ namespace MealMate.DAL.EntityFrameworkCore
                     break;
             }
         }
+        public static Product[] GetSeedProducts()
+        {
+            // Path to JSON file in the same directory as Seed.cs (at runtime)
+            string jsonFilePath = Path.GetFullPath(
+                Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "MealMate.DAL", "EntityFrameworkCore", "cleaned_data_nometa.json")
+            );
+
+
+            Console.WriteLine("JSON file path: " + jsonFilePath);
+
+            // Read the JSON file
+            string jsonString = File.ReadAllText(jsonFilePath);
+
+            // Deserialize JSON into a list of ProductDTO objects (temporary class to match JSON structure)
+            var productDtos = JsonSerializer.Deserialize<List<LoadedProductDto>>(jsonString, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
+
+            // Map DTOs to Product entities with new Guids
+            var products = productDtos.Select(dto => new Product(Guid.NewGuid())
+            {
+                Image = dto.Image ?? "",
+                Consistency = dto.Consistency,
+                Name = dto.Name,
+                NameClean = dto.NameClean ?? "",
+                OriginalName = dto.OriginalName,
+                Amount = dto.Amount,
+                Unit = dto.Unit,
+                Price = dto.Price,
+                Aisle = dto.Aisle,
+                Description = dto.Description ?? "Fresh food from MealMate", // Default if null
+                IsDeleted = false // Default value
+            }).ToArray();
+
+            return products;
+        }
+
+        public static Customer[] GenSeedCustomer()
+        {
+            var vietnameseFirstNames = new[] { "Cường", "Dũng", "Hưng", "Khôi", "Long", "Nam", "Phát", "Quang", "Thành", "Tùng", "Tuấn", "Việt", "Linh", "Hải", "Sơn" };
+            var vietnameseLastNames = new[] { "Nguyễn", "Trần", "Lê", "Phạm", "Huỳnh", "Hoàng", "Phan", "Võ", "Đặng", "Bùi", "Đỗ", "Hồ" };
+
+            // ✅ You provide these full, valid addresses
+            var providedAddresses = new[]
+            {
+                "436 Nguyễn Thị Minh Khai, Phường 5, Quận 3, Hồ Chí Minh",
+                "268 Lý Thường Kiệt, Phường 14, Quận 10, Hồ Chí Minh",
+                "14 Trần Quang Diệu, Phường 14, Quận 3, Hồ Chí Minh",
+                "123 Điện Biên Phủ, Phường 15, Quận Bình Thạnh, Hồ Chí Minh",
+                "21 Nguyễn Văn Cừ, Phường 2, Quận 5, Hồ Chí Minh",
+                "88 Cách Mạng Tháng Tám, Phường 7, Quận 3, Hồ Chí Minh",
+                "19 Hai Bà Trưng, Phường Bến Nghé, Quận 1, Hồ Chí Minh",
+                "300 Nguyễn Văn Linh, Phường Tân Phong, Quận 7, Hồ Chí Minh",
+                "55 Phạm Văn Đồng, Phường 3, Quận Gò Vấp, Hồ Chí Minh",
+                "99 Trường Chinh, Phường 13, Quận Tân Bình, Hồ Chí Minh",
+            };
+
+            var customerFaker = new Faker<Customer>("vi")
+                .RuleFor(c => c.Id, f => Guid.NewGuid())
+                .RuleFor(c => c.LName, f => f.PickRandom(vietnameseLastNames))
+                .RuleFor(c => c.FName, f => f.PickRandom(vietnameseFirstNames))
+                .RuleFor(c => c.UserName, (f, c) => $"{c.FName.ToLower().Replace(" ", "")}{f.Random.Number(1, 99)}")
+                .RuleFor(c => c.PhoneNumber, f => f.Phone.PhoneNumber("0#########"))
+                .RuleFor(c => c.TotalMoneySpent, f => f.Random.Decimal(50, 500))
+                .RuleFor(c => c.IsDeleted, f => false)
+                .RuleFor(c => c.Email, (f, c) =>
+                {
+                    var localPart = $"{c.FName}.{c.LName}".ToLower().Replace(" ", "");
+                    var randomDigits = f.Random.Number(100, 999); // Ensures 3 digits
+                    return $"{localPart}{randomDigits}@gmail.com";
+                })
+                .RuleFor(c => c.FortuneChance, (f, c) => f.Random.Int(1, (int)(c.TotalMoneySpent / 100)))
+                .RuleFor(c => c.Address, f => ""); // Address will be set manually
+
+            var customers = customerFaker.Generate(providedAddresses.Length);
+            var providedAddressCount = providedAddresses.Length;
+            // Inject your own addresses
+            for (int i = 0; i < customers.Count; i++)
+            {
+                customers[i].Address = providedAddresses[i % providedAddressCount];
+            }
+
+            return customers.ToArray();
+        }
         public async Task SeedDevelopmentStagingAsync()
         {
             _context.Database.EnsureCreated();
+
 
             if (_context.Products.Any())
             {
                 return;   // DB has been seeded
             }
 
-            var customers = new Customer[] {
-                new Customer
-                {
-                    Id = new Guid("3fd99782-4556-4bbc-bf79-8e5ade728fc4"),
-                    UserName = "Customer1",
-                    FName = "Cường Dũng",
-                    LName = "Trần",
-                    Address = "436 Đ. Nguyễn Thị Minh Khai, Phường 5, Quận 3, Hồ Chí Minh, Việt Nam",
-                    Email = "nguyenthanhtung@gmail.com",
-                    PhoneNumber = "0987654321",
-                    IsDeleted = false,
-                    TotalMoneySpent = 150.00M,
-                    FortuneChance = 5,
-                },
-                new Customer
-                {
-                    Id = new Guid("fcdedd40-4b84-45ad-9d30-783264f83f61"),
-                    UserName = "Customer2",
-                    FName = "Hưng Khôi",
-                    LName = "Lê",
-                    Address = "268 Lý Thường Kiệt, Phường 14, Quận 10, Hồ Chí Minh, Việt Nam",
-                    Email = "lhk@gmail.com",
-                    PhoneNumber = "1234567812",
-                    IsDeleted = false,
-                    TotalMoneySpent = 200.00M,
-                    FortuneChance = 3,
-                },
-                new Customer
-                {
-                    Id = new Guid("42f52f54-a89a-49cf-8564-4c116987e237"),
-                    UserName = "Customer3",
-                    FName = "Long Nam",
-                    LName = "Phạm",
-                    Address = "14 Trần Quang Diệu, Phường 14, Quận 3, Hồ Chí Minh, Việt Nam",
-                    Email = "pln@gmail.com",
-                    PhoneNumber = "1234876521",
-                    IsDeleted = false,
-                    TotalMoneySpent = 100.00M,
-                    FortuneChance = 10,
-                },
-                new Customer
-                {
-                    Id = new Guid("8da727e0-9529-49cf-a971-945791782208"),
-                    UserName = "Customer4",
-                    FName = "Phát Quang",
-                    LName = "Huỳnh",
-                    Address = "Đường số 4, phường 26, Bình Thạnh, Hồ Chí Minh, Việt Nam",
-                    Email = "hpq@gmail.com",
-                    PhoneNumber = "3218764521",
-                    IsDeleted = false,
-                    TotalMoneySpent = 300.00M,
-                    FortuneChance = 8,
-                }
-            };
+            var products = GetSeedProducts();
+
+            var customers = GenSeedCustomer();
 
             // Seed Shippers
             var shippers = new Shipper[]
@@ -108,7 +145,8 @@ namespace MealMate.DAL.EntityFrameworkCore
                     Email = "pst@gmail.com",
                     Address = "123 Phan St",
                     PhoneNumber = "1234567890",
-                    IsDeleted = false, VehicleCapacity = 1100},
+                    IsDeleted = false,
+                },
                 new Shipper { Id = Guid.NewGuid(),
                     UserName = "Shipper2",
                     FName = "Bích Diễm",
@@ -116,7 +154,7 @@ namespace MealMate.DAL.EntityFrameworkCore
                     Email = "bdv@gmail.com",
                     Address = "456 Vũ St",
                     PhoneNumber = "2345678901",
-                    IsDeleted = false, VehicleCapacity = 800 },
+                    IsDeleted = false },
                 new Shipper { Id = Guid.NewGuid(),
                     UserName = "Shipper3",
                     FName = "Tiến Vĩ",
@@ -124,7 +162,7 @@ namespace MealMate.DAL.EntityFrameworkCore
                     Email = "hld@gmail.com",
                     Address = "789 Đặng St",
                     PhoneNumber = "3456789012",
-                    IsDeleted = false, VehicleCapacity = 1200},
+                    IsDeleted = false},
                 new Shipper { Id = Guid.NewGuid(),
                     UserName = "Shipper4",
                     FName = "Tiến Dụng",
@@ -132,7 +170,7 @@ namespace MealMate.DAL.EntityFrameworkCore
                     Email = "hnb@gmail.com",
                     Address = "321 Bùi St",
                     PhoneNumber = "4567890123",
-                    IsDeleted = false, VehicleCapacity = 1100},
+                    IsDeleted = false},
                 new Shipper { Id = Guid.NewGuid(),
                     UserName = "Shipper5",
                     FName = "Văn Hào",
@@ -140,7 +178,7 @@ namespace MealMate.DAL.EntityFrameworkCore
                     Email = "ptd@gmail.com",
                     Address = "654 Đỗ St",
                     PhoneNumber = "5678901234",
-                    IsDeleted = false, VehicleCapacity = 1200}
+                    IsDeleted = false}
             };
 
             // Seed Stores
@@ -255,10 +293,9 @@ namespace MealMate.DAL.EntityFrameworkCore
             // Seed ApplicationUser
             if (!_context.ApplicationUsers.Any())
             {
-                var customerPasswords = new string[]
-                {
-                    "customer1", "customer2", "customer3", "customer4"
-                };
+                var customerPasswords = Enumerable.Range(1, 20)
+                .Select(i => $"customer{i}")
+                .ToArray();
                 var shipperPasswords = new string[]
                 {
                     "shipper1", "shipper2", "shipper3", "shipper4", "shipper5"
@@ -312,108 +349,38 @@ namespace MealMate.DAL.EntityFrameworkCore
             };
 
 
-            // Seed Products
-            var products = new Product[]
-            {
-                // Pork
-                new Product(Guid.NewGuid()) { Category = "Pork", PName = "Pork Belly", Price = 15.99, Weight = 1360, ImageURL = "https://img.spoonacular.com/ingredients_500x500/pork-belly.jpg", Description = "Rich and flavorful pork belly, perfect for slow cooking.", IsDeleted = false },
-                new Product(Guid.NewGuid()) { Category = "Pork", PName = "Pork Loin", Price = 12.99, Weight = 1000, ImageURL = "https://img.spoonacular.com/ingredients_500x500/pork-loin.jpg", Description = "Lean and tender pork loin, ideal for roasting.", IsDeleted = false },
-                new Product(Guid.NewGuid()) { Category = "Pork", PName = "Pork Chops", Price = 12.49, Weight = 1000, ImageURL = "https://img.spoonacular.com/ingredients_500x500/pork-chops.jpg", Description = "Juicy pork chops, great for grilling or pan-frying.", IsDeleted = false },
-                new Product(Guid.NewGuid()) { Category = "Pork", PName = "Pork Ribs", Price = 18.99, Weight = 1200, ImageURL = "https://img.spoonacular.com/ingredients_500x500/raw-pork-ribs.jpg", Description = "Tender pork ribs, excellent for BBQ.", IsDeleted = false },
-                new Product(Guid.NewGuid()) { Category = "Pork", PName = "Ground Pork", Price = 10.99, Weight = 500, ImageURL = "https://img.spoonacular.com/ingredients_500x500/pork-tenderloin-raw.png", Description = "Versatile ground pork, perfect for patties or stir-fry.", IsDeleted = false },
 
-                // Beef
-                new Product(Guid.NewGuid()) { Category = "Beef", PName = "Ground Beef", Price = 11.99, Weight = 500, ImageURL = "https://img.spoonacular.com/ingredients_500x500/fresh-ground-beef.jpg", Description = "Lean ground beef, ideal for burgers or pasta sauce.", IsDeleted = false },
-                new Product(Guid.NewGuid()) { Category = "Beef", PName = "Beef Brisket", Price = 20.99, Weight = 1200, ImageURL = "https://img.spoonacular.com/ingredients_500x500/beef-brisket.png", Description = "Slow-cooking beef brisket, rich in flavor.", IsDeleted = false },
-                new Product(Guid.NewGuid()) { Category = "Beef", PName = "Beef Ribeye", Price = 24.99, Weight = 1000, ImageURL = "https://img.spoonacular.com/ingredients_500x500/ribeye-raw.jpg", Description = "Succulent beef ribeye, perfect for grilling.", IsDeleted = false },
-                new Product(Guid.NewGuid()) { Category = "Beef", PName = "Beef Tenderloin", Price = 35.99, Weight = 800, ImageURL = "https://img.spoonacular.com/ingredients_500x500/pork-tenderloin-raw.png", Description = "Premium beef tenderloin, melt-in-your-mouth texture.", IsDeleted = false },
-                new Product(Guid.NewGuid()) { Category = "Beef", PName = "Beef Stew Meat", Price = 10.99, Weight = 500, ImageURL = "https://img.spoonacular.com/ingredients_500x500/beef-roast.png", Description = "Tender beef stew meat, great for slow cooking.", IsDeleted = false },
-
-                // Seafood
-                new Product(Guid.NewGuid()) { Category = "Seafood", PName = "Salmon Fillet", Price = 25.99, Weight = 1000, ImageURL = "https://img.spoonacular.com/ingredients_500x500/salmon-caviar.png", Description = "Fresh salmon fillet, perfect for baking or grilling.", IsDeleted = false },
-                new Product(Guid.NewGuid()) { Category = "Seafood", PName = "Shrimp", Price = 18.99, Weight = 500, ImageURL = "https://img.spoonacular.com/ingredients_500x500/shrimp.png", Description = "Juicy shrimp, perfect for stir-frying or grilling.", IsDeleted = false },
-                new Product(Guid.NewGuid()) { Category = "Seafood", PName = "Scallops", Price = 28.99, Weight = 400, ImageURL = "https://img.spoonacular.com/ingredients_500x500/scallops.jpg", Description = "Delicate scallops, ideal for pan-searing.", IsDeleted = false },
-                new Product(Guid.NewGuid()) { Category = "Seafood", PName = "Cod", Price = 14.99, Weight = 1000, ImageURL = "https://img.spoonacular.com/ingredients_500x500/cod-fillet.jpg", Description = "Mild and flaky cod, perfect for frying or baking.", IsDeleted = false },
-                new Product(Guid.NewGuid()) { Category = "Seafood", PName = "Crab Legs", Price = 39.99, Weight = 800, ImageURL = "https://img.spoonacular.com/ingredients_500x500/crabmeat.jpg", Description = "Delicious crab legs, ideal for special occasions.", IsDeleted = false },
-
-                // Milk
-                new Product(Guid.NewGuid()) { Category = "Milk", PName = "Whole Milk", Price = 3.99, Weight = 1000, ImageURL = "https://img.spoonacular.com/ingredients_500x500/milk.png", Description = "Creamy whole milk, perfect for drinking or baking.", IsDeleted = false },
-                new Product(Guid.NewGuid()) { Category = "Milk", PName = "Skim Milk", Price = 3.49, Weight = 1000, ImageURL = "https://img.spoonacular.com/ingredients_500x500/milk.png", Description = "Low-fat skim milk, ideal for a lighter option.", IsDeleted = false },
-                new Product(Guid.NewGuid()) { Category = "Milk", PName = "Almond Milk", Price = 4.99, Weight = 1000, ImageURL = "https://img.spoonacular.com/ingredients_500x500/almond-milk.jpg", Description = "Smooth almond milk, dairy-free and nutritious.", IsDeleted = false },
-                new Product(Guid.NewGuid()) { Category = "Milk", PName = "Soy Milk", Price = 4.49, Weight = 1000, ImageURL = "https://img.spoonacular.com/ingredients_500x500/soy-milk.jpg", Description = "Healthy soy milk, rich in protein.", IsDeleted = false },
-                new Product(Guid.NewGuid()) { Category = "Milk", PName = "Coconut Milk", Price = 5.49, Weight = 1000, ImageURL = "https://img.spoonacular.com/ingredients_500x500/coconut-milk.png", Description = "Rich coconut milk, perfect for cooking or drinking.", IsDeleted = false },
-
-                // Spice
-                new Product(Guid.NewGuid()) { Category = "Spice", PName = "Black Pepper", Price = 2.99, Weight = 100, ImageURL = "https://img.spoonacular.com/ingredients_500x500/pepper.jpg", Description = "Ground black pepper, adds a hint of spice to any dish.", IsDeleted = false },
-                new Product(Guid.NewGuid()) { Category = "Spice", PName = "Cinnamon", Price = 3.99, Weight = 100, ImageURL = "https://img.spoonacular.com/ingredients_500x500/cinnamon.jpg", Description = "Warm cinnamon, perfect for baking and cooking.", IsDeleted = false },
-                new Product(Guid.NewGuid()) { Category = "Spice", PName = "Paprika", Price = 2.49, Weight = 100, ImageURL = "https://img.spoonacular.com/ingredients_500x500/paprika.jpg", Description = "Smoky paprika, adds depth to savory dishes.", IsDeleted = false },
-                new Product(Guid.NewGuid()) { Category = "Spice", PName = "Turmeric", Price = 3.49, Weight = 100, ImageURL = "https://img.spoonacular.com/ingredients_500x500/turmeric.jpg", Description = "Golden turmeric, adds color and flavor.", IsDeleted = false },
-                new Product(Guid.NewGuid()) { Category = "Spice", PName = "Cumin", Price = 2.99, Weight = 100, ImageURL = "https://img.spoonacular.com/ingredients_500x500/ground-cumin.jpg", Description = "Earthy cumin, essential in various cuisines.", IsDeleted = false },
-
-                // Vegetable
-                new Product(Guid.NewGuid()) { Category = "Vegetable", PName = "Spinach", Price = 1.99, Weight = 500, ImageURL = "https://img.spoonacular.com/ingredients_500x500/spinach.jpg", Description = "Fresh spinach, great for salads or smoothies.", IsDeleted = false },
-                new Product(Guid.NewGuid()) { Category = "Vegetable", PName = "Carrots", Price = 1.49, Weight = 500, ImageURL = "https://img.spoonacular.com/ingredients_500x500/baby-carrots.jpg", Description = "Crisp carrots, perfect for snacking or cooking.", IsDeleted = false },
-                new Product(Guid.NewGuid()) { Category = "Vegetable", PName = "Broccoli", Price = 2.49, Weight = 500, ImageURL = "https://img.spoonacular.com/ingredients_500x500/broccoli.jpg", Description = "Nutrient-rich broccoli, ideal for steaming.", IsDeleted = false },
-                new Product(Guid.NewGuid()) { Category = "Vegetable", PName = "Bell Peppers", Price = 2.99, Weight = 500, ImageURL = "https://img.spoonacular.com/ingredients_500x500/yellow-bell-pepper.jpg", Description = "Colorful bell peppers, great for salads or stir-fry.", IsDeleted = false },
-                new Product(Guid.NewGuid()) { Category = "Vegetable", PName = "Tomatoes", Price = 1.79, Weight = 500, ImageURL = "https://img.spoonacular.com/ingredients_500x500/tomato.png", Description = "Juicy tomatoes, perfect for salads or sauces.", IsDeleted = false },
-
-                // Sauce
-                new Product(Guid.NewGuid()) { Category = "Sauce", PName = "Tomato Sauce", Price = 2.99, Weight = 500, ImageURL = "https://img.spoonacular.com/ingredients_500x500/tomato-sauce-or-pasta-sauce.jpg", Description = "Smooth tomato sauce, ideal for pasta and pizza.", IsDeleted = false },
-                new Product(Guid.NewGuid()) { Category = "Sauce", PName = "Soy Sauce", Price = 2.49, Weight = 500, ImageURL = "https://img.spoonacular.com/ingredients_500x500/soy-sauce.jpg", Description = "Savory soy sauce, a must for Asian dishes.", IsDeleted = false },
-                new Product(Guid.NewGuid()) { Category = "Sauce", PName = "Hot Sauce", Price = 3.99, Weight = 300, ImageURL = "https://img.spoonacular.com/ingredients_500x500/hot-sauce-or-tabasco.png", Description = "Spicy hot sauce, adds a kick to any meal.", IsDeleted = false },
-                new Product(Guid.NewGuid()) { Category = "Sauce", PName = "BBQ Sauce", Price = 4.49, Weight = 500, ImageURL = "https://img.spoonacular.com/ingredients_500x500/barbecue-sauce.jpg", Description = "Smoky BBQ sauce, perfect for grilling.", IsDeleted = false },
-                new Product(Guid.NewGuid()) { Category = "Sauce", PName = "Fish Sauce", Price = 3.49, Weight = 500, ImageURL = "https://img.spoonacular.com/ingredients_500x500/fish-sauce.jpg", Description = "Savory fish sauce, adds depth to Asian dishes.", IsDeleted = false },
-
-                // Fruit
-                new Product(Guid.NewGuid()) { Category = "Fruit", PName = "Apples", Price = 1.99, Weight = 1000, ImageURL = "https://img.spoonacular.com/ingredients_500x500/red-delicious-apples.png", Description = "Crisp and sweet apples, perfect for snacking.", IsDeleted = false },
-                new Product(Guid.NewGuid()) { Category = "Fruit", PName = "Bananas", Price = 1.29, Weight = 1000, ImageURL = "https://img.spoonacular.com/ingredients_500x500/bananas.jpg", Description = "Fresh bananas, great for snacks or smoothies.", IsDeleted = false },
-                new Product(Guid.NewGuid()) { Category = "Fruit", PName = "Oranges", Price = 2.49, Weight = 1000, ImageURL = "https://img.spoonacular.com/ingredients_500x500/oranges.jpg", Description = "Juicy oranges, rich in vitamin C.", IsDeleted = false },
-                new Product(Guid.NewGuid()) { Category = "Fruit", PName = "Grapes", Price = 3.49, Weight = 500, ImageURL = "https://img.spoonacular.com/ingredients_500x500/grapes.jpg", Description = "Sweet and juicy grapes, perfect for snacking.", IsDeleted = false },
-                new Product(Guid.NewGuid()) { Category = "Fruit", PName = "Strawberries", Price = 4.99, Weight = 500, ImageURL = "https://img.spoonacular.com/ingredients_500x500/strawberries.jpg", Description = "Fresh strawberries, ideal for desserts.", IsDeleted = false },
-
-                // Grain
-                new Product(Guid.NewGuid()) { Category = "Grain", PName = "Rice", Price = 5.99, Weight = 1000, ImageURL = "https://img.spoonacular.com/ingredients_500x500/uncooked-white-rice.png", Description = "White rice, versatile and easy to cook.", IsDeleted = false },
-                new Product(Guid.NewGuid()) { Category = "Grain", PName = "Quinoa", Price = 7.99, Weight = 500, ImageURL = "https://img.spoonacular.com/ingredients_500x500/uncooked-quinoa.png", Description = "Nutritious quinoa, great for salads or side dishes.", IsDeleted = false },
-                new Product(Guid.NewGuid()) { Category = "Grain", PName = "Barley", Price = 4.99, Weight = 500, ImageURL = "https://img.spoonacular.com/ingredients_500x500/pearl-barley.png", Description = "Whole grain barley, ideal for soups or stews.", IsDeleted = false },
-                new Product(Guid.NewGuid()) { Category = "Grain", PName = "Oats", Price = 3.99, Weight = 500, ImageURL = "https://img.spoonacular.com/ingredients_500x500/steel-cut-oats.png", Description = "Whole oats, perfect for breakfast.", IsDeleted = false },
-                new Product(Guid.NewGuid()) { Category = "Grain", PName = "Wheat Flour", Price = 2.99, Weight = 1000, ImageURL = "https://img.spoonacular.com/ingredients_500x500/flour.png", Description = "Whole wheat flour, essential for baking.", IsDeleted = false }
-            };
-
-            // Seed ATs
-            // Initialize the list to hold the AT entities
             var atEntities = new List<AT>();
 
-            // Products that should be available in all stores
-            var productsInAllStores = products.Take(30); // Choose the first 30 products to be available in all stores
+            // Store 1 gets **every product**
+            var store1 = stores.First(); // assuming store 1 is the first one
 
-            // Add products to all stores
-            foreach (var product in productsInAllStores)
+            foreach (var product in products)
             {
-                foreach (var store in stores)
+                var atEntity = new AT
                 {
-                    var atEntity = new AT
-                    {
-                        ProductID = product.Id,
-                        Product = product,
-                        StoreID = store.Id,
-                        Store = store,
-                        NumberAtStore = new Random().Next(10, 50), // Random stock quantity for each store
-                        IsDeleted = false
-                    };
+                    ProductID = product.Id,
+                    Product = product,
+                    StoreID = store1.Id,
+                    Store = store1,
+                    NumberAtStore = new Random().Next(10, 50),
+                    IsDeleted = false
+                };
 
-                    // Add the AT entity to the atEntities list
-                    atEntities.Add(atEntity);
-                }
+                atEntities.Add(atEntity);
             }
 
-            // Products that should be available in only 3 stores
-            var productsInThreeStores = products.Skip(30).Take(15); // Choose the next 15 products for 3 stores
+            // For remaining stores, each gets 70% of the products
+            var remainingStores = stores.Skip(1).ToList();
+            var productCount = products.Count();
+            var seventyPercentCount = (int)(productCount * 0.7);
 
-            // Add products to 3 random stores
-            foreach (var product in productsInThreeStores)
+            foreach (var store in remainingStores)
             {
-                var selectedStores = stores.OrderBy(s => Guid.NewGuid()).Take(3).ToList(); // Select 3 random stores
-                foreach (var store in selectedStores)
+                // Shuffle and take 70% of products for this store
+                var selectedProducts = products.OrderBy(_ => Guid.NewGuid()).Take(seventyPercentCount).ToList();
+
+                foreach (var product in selectedProducts)
                 {
                     var atEntity = new AT
                     {
@@ -421,11 +388,10 @@ namespace MealMate.DAL.EntityFrameworkCore
                         Product = product,
                         StoreID = store.Id,
                         Store = store,
-                        NumberAtStore = new Random().Next(5, 20), // Random stock quantity for each store
+                        NumberAtStore = new Random().Next(5, 30),
                         IsDeleted = false
                     };
 
-                    // Add the AT entity to the atEntities list
                     atEntities.Add(atEntity);
                 }
             }
@@ -435,76 +401,70 @@ namespace MealMate.DAL.EntityFrameworkCore
             var random = new Random();
             var bills = new List<Bill>();
 
-            for (int i = 0; i < 10; i++) // Generating 10 random bills
+            foreach (var customer in customers)
             {
-                var customer = customers[random.Next(customers.Count())];
-                var store = stores[random.Next(stores.Count())];
-                var bill = new Bill(Guid.NewGuid())
+                int numberOfBills = random.Next(3, 7);
+
+                for (int i = 0; i < numberOfBills; i++)
                 {
-                    PaymentMethod = random.Next(0, 2) == 0 ? "Credit Card" : "Momo", // Randomly pick payment method
-                    DateAndTime = DateTime.UtcNow.AddDays(-random.Next(1, 30)), // Random date within the past month
-                    CustomerID = customer.Id,
-                    Customer = customer,
-                    StoreID = store.Id,
-                    Store = store,
-                    TotalPrice = 0, // Total will be calculated based on Includes
-                    TotalWeight = 0, // Total weight will be calculated based on Includes
-                    DeliveryStatus = (DeliveryStatus)random.Next(1, Enum.GetValues(typeof(DeliveryStatus)).Length), // Random status
-                    ShippingAddress = customer.Address,
-                    IsDeleted = false
-                };
-                if (i != 9)
-                {
-                    var shipper = shippers[random.Next(shippers.Count())];
-                    bill.ShipperID = shipper.Id;
-                    bill.Shipper = shipper;
-                }
-                else if (i == 9)
-                {
-                    bill.DeliveryStatus = DeliveryStatus.Pending;
-                    bill.ShipperID = null;
-                    bill.Shipper = null;
-                }
-
-                // Generate Includes for each Bill
-                int numberOfItems = random.Next(1, 6); // Random number of products per bill (between 1 and 5)
-
-                double billTotalPrice = 0;
-                int billTotalWeight = 0;
-
-                var firstIndex = random.Next(products.Count());
-
-                for (int j = 0; j < numberOfItems; j++)
-                {
-                    var product = products[(firstIndex + j) % products.Length];
-                    int numberOfProducts = random.Next(1, 4); // Random number of products (between 1 and 3)
-
-                    double subTotal = product.Price * numberOfProducts;
-
-                    var include = new Include
+                    var store = stores[random.Next(stores.Count())];
+                    var bill = new Bill(Guid.NewGuid())
                     {
-                        TransactionID = bill.Id,
-                        ProductID = product.Id,
-                        Transaction = bill,
-                        Product = product,
-                        NumberOfProductInBill = numberOfProducts,
-                        SubTotal = subTotal,
+                        PaymentMethod = random.Next(0, 2) == 0 ? "Credit Card" : "Momo",
+                        DateAndTime = DateTime.UtcNow.AddDays(-random.Next(1, 30)),
+                        CustomerID = customer.Id,
+                        Customer = customer,
+                        StoreID = store.Id,
+                        Store = store,
+                        TotalPrice = 0,
+                        DeliveryStatus = (DeliveryStatus)random.Next(1, Enum.GetValues(typeof(DeliveryStatus)).Length),
+                        ShippingAddress = customer.Address,
                         IsDeleted = false
                     };
 
-                    // Add the Include entity to the Bill's Includes collection
-                    bill.Includes.Add(include);
+                    // Make 1 out of 6 bills pending without a shipper
+                    if (i == numberOfBills - 1)
+                    {
+                        bill.DeliveryStatus = DeliveryStatus.Pending;
+                        bill.ShipperID = null;
+                        bill.Shipper = null;
+                    }
+                    else
+                    {
+                        var shipper = shippers[random.Next(shippers.Count())];
+                        bill.ShipperID = shipper.Id;
+                        bill.Shipper = shipper;
+                    }
 
-                    // Update the bill's total price and weight
-                    billTotalPrice += subTotal;
-                    billTotalWeight += product.Weight * numberOfProducts;
+                    // Generate Includes
+                    int numberOfItems = random.Next(4, 10);
+                    double billTotalPrice = 0;
+                    var firstIndex = random.Next(products.Length);
+
+                    for (int j = 0; j < numberOfItems; j++)
+                    {
+                        var product = products[(firstIndex + j) % products.Length];
+                        int numberOfProducts = random.Next(1, 5);
+                        double subTotal = product.Price * numberOfProducts;
+
+                        var include = new Include
+                        {
+                            TransactionID = bill.Id,
+                            ProductID = product.Id,
+                            Transaction = bill,
+                            Product = product,
+                            NumberOfProductInBill = numberOfProducts,
+                            SubTotal = subTotal,
+                            IsDeleted = false
+                        };
+
+                        bill.Includes.Add(include);
+                        billTotalPrice += subTotal;
+                    }
+
+                    bill.TotalPrice = billTotalPrice;
+                    bills.Add(bill);
                 }
-
-                // Assign total price and weight to the bill after Includes are added
-                bill.TotalPrice = billTotalPrice;
-                bill.TotalWeight = billTotalWeight;
-
-                bills.Add(bill);
             }
             // Now `bills` contains the generated Bill and Include data
 
@@ -549,15 +509,16 @@ namespace MealMate.DAL.EntityFrameworkCore
             var random1 = new Random();
             var promoteProducts = new List<PromoteProduct>();
 
-            // For each product promotion, apply it to a random number of products
             foreach (var promotion in productPromotions)
             {
-                // Select a random subset of products to apply the promotion to
-                var selectedProducts = products.OrderBy(p => Guid.NewGuid()).Take(random1.Next(1, 6)).ToList(); // Random 1 to 5 products
+                // Calculate 30% of products (rounded down)
+                int count = (int)(products.Length * 0.3);
+
+                // Select random 30% of products
+                var selectedProducts = products.OrderBy(p => Guid.NewGuid()).Take(count).ToList();
 
                 foreach (var product in selectedProducts)
                 {
-                    // Create a new PromoteProduct object to associate the ProductPromotion with a Product
                     var promoteProduct = new PromoteProduct
                     {
                         ProductId = product.Id,
@@ -566,9 +527,7 @@ namespace MealMate.DAL.EntityFrameworkCore
                         ProductPromotion = promotion
                     };
 
-                    promoteProducts.Add(promoteProduct); // Add the PromoteProduct to the list of PromoteProducts
-
-                    // Optionally, you could also add it to the promotion's PromoteProducts collection if needed
+                    promoteProducts.Add(promoteProduct);
                     promotion.PromoteProducts.Add(promoteProduct);
                 }
             }
@@ -655,43 +614,79 @@ namespace MealMate.DAL.EntityFrameworkCore
                 new CustomerPromotion(Guid.NewGuid())
                 {
                     Discount = 0.25m,
-                    Name = "New Beef Ribeye try out",
-                    Description = "25% off for Beef Ribeye",
+                    Name = "New Ground Beef try out",
+                    Description = "20% off for Ground Beef",
                     StartDay = new DateTime(2024, 11, 01).ToUniversalTime(),
                     EndDay = new DateTime(2025, 11, 30).ToUniversalTime(),
-                    ProductId = products[7].Id
+                    ProductId = products[18].Id
                 },
                 new CustomerPromotion(Guid.NewGuid())
                 {
-                    Discount = 0.30m,
-                    Name = "Whole Milk discount",
-                    Description = "30% off on Whole Milk",
+                    Discount = 0.15m,
+                    Name = "New Rice discount",
+                    Description = "15% off on Rice",
                     StartDay = new DateTime(2024, 11, 01).ToUniversalTime(),
                     EndDay = new DateTime(2025, 11, 30).ToUniversalTime(),
-                    ProductId = products[15].Id
+                    ProductId = products[104].Id
                 },
                 new CustomerPromotion(Guid.NewGuid())
                 {
-                    Discount = 0.50m,
-                    Name = "Pork Belly discount",
-                    Description = "50% off on Pork Belly",
+                    Discount = 0.20m,
+                    Name = "Fish Fillet discount",
+                    Description = "20% off on Fish Fillet",
                     StartDay = new DateTime(2024, 11, 01).ToUniversalTime(),
                     EndDay = new DateTime(2025, 11, 30).ToUniversalTime(),
-                    ProductId = products[0].Id
+                    ProductId = products[1084].Id
+                },
+                new CustomerPromotion(Guid.NewGuid())
+                {
+                    Discount = 0.15m,
+                    Name = "New Bananas try out",
+                    Description = "15% off for Beef Ribeye",
+                    StartDay = new DateTime(2024, 11, 01).ToUniversalTime(),
+                    EndDay = new DateTime(2025, 11, 30).ToUniversalTime(),
+                    ProductId = products[541].Id
+                },
+                new CustomerPromotion(Guid.NewGuid())
+                {
+                    Discount = 0.2m,
+                    Name = "Whipped Cream discount",
+                    Description = "20% off on Whipped Cream",
+                    StartDay = new DateTime(2024, 11, 01).ToUniversalTime(),
+                    EndDay = new DateTime(2025, 11, 30).ToUniversalTime(),
+                    ProductId = products[490].Id
                 }
             };
 
             var promoteCustomers = new List<PromoteCustomer>();
             var random3 = new Random();
 
-            // Assume each customer can receive 1-3 random promotions
-            foreach (var customer in customers)
-            {
-                // Choose a random number of promotions for the customer (between 1 and 3)
-                int promotionsForCustomer = random3.Next(1, 4);
+            // Get counts based on percentages
+            int totalCustomers = customers.Length;
+            int count0 = (int)(totalCustomers * 0.3);
+            int count1 = (int)(totalCustomers * 0.4);
+            int count2 = (int)(totalCustomers * 0.2);
+            int count3 = totalCustomers - (count0 + count1 + count2); // Whatever remains
 
-                // Randomly select promotions from customerPromotions for this customer
-                var selectedPromotions = customerPromotions.OrderBy(_ => Guid.NewGuid()).Take(promotionsForCustomer);
+            // Create a list matching the promotion counts per customer
+            var promotionDistribution = new List<int>();
+            promotionDistribution.AddRange(Enumerable.Repeat(0, count0));
+            promotionDistribution.AddRange(Enumerable.Repeat(1, count1));
+            promotionDistribution.AddRange(Enumerable.Repeat(2, count2));
+            promotionDistribution.AddRange(Enumerable.Repeat(3, count3));
+
+            // Shuffle the distribution
+            promotionDistribution = promotionDistribution.OrderBy(_ => Guid.NewGuid()).ToList();
+
+            // Assign promotions to customers
+            for (int i = 0; i < totalCustomers; i++)
+            {
+                var customer = customers[i];
+                int promotionCount = promotionDistribution[i];
+
+                var selectedPromotions = customerPromotions
+                    .OrderBy(_ => Guid.NewGuid())
+                    .Take(promotionCount);
 
                 foreach (var promotion in selectedPromotions)
                 {
@@ -703,11 +698,11 @@ namespace MealMate.DAL.EntityFrameworkCore
                         CustomerPromotion = promotion
                     };
 
-                    // Add to the PromoteCustomer list and update the CustomerPromotion's collection
                     promoteCustomers.Add(promoteCustomer);
-                    promotion.PromoteCustomers.Add(promoteCustomer); // Update the collection if required
+                    promotion.PromoteCustomers.Add(promoteCustomer);
                 }
             }
+
 
 
             // Continue adding similar blocks for other entities like BillPromotion, CustomerPromotion, Shipper, StoreManager, Store, etc.
@@ -740,3 +735,17 @@ namespace MealMate.DAL.EntityFrameworkCore
     }
 }
 
+public class LoadedProductDto
+{
+    public int Id { get; set; } // Ignored in Product class
+    public string Image { get; set; }
+    public string Consistency { get; set; }
+    public string Name { get; set; }
+    public string NameClean { get; set; }
+    public string OriginalName { get; set; }
+    public int Amount { get; set; }
+    public string Unit { get; set; }
+    public double Price { get; set; }
+    public string Aisle { get; set; }
+    public string Description { get; set; } // Optional in JSON, will use default if missing
+}

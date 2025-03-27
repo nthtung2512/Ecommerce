@@ -3,6 +3,7 @@ using System;
 using MealMate.DAL.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MealMate.DAL.Migrations
 {
     [DbContext(typeof(MealMateDbContext))]
-    partial class MealMateDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250326022330_InitialCreateMMv2")]
+    partial class InitialCreateMMv2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -651,6 +654,9 @@ namespace MealMate.DAL.Migrations
             modelBuilder.Entity("MealMate.DAL.Entities.ApplicationUser.Shipper", b =>
                 {
                     b.HasBaseType("MealMate.DAL.Entities.ApplicationUser.ApplicationUser");
+
+                    b.Property<int>("VehicleCapacity")
+                        .HasColumnType("integer");
 
                     b.ToTable("shipper", (string)null);
                 });
