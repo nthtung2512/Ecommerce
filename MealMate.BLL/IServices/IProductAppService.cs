@@ -7,6 +7,7 @@ namespace MealMate.BLL.IServices
     {
         // Product
         Task<ProductDto> GetProductByIdAsync(Guid productId);
+        Task<List<ProductDto>> GetAllProductsAsync();
         Task<List<ProductDto>> GetListProductByCategoryAsync(string category);
         Task<List<ProductDto>> GetListProductByPromotionIDAsync(Guid id);
         Task<List<ProductDto>> GetListProductHavePromotionAsync();

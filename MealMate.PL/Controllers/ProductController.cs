@@ -27,6 +27,12 @@ namespace MealMate.PL.Controllers
             _reserveCartCacheService = reserveCartCacheService;
         }
 
+        [HttpGet("all")]
+        public async Task<IActionResult> GetAllProducts()
+        {
+            var products = await _productAppService.GetAllProductsAsync();
+            return Ok(products);
+        }
 
         [HttpGet("category/{category}")]
         public async Task<IActionResult> GetListProductByCategory(string category)

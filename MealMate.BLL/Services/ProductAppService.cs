@@ -58,6 +58,22 @@ namespace MealMate.BLL.Services
             return productDtos;
         }
 
+        public async Task<List<ProductDto>> GetAllProductsAsync()
+        {
+            var products = await _productRepository.GetAllAsync();
+            if (products.Count == 0)
+            {
+                throw new EntityNotFoundException("No product found");
+            }
+            var productDtos = new List<ProductDto>();
+            foreach (var product in products)
+            {
+                var productDto = await _mapProductService.MapProductDto(product);
+                productDtos.Add(productDto);
+            }
+            return productDtos;
+        }
+
         public async Task<List<ProductDto>> GetListProductByCategoryAsync(string category)
         {
             var products = await _productRepository.GetListProductByCategoryAsync(category);
