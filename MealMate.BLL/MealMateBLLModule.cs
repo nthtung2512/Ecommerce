@@ -5,6 +5,7 @@ using MealMate.BLL.AutoMapperProfiles;
 using MealMate.BLL.ExceptionHandler;
 using MealMate.BLL.IServices;
 using MealMate.BLL.IServices.auth;
+using MealMate.BLL.IServices.Chatbot;
 using MealMate.BLL.IServices.Delivery;
 using MealMate.BLL.IServices.Hubs;
 using MealMate.BLL.IServices.Payment;
@@ -13,6 +14,7 @@ using MealMate.BLL.IServices.Search;
 using MealMate.BLL.IServices.Utility;
 using MealMate.BLL.Services;
 using MealMate.BLL.Services.auth;
+using MealMate.BLL.Services.Chatbot;
 using MealMate.BLL.Services.Delivery;
 using MealMate.BLL.Services.Hubs;
 using MealMate.BLL.Services.Payment;
@@ -60,6 +62,9 @@ namespace MealMate.BLL
             services.AddScoped<IReserveCartItemCacheService, ReserveCartItemCacheService>();
 
             services.AddScoped<IRouteService, RouteService>();
+
+            services.AddScoped<IRecipeAppService, RecipeAppService>();
+            services.AddScoped<IRecipeRatingAppService, RecipeRatingAppService>();
 
             services.AddSignalR();
 

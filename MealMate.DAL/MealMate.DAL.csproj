@@ -50,6 +50,9 @@
     <None Update="EntityFrameworkCore\cleaned_data_nometa.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="EntityFrameworkCore\filtered_recipes.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

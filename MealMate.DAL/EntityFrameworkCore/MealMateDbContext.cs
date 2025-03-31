@@ -1,4 +1,5 @@
 ﻿using MealMate.DAL.Entities.ApplicationUser;
+using MealMate.DAL.Entities.Chatbot;
 using MealMate.DAL.Entities.Products;
 using MealMate.DAL.Entities.Promotion;
 using MealMate.DAL.Entities.Stores;
@@ -29,6 +30,9 @@ namespace MealMate.DAL.EntityFrameworkCore
         public DbSet<Include> Includes { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<CartItem> CartItems { get; set; }
+        public DbSet<Recipe> Recipes { get; set; }
+        public DbSet<RecipeRating> RecipeRatings { get; set; }
+        public DbSet<Ingredient> Ingredients { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -217,6 +221,51 @@ namespace MealMate.DAL.EntityFrameworkCore
             builder.Entity<CartItem>(b =>
             {
                 b.ToTable(PortalConst.DbTablePrefix + "cart_item", PortalConst.DbSchema).HasKey(i => i.CartItemID);
+            });
+
+            builder.Entity<Recipe>(b =>
+            {
+                b.ToTable(PortalConst.DbTablePrefix + "recipe", PortalConst.DbSchema);
+
+                // Define One-to-Many: Recipe -> Ingredients
+                b.HasMany(r => r.Ingredients)
+                 .WithOne(i => i.Recipe)
+                 .HasForeignKey(i => i.RecipeId)
+                 .OnDelete(DeleteBehavior.Cascade); // Deleting a Recipe deletes its Ingredients
+            });
+
+            builder.Entity<RecipeRating>(b =>
+            {
+                b.ToTable(PortalConst.DbTablePrefix + "recipe_rating", PortalConst.DbSchema);
+
+                // Composite key (CustomerId + RecipeId)
+                b.HasKey(r => new { r.CustomerId, r.RecipeId });
+
+                // Foreign Key: Recipe -> RecipeRating
+                b.HasOne<Recipe>()
+                 .WithMany()
+                 .HasForeignKey(r => r.RecipeId)
+                 .OnDelete(DeleteBehavior.Cascade);
+
+                // Foreign Key: Customer -> RecipeRating
+                b.HasOne<Customer>()
+                 .WithMany()
+                 .HasForeignKey(r => r.CustomerId)
+                 .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            builder.Entity<Ingredient>(b =>
+            {
+                b.ToTable(PortalConst.DbTablePrefix + "ingredient", PortalConst.DbSchema);
+
+                // Define Composite Key: (RecipeId, Name)
+                b.HasKey(i => new { i.RecipeId, i.Name });
+
+                // Define Foreign Key for Recipe
+                b.HasOne(i => i.Recipe)
+                 .WithMany(r => r.Ingredients)
+                 .HasForeignKey(i => i.RecipeId)
+                 .OnDelete(DeleteBehavior.Cascade);
             });
         }
     }

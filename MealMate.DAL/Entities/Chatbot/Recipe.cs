@@ -4,13 +4,15 @@ namespace MealMate.DAL.Entities.Chatbot
 {
     public class Recipe(Guid id) : Entity<Guid>(id)
     {
-        public required string RecipeName { get; set; }
-        public required string RecipeDescription { get; set; }
-        public required string Difficulty { get; set; }
-        public required string RecipeInstructions { get; set; }
-        public string RecipeTags { get; set; } = string.Empty;
-        public required string CookingTime { get; set; }
-        public required string NumOfServe { get; set; }
-        public string[] GetListRecipeInstructions() => RecipeInstructions.Split(';');
+        public required string Title { get; set; }
+        public required string Tags { get; set; }
+        public List<Ingredient> Ingredients { get; } = [];
+        public string Instructions { get; set; } = string.Empty;
+        public required string Summary { get; set; }
+        public required int HealthScore { get; set; }
+        public required int ReadyInMinutes { get; set; }
+        public required int Servings { get; set; }
+        public string Image { get; set; } = string.Empty;
+        public string[] GetListTags() => Tags.Split(';');
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Bogus;
 using MealMate.DAL.Entities.ApplicationUser;
+using MealMate.DAL.Entities.Chatbot;
 using MealMate.DAL.Entities.Products;
 using MealMate.DAL.Entities.Promotion;
 using MealMate.DAL.Entities.Stores;
@@ -121,6 +122,69 @@ namespace MealMate.DAL.EntityFrameworkCore
 
             return customers.ToArray();
         }
+
+        public static Recipe[] GetSeedRecipes()
+        {
+            // Path to JSON file
+            string jsonFilePath = Path.GetFullPath(
+                Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "MealMate.DAL", "EntityFrameworkCore", "filtered_recipes.json")
+            );
+
+            Console.WriteLine("JSON file path: " + jsonFilePath);
+
+            // Read JSON file
+            string jsonString = File.ReadAllText(jsonFilePath);
+
+            // Deserialize JSON into a list of RecipeDTO objects
+            var recipeDtos = JsonSerializer.Deserialize<List<RecipeDto>>(jsonString, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
+
+            if (recipeDtos == null)
+            {
+                throw new Exception("Failed to deserialize JSON file.");
+            }
+
+            // Map DTOs to Recipe entities
+            var recipes = recipeDtos.Select(dto =>
+            {
+                var recipe = new Recipe(Guid.NewGuid())
+                {
+                    Title = dto.Title,
+                    Tags = string.Join(";", dto.Tags),
+                    Instructions = dto.Instructions ?? string.Empty,
+                    Summary = dto.Summary,
+                    HealthScore = dto.HealthScore,
+                    ReadyInMinutes = dto.ReadyInMinutes,
+                    Servings = dto.Servings,
+                    Image = dto.Image ?? string.Empty
+                };
+
+                // Process Ingredients to remove duplicates (keep only last occurrence)
+                var uniqueIngredients = dto.Ingredients
+                    .GroupBy(ing => ing.Name, StringComparer.OrdinalIgnoreCase) // Group by Name (case-insensitive)
+                    .Select(group => group.Last()) // Keep the last occurrence
+                    .ToList();
+
+                // Populate Ingredients separately since Ingredients is read-only
+                recipe.Ingredients.AddRange(uniqueIngredients.Select(ing => new Ingredient
+                {
+                    RecipeId = recipe.Id,  // Use the Recipe's actual ID
+                    Recipe = recipe,       // Set the required Recipe reference
+                    Name = ing.Name,
+                    Amount = ing.Amount,
+                    Unit = ing.Unit,
+                    Original = ing.Original,
+                    NameClean = ing.NameClean ?? string.Empty
+                }));
+
+                return recipe;
+            }).ToArray();
+
+            return recipes;
+        }
+
         public async Task SeedDevelopmentStagingAsync()
         {
             _context.Database.EnsureCreated();
@@ -511,10 +575,10 @@ namespace MealMate.DAL.EntityFrameworkCore
 
             foreach (var promotion in productPromotions)
             {
-                // Calculate 30% of products (rounded down)
-                int count = (int)(products.Length * 0.3);
+                // Calculate 15% of products (rounded down)
+                int count = (int)(products.Length * 0.15);
 
-                // Select random 30% of products
+                // Select random 15% of products
                 var selectedProducts = products.OrderBy(p => Guid.NewGuid()).Take(count).ToList();
 
                 foreach (var product in selectedProducts)
@@ -663,9 +727,9 @@ namespace MealMate.DAL.EntityFrameworkCore
 
             // Get counts based on percentages
             int totalCustomers = customers.Length;
-            int count0 = (int)(totalCustomers * 0.3);
-            int count1 = (int)(totalCustomers * 0.4);
-            int count2 = (int)(totalCustomers * 0.2);
+            int count0 = (int)(totalCustomers * 0.6);
+            int count1 = (int)(totalCustomers * 0.2);
+            int count2 = (int)(totalCustomers * 0.1);
             int count3 = totalCustomers - (count0 + count1 + count2); // Whatever remains
 
             // Create a list matching the promotion counts per customer
@@ -729,6 +793,8 @@ namespace MealMate.DAL.EntityFrameworkCore
             _context.CustomerPromotions.AddRange(customerPromotions);
             if (!_context.PromoteCustomers.Any())
                 _context.PromoteCustomers.AddRange(promoteCustomers);
+            if (!_context.Recipes.Any())
+                _context.Recipes.AddRange(GetSeedRecipes());
 
             await _context.SaveChangesAsync();
         }
@@ -748,4 +814,29 @@ public class LoadedProductDto
     public double Price { get; set; }
     public string Aisle { get; set; }
     public string Description { get; set; } // Optional in JSON, will use default if missing
+}
+
+// DTO classes for JSON mapping
+public class RecipeDto
+{
+    public required int Id { get; set; }
+    public required string Title { get; set; }
+    public required List<string> Tags { get; set; }
+    public required List<IngredientDto> Ingredients { get; set; }
+    public required string Instructions { get; set; }
+    public required string Summary { get; set; }
+    public required int HealthScore { get; set; }
+    public required int ReadyInMinutes { get; set; }
+    public required int Servings { get; set; }
+    public required string Image { get; set; }
+}
+
+public class IngredientDto
+{
+    public required int Id { get; set; }
+    public required string Name { get; set; }
+    public required double Amount { get; set; }
+    public required string Unit { get; set; }
+    public required string Original { get; set; }
+    public required string NameClean { get; set; }
 }

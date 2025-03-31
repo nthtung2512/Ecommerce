@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using MealMate.Base;
 using MealMate.DAL.Entities.ApplicationUser;
+using MealMate.DAL.Entities.Chatbot;
 using MealMate.DAL.Entities.Transactions;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -12,6 +13,7 @@ namespace MealMate.DAL
         {
             services.AddScoped<IValidator<ApplicationUser>, ApplicationUserValidator>();
             services.AddScoped<IValidator<Product>, ProductValidator>();
+            services.AddScoped<IValidator<RecipeRating>, RecipeRatingValidator>();
         }
     }
 }

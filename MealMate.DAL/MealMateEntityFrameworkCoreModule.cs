@@ -5,10 +5,12 @@ using MealMate.DAL.EntityFrameworkCore;
 using MealMate.DAL.IRepositories;
 using MealMate.DAL.IRepositories.auth;
 using MealMate.DAL.IRepositories.CartRedis;
+using MealMate.DAL.IRepositories.Chatbot;
 using MealMate.DAL.IRepositories.UnitOfWork;
 using MealMate.DAL.Repositories;
 using MealMate.DAL.Repositories.auth;
 using MealMate.DAL.Repositories.CartRedis;
+using MealMate.DAL.Repositories.Chatbot;
 using MealMate.DAL.Repositories.UnitOfWork;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -38,6 +40,8 @@ namespace MealMate.DAL
             services.AddScoped<IAtRepository, AtRepository>();
             services.AddScoped<IShipperRepository, ShipperRepository>();
             services.AddScoped<ICartRepository, CartRepository>();
+            services.AddScoped<IRecipeRepository, RecipeRepository>();
+            services.AddScoped<IRecipeRatingRepository, RecipeRatingRepository>();
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
