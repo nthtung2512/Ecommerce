@@ -35,6 +35,13 @@ public class TransactionController : ControllerBase
         return Ok(bill);
     }
 
+    [HttpGet("status/{status}")]
+    public async Task<IActionResult> GetBillListByStatus(DeliveryStatus status)
+    {
+        var bills = await _transactionService.GetBillListByStatusAsync(status);
+        return Ok(bills);
+    }
+
     [HttpGet("store/{storeid}/{status}")]
     public async Task<IActionResult> GetBillListByStoreIdAsync(Guid storeid, DeliveryStatus status)
     {
