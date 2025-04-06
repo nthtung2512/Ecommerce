@@ -100,5 +100,17 @@ namespace MealMate.PL.Controllers
                 return StatusCode(500, new { error = "Error retrieving last customer ID", details = ex.Message });
             }
         }
+
+        [HttpGet("chatbot/purchase_history/{customerId}")]
+        [SwaggerOperation(
+            Summary = "Get purchase history by customer id",
+            Description = "Return: List<IncludeDto>"
+        )]
+        public async Task<IActionResult> GetPurchaseHistory(Guid customerId)
+        {
+            var purchaseHistory = await _transactionService.GetCustomerPurchaseHistory(customerId);
+            return Ok(purchaseHistory);
+            
+        }
     }
 }

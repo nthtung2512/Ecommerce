@@ -15,5 +15,7 @@ namespace MealMate.BLL.IServices
         Task<BillDto> AssignShipperToBillAsync(Guid transactionId, Guid shipperId);
         Task<DeliveryStatus> UpdateDeliveryStatusAsync(Guid transactionId, DeliveryStatus status);
         Task<CancelOrderDto> CancelOrderAsync(Guid billId, DeliveryStatus deliveryStatus);
+        Task<List<BillDto>> GetBillListByStatusAsync(DeliveryStatus status);
+        Task<List<ChatbotHistoryBillDto>> GetCustomerPurchaseHistory(Guid customerId);
     }
 }

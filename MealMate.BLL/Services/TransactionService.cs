@@ -86,6 +86,16 @@ namespace MealMate.BLL.Services
             return fullBillDto;
         }
 
+        public async Task<List<BillDto>> GetBillListByStatusAsync(DeliveryStatus status)
+        {
+            var bills = await _transactionRepository.GetBillListByStatusAsync(status);
+            if (bills.Count == 0)
+            {
+                throw new EntityNotFoundException("No bills found");
+            }
+            return _mapper.Map<List<BillDto>>(bills);
+        }
+
         public async Task<Guid> GetLastBillIdAsync(Guid customerId)
         {
             var bills = await _transactionRepository.GetBillListAsync(customerId) ?? throw new EntityNotFoundException("No bills found for the customer.");
@@ -278,6 +288,40 @@ namespace MealMate.BLL.Services
                 Bill = billDto,
                 OldShipperId = oldShipperId
             };
+        }
+
+        public async Task<List<ChatbotHistoryBillDto>> GetCustomerPurchaseHistory(Guid customerId)
+        {
+            var bills = await _transactionRepository.GetDetailBillListAsync(customerId);
+            if (bills.Count == 0)
+            {
+                throw new EntityNotFoundException("No bills found");
+            }
+
+            var fullBillDtos = new List<ChatbotHistoryBillDto>();
+            foreach (var bill in bills)
+            {
+                var includesDto = bill.Includes.Select(include => new IncludeDto
+                {
+                    TransactionID = include.TransactionID,
+                    ProductID = include.ProductID,
+                    NumberOfProductInBill = include.NumberOfProductInBill,
+                    SubTotal = include.SubTotal,
+                    Product = _mapper.Map<ProductCreationDto>(include.Product)
+                }).ToList();
+
+                var fullBillDto = new ChatbotHistoryBillDto
+                {
+                    TransactionId = bill.Id,
+                    CustomerID = bill.CustomerID,
+                    DateAndTime = bill.DateAndTime,
+                    TotalPrice = bill.TotalPrice,
+                    Includes = includesDto
+                };
+                fullBillDtos.Add(fullBillDto);
+            }
+
+            return fullBillDtos;
         }
     }
 }
