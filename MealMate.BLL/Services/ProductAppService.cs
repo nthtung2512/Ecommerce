@@ -148,6 +148,14 @@ namespace MealMate.BLL.Services
 
         public async Task<List<ProductDto>> GetListProductHavePromotionAsync()
         {
+            string cacheKey = "products-promotion";
+            var cached = await _redisCacheService.GetDataAsync<List<ProductDto>>(cacheKey);
+            if (cached != null)
+            {
+                return cached;
+            }
+
+            // If not cached, fetch from the database
             var products = await _productRepository.GetListProductHavePromotionAsync();
             if (products.Count == 0)
             {
@@ -171,6 +179,13 @@ namespace MealMate.BLL.Services
 
         public async Task<List<TempTop5Product>> GetTempTop5ProductsAsync(int year)
         {
+            string cacheKey = $"products-top5:{year}";
+            var cached = await _redisCacheService.GetDataAsync<List<TempTop5Product>>(cacheKey);
+            if (cached != null)
+            {
+                return cached;
+            }
+            // If not cached, fetch from the database
             var tempTop5Products = await _productRepository.GetTempTop5ProductsAsync(year);
             if (tempTop5Products.Count == 0)
             {

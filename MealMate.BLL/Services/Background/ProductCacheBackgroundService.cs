@@ -1,6 +1,7 @@
 ﻿using MealMate.BLL.Dtos.Product;
 using MealMate.BLL.IServices;
 using MealMate.BLL.IServices.Redis;
+using MealMate.DAL.Entities.Transactions;
 using MealMate.DAL.IRepositories;
 using MealMate.DAL.Utils.Exceptions;
 using Microsoft.Extensions.DependencyInjection;
@@ -80,6 +81,48 @@ namespace MealMate.BLL.Services.Background
                 }
             }
 
+            // Cache products have promotions
+            var keyPromotion = "products-promotion";
+            var existingPromotion = await redisCacheService.GetDataAsync<List<ProductDto>>(keyPromotion);
+            if (existingPromotion != null)
+            {
+                _logger.LogInformation("Cache already exists for products with promotions, skipping.");
+            }
+            else
+            {
+                try
+                {
+                    var products = await productService.GetListProductHavePromotionAsync();
+                    await redisCacheService.SetDataAsync(keyPromotion, products, ttl);
+                    _logger.LogInformation("Cached products with promotions");
+                }
+                catch (EntityNotFoundException)
+                {
+                    _logger.LogWarning("No products found with promotions");
+                }
+            }
+
+            // Cache top 5 products
+            var keyTop5 = "products-top5";
+            var existingTop5 = await redisCacheService.GetDataAsync<List<TempTop5Product>>(keyTop5);
+            if (existingTop5 != null)
+            {
+                _logger.LogInformation("Cache already exists for top 5 products, skipping.");
+            }
+            else
+            {
+                try
+                {
+                    var year = DateTime.UtcNow.Year;
+                    var top5Products = await productService.GetTempTop5ProductsAsync(year);
+                    await redisCacheService.SetDataAsync(keyTop5, top5Products, ttl);
+                    _logger.LogInformation("Cached top 5 products");
+                }
+                catch (EntityNotFoundException)
+                {
+                    _logger.LogWarning("No top 5 products found");
+                }
+            }
             _logger.LogInformation("Product caching completed.");
         }
     }
