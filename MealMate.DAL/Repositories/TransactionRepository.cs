@@ -79,6 +79,11 @@ namespace MealMate.DAL.Repositories
             return await _context.Bills.Where(b => b.CustomerID == customerId).ToListAsync();
         }
 
+        public async Task<List<Bill>> GetDetailBillListAsync(Guid customerId)
+        {
+            return await _context.Bills.Include(b => b.Includes).ThenInclude(i => i.Product).Where(b => b.CustomerID == customerId && !b.IsDeleted).ToListAsync();
+        }
+
         public async Task<List<Bill>> GetAllBillAsync()
         {
             return await _context.Bills.Include(b => b.Includes).ToListAsync();

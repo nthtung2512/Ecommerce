@@ -290,15 +290,15 @@ namespace MealMate.BLL.Services
             };
         }
 
-        public async Task<List<FullBillDto>> GetCustomerPurchaseHistory(Guid customerId)
+        public async Task<List<ChatbotHistoryBillDto>> GetCustomerPurchaseHistory(Guid customerId)
         {
-            var bills = await _transactionRepository.GetBillListAsync(customerId);
+            var bills = await _transactionRepository.GetDetailBillListAsync(customerId);
             if (bills.Count == 0)
             {
                 throw new EntityNotFoundException("No bills found");
             }
 
-            var fullBillDtos = new List<FullBillDto>();
+            var fullBillDtos = new List<ChatbotHistoryBillDto>();
             foreach (var bill in bills)
             {
                 var includesDto = bill.Includes.Select(include => new IncludeDto
@@ -310,17 +310,12 @@ namespace MealMate.BLL.Services
                     Product = _mapper.Map<ProductCreationDto>(include.Product)
                 }).ToList();
 
-                var fullBillDto = new FullBillDto
+                var fullBillDto = new ChatbotHistoryBillDto
                 {
                     TransactionId = bill.Id,
                     CustomerID = bill.CustomerID,
-                    StoreID = bill.StoreID,
-                    ShipperID = bill.ShipperID,
-                    PaymentMethod = bill.PaymentMethod,
                     DateAndTime = bill.DateAndTime,
-                    DeliveryStatus = bill.DeliveryStatus,
                     TotalPrice = bill.TotalPrice,
-                    ShippingAddress = bill.ShippingAddress,
                     Includes = includesDto
                 };
                 fullBillDtos.Add(fullBillDto);
