@@ -85,5 +85,14 @@ namespace MealMate.DAL.Repositories
         {
             return await Query.ToListAsync();
         }
+
+        public Task<List<string>> GetAllCategoriesAsync()
+        {
+            return _context.Products
+                .Where(p => !p.IsDeleted)
+                .Select(p => p.Aisle)
+                .Distinct()
+                .ToListAsync();
+        }
     }
 }

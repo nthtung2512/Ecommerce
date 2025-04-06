@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using MealMate.BLL.Dtos.Product;
 using MealMate.BLL.IServices;
+using MealMate.BLL.IServices.Redis;
 using MealMate.BLL.IServices.Utility;
 using MealMate.DAL.Entities.Transactions;
 using MealMate.DAL.IRepositories;
@@ -14,16 +15,18 @@ namespace MealMate.BLL.Services
         private readonly IProductRepository _productRepository;
         private readonly ITransactionRepository _transactionRepository;
         private readonly IMapProductService _mapProductService;
+        private readonly IRedisCacheService _redisCacheService;
         private readonly IValidator<Product> _productValidator;
         private readonly GuidGenerator _guidGenerator;
 
-        public ProductAppService(IProductRepository productRepository, GuidGenerator guidGenerator, IValidator<Product> productValidator, ITransactionRepository transactionRepository, IMapProductService mapProductService)
+        public ProductAppService(IProductRepository productRepository, GuidGenerator guidGenerator, IValidator<Product> productValidator, ITransactionRepository transactionRepository, IMapProductService mapProductService, IRedisCacheService redisCacheService)
         {
             _productRepository = productRepository;
             _guidGenerator = guidGenerator;
             _productValidator = productValidator;
             _transactionRepository = transactionRepository;
             _mapProductService = mapProductService;
+            _redisCacheService = redisCacheService;
         }
 
         public async Task<List<ProductDto>> GetAllItemsByBillIdAsync(Guid transactionId)
@@ -60,18 +63,27 @@ namespace MealMate.BLL.Services
 
         public async Task<List<ProductDto>> GetListProductByCategoryAsync(string category)
         {
+            string cacheKey = $"products-category:{category}";
+            var cached = await _redisCacheService.GetDataAsync<List<ProductDto>>(cacheKey);
+            if (cached != null)
+            {
+                return cached;
+            }
+
             var products = await _productRepository.GetListProductByCategoryAsync(category);
             if (products.Count == 0)
             {
                 throw new EntityNotFoundException("No product found for this category");
             }
-            var productDtos = new List<ProductDto>();
 
+            var productDtos = new List<ProductDto>();
             foreach (var product in products)
             {
                 var productDto = await _mapProductService.MapProductDto(product);
                 productDtos.Add(productDto);
             }
+
+            await _redisCacheService.SetDataAsync(cacheKey, productDtos);
             return productDtos;
         }
 
@@ -94,17 +106,27 @@ namespace MealMate.BLL.Services
 
         public async Task<List<ProductDto>> GetListProductByStoreIDAsync(Guid storeId)
         {
+            string cacheKey = $"products-store:{storeId}";
+            var cached = await _redisCacheService.GetDataAsync<List<ProductDto>>(cacheKey);
+            if (cached != null)
+            {
+                return cached;
+            }
+
             var products = await _productRepository.GetListProductByStoreIDAsync(storeId);
             if (products.Count == 0)
             {
                 throw new EntityNotFoundException("No product found for this store");
             }
+
             var productDtos = new List<ProductDto>();
             foreach (var product in products)
             {
                 var productDto = await _mapProductService.MapProductDto(product);
                 productDtos.Add(productDto);
             }
+
+            await _redisCacheService.SetDataAsync(cacheKey, productDtos);
             return productDtos;
         }
 
@@ -156,6 +178,16 @@ namespace MealMate.BLL.Services
             }
 
             return productDtos;
+        }
+
+        public async Task<List<string>> GetAllCategories()
+        {
+            var categories = await _productRepository.GetAllCategoriesAsync() ?? throw new EntityNotFoundException("No category found");
+            if (categories.Count == 0)
+            {
+                throw new EntityNotFoundException("No category found");
+            }
+            return categories;
         }
 
         public async Task<ProductDto> CreateProductAsync(ProductCreationDto createData)

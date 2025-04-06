@@ -14,6 +14,7 @@ using MealMate.BLL.IServices.Search;
 using MealMate.BLL.IServices.Utility;
 using MealMate.BLL.Services;
 using MealMate.BLL.Services.auth;
+using MealMate.BLL.Services.Background;
 using MealMate.BLL.Services.Chatbot;
 using MealMate.BLL.Services.Delivery;
 using MealMate.BLL.Services.Hubs;
@@ -73,6 +74,7 @@ namespace MealMate.BLL
             services.AddScoped<IElasticSearchService, ElasticSearchService>();
 
             services.AddHostedService<RedisExpirationSubscriber>();
+            services.AddHostedService<ProductCacheBackgroundService>();
 
 
             /*services.AddScoped<IProductHubClient, ProductHubClient>();*/
