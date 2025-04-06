@@ -8,6 +8,8 @@ using MealMate.DAL.Entities.Transactions;
 using MealMate.DAL.Utils.Enum;
 using MealMate.PL.Environment;
 using Microsoft.AspNetCore.Identity;
+using System.Globalization;
+using System.Text;
 using System.Text.Json;
 
 namespace MealMate.DAL.EntityFrameworkCore
@@ -75,10 +77,34 @@ namespace MealMate.DAL.EntityFrameworkCore
             return products;
         }
 
+        public static string RemoveDiacritics(string text)
+        {
+            var normalizedString = text.Normalize(NormalizationForm.FormD);
+            var stringBuilder = new StringBuilder();
+
+            foreach (var c in normalizedString)
+            {
+                var unicodeCategory = CharUnicodeInfo.GetUnicodeCategory(c);
+                if (unicodeCategory != UnicodeCategory.NonSpacingMark)
+                {
+                    stringBuilder.Append(c);
+                }
+            }
+
+            return stringBuilder.ToString().Normalize(NormalizationForm.FormC);
+        }
+
         public static Customer[] GenSeedCustomer()
         {
-            var vietnameseFirstNames = new[] { "Cường", "Dũng", "Hưng", "Khôi", "Long", "Nam", "Phát", "Quang", "Thành", "Tùng", "Tuấn", "Việt", "Linh", "Hải", "Sơn" };
-            var vietnameseLastNames = new[] { "Nguyễn", "Trần", "Lê", "Phạm", "Huỳnh", "Hoàng", "Phan", "Võ", "Đặng", "Bùi", "Đỗ", "Hồ" };
+            var vietnameseFirstNames = new List<string>
+            {
+                "Cuong", "Dung", "Hung", "Khoi", "Long", "Nam", "Phat", "Quang", "Thanh", "Tung", "Tuan", "Viet", "Linh", "Hai", "Son"
+            };
+
+            var vietnameseLastNames = new List<string>
+            {
+                "Nguyen", "Tran", "Le", "Pham", "Huynh", "Hoang", "Phan", "Vo", "Dang", "Bui", "Do", "Ho"
+            };
 
             // ✅ You provide these full, valid addresses
             var providedAddresses = new[]
