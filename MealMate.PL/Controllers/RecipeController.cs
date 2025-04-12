@@ -48,29 +48,33 @@ namespace MealMate.PL.Controllers
         [HttpPost("rating")]
         [SwaggerOperation(
             Summary = "Create recipe rating",
-            Description = "Creates a new rating for a specified recipe. \n\n" +
-                          "**Request Body:**\n" +
-                          "- entity (RecipeRatingCreateDto) - The data transfer object containing the rating details (required)"
+            Description = "Creates a new rating for a specified recipe.\n\n" +
+                          "**Request Body (RecipeRatingCreateDto):**\n" +
+                          "- `CustomerId` (Guid) - The ID of the customer submitting the rating. (required)\n" +
+                          "- `RecipeId` (Guid) - The ID of the recipe being rated. (required)\n" +
+                          "- `Rating` (decimal) - The rating value (e.g., 1.0 to 5.0). (required)"
         )]
         [SwaggerResponse(200, "Successfully created the recipe rating", typeof(void))]
-        public async Task<IActionResult> CreateRecipeRating(RecipeRatingCreateDto entity)
+        public async Task<IActionResult> CreateRecipeRating([FromBody] RecipeRatingCreateDto entity)
         {
-            await _recipeRatingAppService.CreateAsync(entity);
-            return Ok(new { data = true });
+            var recipeReturnDto = await _recipeRatingAppService.CreateRecipeRatingAsync(entity);
+            return Ok(recipeReturnDto);
         }
 
         [HttpPut("rating")]
         [SwaggerOperation(
             Summary = "Update recipe rating",
-            Description = "Updates an existing rating for a specified recipe. \n\n" +
-                          "**Request Body:**\n" +
-                          "- entity (RecipeRatingCreateDto) - The data transfer object containing the updated rating details (required)"
+            Description = "Updates an existing rating for a specified recipe.\n\n" +
+                          "**Request Body (RecipeRatingCreateDto):**\n" +
+                          "- `CustomerId` (Guid) - The ID of the customer updating the rating. (required)\n" +
+                          "- `RecipeId` (Guid) - The ID of the recipe whose rating is being updated. (required)\n" +
+                          "- `Rating` (decimal) - The updated rating value (e.g., 1.0 to 5.0). (required)"
         )]
         [SwaggerResponse(200, "Successfully updated the recipe rating", typeof(void))]
-        public async Task<IActionResult> UpdateRecipeRating(RecipeRatingCreateDto entity)
+        public async Task<IActionResult> UpdateRecipeRating([FromBody] RecipeRatingCreateDto entity)
         {
-            await _recipeRatingAppService.UpdateAsync(entity);
-            return Ok();
+            var recipeReturnDto = await _recipeRatingAppService.UpdateRecipeRatingAsync(entity);
+            return Ok(recipeReturnDto);
         }
 
         [HttpDelete("rating/{recipeId}/{customerId}")]
@@ -84,8 +88,8 @@ namespace MealMate.PL.Controllers
         [SwaggerResponse(200, "Successfully deleted the recipe rating", typeof(void))]
         public async Task<IActionResult> DeleteRecipeRating(Guid recipeId, Guid customerId)
         {
-            await _recipeRatingAppService.DeleteAsync(recipeId, customerId);
-            return Ok();
+            var recipeReturnDto = await _recipeRatingAppService.DeleteRecipeRatingAsync(recipeId, customerId);
+            return Ok(recipeReturnDto);
         }
     }
 }

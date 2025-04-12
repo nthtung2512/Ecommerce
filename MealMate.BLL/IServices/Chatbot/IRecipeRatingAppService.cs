@@ -5,8 +5,8 @@ namespace MealMate.BLL.IServices.Chatbot
     public interface IRecipeRatingAppService
     {
         Task<RecipeRatingReturnDto> GetRecipeRatingAsync(Guid recipeId, Guid customerId);
-        Task CreateAsync(RecipeRatingCreateDto entity);
-        Task UpdateAsync(RecipeRatingCreateDto entity);
-        Task DeleteAsync(Guid recipeId, Guid customerId);
+        Task<RecipeReturnDto> CreateRecipeRatingAsync(RecipeRatingCreateDto entity);
+        Task<RecipeReturnDto> UpdateRecipeRatingAsync(RecipeRatingCreateDto entity);
+        Task<RecipeReturnDto> DeleteRecipeRatingAsync(Guid recipeId, Guid customerId);
     }
 }

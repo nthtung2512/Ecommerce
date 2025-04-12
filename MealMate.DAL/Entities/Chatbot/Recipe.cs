@@ -1,4 +1,5 @@
 ﻿using MealMate.DAL.Utils.EFCore;
+using Microsoft.EntityFrameworkCore;
 
 namespace MealMate.DAL.Entities.Chatbot
 {
@@ -14,5 +15,7 @@ namespace MealMate.DAL.Entities.Chatbot
         public required int Servings { get; set; }
         public string Image { get; set; } = string.Empty;
         public string[] GetListTags() => Tags.Split(';');
+        [Precision(2, 1)]
+        public decimal AverageRating { get; set; }
     }
 }

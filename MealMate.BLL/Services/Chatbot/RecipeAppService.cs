@@ -28,6 +28,7 @@ namespace MealMate.BLL.Services.Chatbot
                 ReadyInMinutes = recipe.ReadyInMinutes,
                 Servings = recipe.Servings,
                 HealthScore = recipe.HealthScore,
+                AverageRating = recipe.AverageRating,
                 Ingredients = recipe.Ingredients.Select(i => new IngredientReturnDto
                 {
                     RecipeId = i.RecipeId,

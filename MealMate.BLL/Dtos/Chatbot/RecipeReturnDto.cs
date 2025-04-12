@@ -12,5 +12,6 @@
         public required int ReadyInMinutes { get; set; }
         public required int Servings { get; set; }
         public required string Image { get; set; }
+        public required decimal AverageRating { get; set; }
     }
 }

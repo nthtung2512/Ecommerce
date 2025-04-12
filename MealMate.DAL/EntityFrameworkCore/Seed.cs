@@ -793,7 +793,47 @@ namespace MealMate.DAL.EntityFrameworkCore
                 }
             }
 
+            // Step 1: Generate and collect ratings
+            var recipes = GetSeedRecipes();
+            var randomVal = new Random();
+            var customerToSkip = customers[randomVal.Next(customers.Length)];
+            var ratings = new List<RecipeRating>();
 
+            foreach (var customer in customers)
+            {
+                if (customer.Id == customerToSkip.Id)
+                    continue;
+
+                int recipeCountToRate = randomVal.Next((int)(recipes.Length * 0.05), (int)(recipes.Length * 0.15) + 1);
+                var recipesToRate = recipes.OrderBy(_ => randomVal.Next()).Take(recipeCountToRate).ToList();
+
+                foreach (var recipe in recipesToRate)
+                {
+                    decimal[] possibleRatings = { 3.0m, 3.5m, 4.0m, 4.5m, 5.0m };
+                    decimal ratingValue = possibleRatings[randomVal.Next(possibleRatings.Length)];
+
+                    ratings.Add(new RecipeRating
+                    {
+                        CustomerId = customer.Id,
+                        RecipeId = recipe.Id,
+                        Rating = ratingValue,
+                        Timestamp = DateTime.UtcNow.AddDays(-random.Next(1, 30))
+                    });
+                }
+            }
+
+            // Step 2: Update AverageRating in-memory
+            var recipeGroups = ratings
+                .GroupBy(r => r.RecipeId)
+                .ToDictionary(g => g.Key, g => g.Select(r => r.Rating).ToList());
+
+            foreach (var recipe in recipes)
+            {
+                if (recipeGroups.TryGetValue(recipe.Id, out var ratingList))
+                {
+                    recipe.AverageRating = Math.Round(ratingList.Average(), 1);
+                }
+            }
 
             // Continue adding similar blocks for other entities like BillPromotion, CustomerPromotion, Shipper, StoreManager, Store, etc.
             // Add to the database context
@@ -809,7 +849,6 @@ namespace MealMate.DAL.EntityFrameworkCore
             _context.Bills.AddRange(bills);
             if (!_context.Includes.Any())
                 _context.Includes.AddRange(bills.SelectMany(b => b.Includes));
-
             _context.ProductPromotions.AddRange(productPromotions);
             if (!_context.PromoteProducts.Any())
                 _context.PromoteProducts.AddRange(promoteProducts);
@@ -820,7 +859,9 @@ namespace MealMate.DAL.EntityFrameworkCore
             if (!_context.PromoteCustomers.Any())
                 _context.PromoteCustomers.AddRange(promoteCustomers);
             if (!_context.Recipes.Any())
-                _context.Recipes.AddRange(GetSeedRecipes());
+                _context.Recipes.AddRange(recipes);
+            if (!_context.RecipeRatings.Any())
+                _context.RecipeRatings.AddRange(ratings);
 
             await _context.SaveChangesAsync();
         }

@@ -51,6 +51,13 @@ namespace MealMate.DAL.Repositories.Chatbot
             return await _context.RecipeRatings.FindAsync(recipeId, customerId);
         }
 
+        public async Task<List<RecipeRating>> GetAllRatingByRecipeIdAsync(Guid recipeId)
+        {
+            return await _context.RecipeRatings
+                .Where(r => r.RecipeId == recipeId)
+                .ToListAsync();
+        }
+
         public async Task UpdateAsync(RecipeRating entity)
         {
             _context.Entry(entity).State = EntityState.Modified;

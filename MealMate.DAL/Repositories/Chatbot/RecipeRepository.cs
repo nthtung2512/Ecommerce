@@ -33,9 +33,23 @@ namespace MealMate.DAL.Repositories.Chatbot
         }
         #endregion
 
+        public async Task<Recipe?> GetByIdAsync(Guid id)
+        {
+            return await _context.Recipes
+                .Include(r => r.Ingredients)
+                .FirstOrDefaultAsync(r => r.Id == id);
+        }
+
         public async Task<List<Recipe>> GetAllRecipesAsync()
         {
             return await _context.Recipes.Include(r => r.Ingredients).ToListAsync();
+        }
+
+        public async Task<Recipe> UpdateAsync(Recipe recipe)
+        {
+            _context.Recipes.Update(recipe);
+            await _context.SaveChangesAsync();
+            return recipe;
         }
     }
 }
