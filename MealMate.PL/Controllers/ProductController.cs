@@ -114,6 +114,13 @@ namespace MealMate.PL.Controllers
             return Ok(results);
         }
 
+        [HttpGet("top10stores/{storeId}")]
+        public async Task<IActionResult> GetTop10RevenueStore(Guid storeId)
+        {
+            var results = await _productAppService.GetTempTop5StoresAsync(storeId);
+            return Ok(results);
+        }
+
 
         [HttpPost("chatbot")]
         [SwaggerOperation(

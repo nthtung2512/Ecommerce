@@ -98,15 +98,14 @@ namespace MealMate.DAL.EntityFrameworkCore
         {
             var vietnameseFirstNames = new List<string>
             {
-                "Cuong", "Dung", "Hung", "Khoi", "Long", "Nam", "Phat", "Quang", "Thanh", "Tung", "Tuan", "Viet", "Linh", "Hai", "Son"
+                "Cuong", "Dung", "Hung", "Khoi", "Long", "Nam", "Phat", "Quang", "Thanh", "Tung"
             };
 
             var vietnameseLastNames = new List<string>
             {
-                "Nguyen", "Tran", "Le", "Pham", "Huynh", "Hoang", "Phan", "Vo", "Dang", "Bui", "Do", "Ho"
+                "Nguyen", "Tran", "Le", "Pham", "Huynh", "Hoang", "Phan", "Vo", "Dang", "Bui"
             };
 
-            // ✅ You provide these full, valid addresses
             var providedAddresses = new[]
             {
                 "436 Nguyễn Thị Minh Khai, Phường 5, Quận 3, Hồ Chí Minh",
@@ -121,29 +120,32 @@ namespace MealMate.DAL.EntityFrameworkCore
                 "99 Trường Chinh, Phường 13, Quận Tân Bình, Hồ Chí Minh",
             };
 
-            var customerFaker = new Faker<Customer>("vi")
-                .RuleFor(c => c.Id, f => Guid.NewGuid())
-                .RuleFor(c => c.LName, f => f.PickRandom(vietnameseLastNames))
-                .RuleFor(c => c.FName, f => f.PickRandom(vietnameseFirstNames))
-                .RuleFor(c => c.UserName, (f, c) => $"{c.FName.ToLower().Replace(" ", "")}{f.Random.Number(1, 99)}")
-                .RuleFor(c => c.PhoneNumber, f => f.Phone.PhoneNumber("0#########"))
-                .RuleFor(c => c.TotalMoneySpent, f => f.Random.Decimal(50, 500))
-                .RuleFor(c => c.IsDeleted, f => false)
-                .RuleFor(c => c.Email, (f, c) =>
-                {
-                    var localPart = $"{c.FName}.{c.LName}".ToLower().Replace(" ", "");
-                    var randomDigits = f.Random.Number(100, 999); // Ensures 3 digits
-                    return $"{localPart}{randomDigits}@gmail.com";
-                })
-                .RuleFor(c => c.FortuneChance, (f, c) => f.Random.Int(1, (int)(c.TotalMoneySpent / 100)))
-                .RuleFor(c => c.Address, f => ""); // Address will be set manually
+            var customers = new List<Customer>();
+            var faker = new Faker("vi");
 
-            var customers = customerFaker.Generate(providedAddresses.Length);
-            var providedAddressCount = providedAddresses.Length;
-            // Inject your own addresses
-            for (int i = 0; i < customers.Count; i++)
+            for (int i = 0; i < vietnameseFirstNames.Count; i++)
             {
-                customers[i].Address = providedAddresses[i % providedAddressCount];
+                var fName = vietnameseFirstNames[i];
+                var lName = vietnameseLastNames[i];
+                var fullName = $"{fName}{lName}";
+                var totalSpent = faker.Random.Decimal(50, 500);
+                var email = $"{fName.ToLower()}{lName.ToLower()}1@gmail.com";
+
+                var customer = new Customer
+                {
+                    Id = Guid.NewGuid(),
+                    FName = fName,
+                    LName = lName,
+                    UserName = fullName,
+                    PhoneNumber = faker.Phone.PhoneNumber("0#########"),
+                    TotalMoneySpent = totalSpent,
+                    IsDeleted = false,
+                    Email = email,
+                    FortuneChance = faker.Random.Int(1, (int)(totalSpent / 100)),
+                    Address = providedAddresses[i % providedAddresses.Length]
+                };
+
+                customers.Add(customer);
             }
 
             return customers.ToArray();
@@ -274,11 +276,11 @@ namespace MealMate.DAL.EntityFrameworkCore
             // Seed Stores
             var stores = new Store[]
             {
-                new Store (Guid.NewGuid()) { Name = "Store One", OpeningDate = new DateTime(2020, 1, 1).ToUniversalTime(), ContactInfo = "contact1@store.com", Location = "102 Dương Bá Trạc, Phường 2, Quận 8, Thành phố Hồ Chí Minh", Latitude = 10.7442071m, Longitude = 106.6889035m},
-                new Store (Guid.NewGuid()) { Name = "Store Two", OpeningDate = new DateTime(2020, 2, 1).ToUniversalTime(), ContactInfo = "contact2@store.com", Location = "23 Pasteur, Phường Nguyễn Thái Bình, Quận 1, Hồ Chí Minh, Việt Nam", Latitude = 10.7800885m, Longitude = 106.6963455m },
-                new Store (Guid.NewGuid()) { Name = "Store Three", OpeningDate = new DateTime(2020, 3, 1).ToUniversalTime(), ContactInfo = "contact3@store.com", Location = "88 Đ. Tô Hiến Thành, Phường 15, Quận 10, Hồ Chí Minh, Việt Nam", Latitude = 10.7780660m, Longitude = 106.6658002m },
-                new Store (Guid.NewGuid()) { Name = "Store Four", OpeningDate = new DateTime(2020, 4, 1).ToUniversalTime(), ContactInfo = "contact4@store.com", Location = "98 Võ Văn Tần, Phường 6, Quận 3, Thành phố Hồ Chí Minh", Latitude = 10.7758044m, Longitude = 106.6893163m },
-                new Store (Guid.NewGuid()) { Name = "Store Five", OpeningDate = new DateTime(2020, 5, 1).ToUniversalTime(), ContactInfo = "contact5@store.com", Location = "45 Điện Biên Phủ, Phường 15, Quận Bình Thạnh, Thành phố Hồ Chí Minh", Latitude = 10.7950647m, Longitude = 106.7012004m }
+                new Store (Guid.NewGuid()) { Name = "Store One", OpeningDate = new DateTime(2020, 1, 1).ToUniversalTime(), ContactInfo = "contact1@gmail.com", Location = "102 Dương Bá Trạc, Phường 2, Quận 8, Thành phố Hồ Chí Minh", Latitude = 10.7442071m, Longitude = 106.6889035m},
+                new Store (Guid.NewGuid()) { Name = "Store Two", OpeningDate = new DateTime(2020, 2, 1).ToUniversalTime(), ContactInfo = "contact2@gmail.com", Location = "23 Pasteur, Phường Nguyễn Thái Bình, Quận 1, Hồ Chí Minh, Việt Nam", Latitude = 10.7800885m, Longitude = 106.6963455m },
+                new Store (Guid.NewGuid()) { Name = "Store Three", OpeningDate = new DateTime(2020, 3, 1).ToUniversalTime(), ContactInfo = "contact3@gmail.com", Location = "88 Đ. Tô Hiến Thành, Phường 15, Quận 10, Hồ Chí Minh, Việt Nam", Latitude = 10.7780660m, Longitude = 106.6658002m },
+                new Store (Guid.NewGuid()) { Name = "Store Four", OpeningDate = new DateTime(2020, 4, 1).ToUniversalTime(), ContactInfo = "contact4@gmail.com", Location = "98 Võ Văn Tần, Phường 6, Quận 3, Thành phố Hồ Chí Minh", Latitude = 10.7758044m, Longitude = 106.6893163m },
+                new Store (Guid.NewGuid()) { Name = "Store Five", OpeningDate = new DateTime(2020, 5, 1).ToUniversalTime(), ContactInfo = "contact5@gmail.com", Location = "45 Điện Biên Phủ, Phường 15, Quận Bình Thạnh, Thành phố Hồ Chí Minh", Latitude = 10.7950647m, Longitude = 106.7012004m }
             };
 
             // Seed Store managers
@@ -383,9 +385,6 @@ namespace MealMate.DAL.EntityFrameworkCore
             // Seed ApplicationUser
             if (!_context.ApplicationUsers.Any())
             {
-                var customerPasswords = Enumerable.Range(1, 20)
-                .Select(i => $"customer{i}")
-                .ToArray();
                 var shipperPasswords = new string[]
                 {
                     "shipper1", "shipper2", "shipper3", "shipper4", "shipper5"
@@ -399,7 +398,7 @@ namespace MealMate.DAL.EntityFrameworkCore
                 for (int i = 0; i < customers.Length; i++)
                 {
                     customers[i].SecurityStamp = Guid.NewGuid().ToString();
-                    var result1 = await _userManager.CreateAsync(customers[i], customerPasswords[i]);
+                    var result1 = await _userManager.CreateAsync(customers[i], "customer");
                     if (result1.Succeeded)
                     {
                         // Optionally add the user to a role
@@ -507,7 +506,7 @@ namespace MealMate.DAL.EntityFrameworkCore
                         StoreID = store.Id,
                         Store = store,
                         TotalPrice = 0,
-                        DeliveryStatus = (DeliveryStatus)random.Next(1, Enum.GetValues(typeof(DeliveryStatus)).Length),
+                        DeliveryStatus = (DeliveryStatus)random.Next(1, 5),
                         ShippingAddress = customer.Address,
                         IsDeleted = false
                     };

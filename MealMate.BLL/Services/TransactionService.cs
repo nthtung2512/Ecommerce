@@ -5,10 +5,12 @@ using MealMate.BLL.Dtos.Stores;
 using MealMate.BLL.IServices;
 using MealMate.BLL.IServices.Hubs;
 using MealMate.BLL.IServices.Redis;
+using MealMate.BLL.IServices.Utility;
 using MealMate.BLL.Services.Hubs;
 using MealMate.DAL.Entities.Products;
 using MealMate.DAL.IRepositories;
 using MealMate.DAL.IRepositories.UnitOfWork;
+using MealMate.DAL.Repositories;
 using MealMate.DAL.Utils.Enum;
 using MealMate.DAL.Utils.Exceptions;
 using MealMate.DAL.Utils.GuidUtil;
@@ -21,6 +23,7 @@ namespace MealMate.BLL.Services
         private readonly ITransactionRepository _transactionRepository;
         private readonly IProductRepository _productRepository;
         private readonly IAtRepository _atRepository;
+        private readonly IHandleCreateBill _handleCreateBill;
         private readonly ICustomerAppService _customerAppService;
         private readonly IReserveCartCacheService _reserveCartCacheService;
         private readonly ICartService _cartService;
@@ -29,7 +32,7 @@ namespace MealMate.BLL.Services
         private readonly GuidGenerator _guidGenerator;
         private readonly IMapper _mapper;
 
-        public TransactionService(ITransactionRepository transactionRepository, GuidGenerator guidGenerator, IMapper mapper, IProductRepository productRepository, ICustomerAppService customerAppService, IAtRepository atRepository, IUnitOfWork unitOfWork, IHubContext<ProductHub, IProductHubClient> productHubContext, IReserveCartCacheService reserveCartCacheService, ICartService cartService)
+        public TransactionService(ITransactionRepository transactionRepository, GuidGenerator guidGenerator, IMapper mapper, IProductRepository productRepository, ICustomerAppService customerAppService, IAtRepository atRepository, IUnitOfWork unitOfWork, IHubContext<ProductHub, IProductHubClient> productHubContext, IReserveCartCacheService reserveCartCacheService, ICartService cartService, IHandleCreateBill handleCreateBill)
         {
             _transactionRepository = transactionRepository;
             _guidGenerator = guidGenerator;
@@ -41,6 +44,7 @@ namespace MealMate.BLL.Services
             _productHubContext = productHubContext;
             _reserveCartCacheService = reserveCartCacheService;
             _cartService = cartService;
+            _handleCreateBill = handleCreateBill;
         }
 
         public async Task<List<BillDto>> GetAllBillAsync()
@@ -212,9 +216,49 @@ namespace MealMate.BLL.Services
             return status;
         }
 
-        public async Task<List<FullBillDto>> GetBillListByStoreIdAsync(Guid storeId, DeliveryStatus status)
+        public async Task<List<FullBillDto>> GetBillListByStoreIdAsync(Guid storeId)
         {
-            var bills = await _transactionRepository.GetBillListByStoreIdAsync(storeId, status);
+            var bills = await _transactionRepository.GetBillListByStoreIdAsync(storeId);
+            var fullBillDtos = new List<FullBillDto>();
+            foreach (var bill in bills)
+            {
+                var includesDto = bill.Includes.Select(include => new IncludeDto
+                {
+                    TransactionID = include.TransactionID,
+                    ProductID = include.ProductID,
+                    NumberOfProductInBill = include.NumberOfProductInBill,
+                    SubTotal = include.SubTotal,
+                    Product = _mapper.Map<ProductCreationDto>(include.Product)
+                }).ToList();
+
+                var fullBillDto = new FullBillDto
+                {
+                    TransactionId = bill.Id,
+                    CustomerID = bill.CustomerID,
+                    StoreID = bill.StoreID,
+                    ShipperID = bill.ShipperID,
+                    PaymentMethod = bill.PaymentMethod,
+                    DateAndTime = bill.DateAndTime,
+                    DeliveryStatus = bill.DeliveryStatus,
+                    TotalPrice = bill.TotalPrice,
+                    ShippingAddress = bill.ShippingAddress,
+                    Includes = includesDto
+                };
+                fullBillDtos.Add(fullBillDto);
+            }
+
+            return fullBillDtos;
+        }
+
+        public async Task<BillStatusStatisticsDto> GetBillStatusByStoreIdPrevAsync(Guid storeId)
+        {
+            var billStatuses = await _transactionRepository.GetBillStatusStatisticsByStoreIdPrevAsync(storeId);
+            return billStatuses;
+        }
+
+        public async Task<List<FullBillDto>> GetBillListByStoreIdAndStatusAsync(Guid storeId, DeliveryStatus status)
+        {
+            var bills = await _transactionRepository.GetBillListByStoreIdAndStatusAsync(storeId, status);
             if (bills.Count == 0)
             {
                 throw new EntityNotFoundException("No bills found");
@@ -322,6 +366,11 @@ namespace MealMate.BLL.Services
             }
 
             return fullBillDtos;
+        }
+
+        public async Task CreateBulkBillPrevDay(Guid storeId)
+        {
+            await _handleCreateBill.CreateBulkBillPrevDay(storeId);
         }
     }
 }

@@ -22,5 +22,6 @@ namespace MealMate.BLL.IServices
 
         // TempTop5Product
         Task<List<TempTop5Product>> GetTempTop5ProductsAsync(int year);
+        Task<List<TempTop5Product>> GetTempTop5StoresAsync(Guid storeId);
     }
 }

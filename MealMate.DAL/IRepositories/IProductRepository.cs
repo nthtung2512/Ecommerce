@@ -9,6 +9,7 @@ namespace MealMate.DAL.IRepositories
         Task<List<Product>> GetListProductByCategoryAsync(string category);
         Task<List<Product>> GetListProductHavePromotionAsync();
         Task<List<TempTop5Product>> GetTempTop5ProductsAsync(int year);
+        Task<List<TempTop5Product>> GetTempTop5StoresAsync(Guid storeId);
         Task<Product?> GetProductByNameAsync(string productName);
         Task<List<Product>> GetProductsByListNameAsync(List<string> productNames);
         Task<List<string>> GetAllCategoriesAsync();

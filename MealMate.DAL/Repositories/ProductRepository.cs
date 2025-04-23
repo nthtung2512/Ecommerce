@@ -86,13 +86,46 @@ namespace MealMate.DAL.Repositories
             return await Query.ToListAsync();
         }
 
-        public Task<List<string>> GetAllCategoriesAsync()
+        public async Task<List<string>> GetAllCategoriesAsync()
         {
-            return _context.Products
+            return await _context.Products
                 .Where(p => !p.IsDeleted)
                 .Select(p => p.Aisle)
                 .Distinct()
                 .ToListAsync();
         }
+
+        public async Task<List<TempTop5Product>> GetTempTop5StoresAsync(Guid storeID)
+        {
+            // Convert to UTC+7
+            var utcNow = DateTime.UtcNow;
+            var utcPlus7 = utcNow.AddHours(7).Date;
+            var previousDay = utcPlus7.AddDays(-1);
+
+            var previousDayUtcStart = previousDay.AddHours(-7); // Convert back to UTC
+            var previousDayUtcEnd = previousDay.AddDays(1).AddHours(-7); // Next day in UTC+7
+
+            // Query all Includes of Bills in the store on the previous day
+            var topProducts = await _context.Includes
+                .Where(i =>
+                    i.Transaction.StoreID == storeID &&
+                    i.Transaction.DateAndTime >= previousDayUtcStart &&
+                    i.Transaction.DateAndTime < previousDayUtcEnd &&
+                    !i.Product.IsDeleted)
+                .GroupBy(i => new { i.ProductID, i.Product.Name })
+                .Select(g => new TempTop5Product
+                {
+                    ProductID = g.Key.ProductID,
+                    Name = g.Key.Name,
+                    Revenue = g.Sum(i => i.SubTotal)
+                })
+                .OrderByDescending(p => p.Revenue)
+                .Take(5)
+                .ToListAsync();
+
+            return topProducts;
+        }
+
+
     }
 }

@@ -67,6 +67,8 @@ namespace MealMate.BLL
             services.AddScoped<IRecipeAppService, RecipeAppService>();
             services.AddScoped<IRecipeRatingAppService, RecipeRatingAppService>();
 
+            services.AddScoped<IHandleCreateBill, HandleCreateBill>();
+
             services.AddSignalR();
 
             services.AddTransient<IHubContextWrapper<IProductHubClient>, ProductHubWrapper>();

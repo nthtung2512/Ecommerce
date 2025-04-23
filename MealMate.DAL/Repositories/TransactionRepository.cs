@@ -89,7 +89,7 @@ namespace MealMate.DAL.Repositories
             return await _context.Bills.Include(b => b.Includes).ToListAsync();
         }
 
-        public async Task<List<Bill>> GetBillListByStoreIdAsync(Guid storeId, DeliveryStatus status)
+        public async Task<List<Bill>> GetBillListByStoreIdAndStatusAsync(Guid storeId, DeliveryStatus status)
         {
             return await _context.Bills.Include(b => b.Includes).ThenInclude(i => i.Product).Where(b => b.StoreID == storeId && !b.IsDeleted && b.DeliveryStatus == status).ToListAsync();
         }
@@ -98,5 +98,50 @@ namespace MealMate.DAL.Repositories
         {
             return await _context.Bills.Include(b => b.Includes).ThenInclude(i => i.Product).Where(b => b.DeliveryStatus == status && !b.IsDeleted).ToListAsync();
         }
+
+        public async Task<List<Bill>> GetBillListByStoreIdAsync(Guid storeId)
+        {
+            return await _context.Bills.Include(b => b.Includes).ThenInclude(i => i.Product).Where(b => b.StoreID == storeId && !b.IsDeleted).ToListAsync();
+        }
+
+        public async Task<BillStatusStatisticsDto> GetBillStatusStatisticsByStoreIdPrevAsync(Guid storeId)
+        {
+            var previousDayStart = DateTime.UtcNow.Date.AddDays(-1);
+            var previousDayEnd = DateTime.UtcNow.Date;
+
+            var bills = await _context.Bills
+                .Where(b =>
+                    b.StoreID == storeId &&
+                    b.DateAndTime >= previousDayStart &&
+                    b.DateAndTime < previousDayEnd &&
+                    !b.IsDeleted)
+                .ToListAsync();
+
+            var totalBills = bills.Count;
+            var deliveredCount = bills.Count(b => b.DeliveryStatus == DeliveryStatus.Delivered);
+            var cancelledCount = bills.Count(b => b.DeliveryStatus == DeliveryStatus.Cancelled);
+            var ghostCount = bills.Count(b => b.DeliveryStatus == DeliveryStatus.Ghost);
+
+            return new BillStatusStatisticsDto
+            {
+                TotalBills = totalBills,
+                DeliveredCount = deliveredCount,
+                CancelledCount = cancelledCount,
+                GhostCount = ghostCount
+            };
+        }
+
+
+    }
+
+    public class BillStatusStatisticsDto
+    {
+        public int TotalBills { get; set; }
+        public int DeliveredCount { get; set; }
+        public int CancelledCount { get; set; }
+        public int GhostCount { get; set; }
+        public double DeliveredRate => TotalBills == 0 ? 0 : (double)DeliveredCount / TotalBills;
+        public double CancelledRate => TotalBills == 0 ? 0 : (double)CancelledCount / TotalBills;
+        public double GhostRate => TotalBills == 0 ? 0 : (double)GhostCount / TotalBills;
     }
 }

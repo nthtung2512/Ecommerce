@@ -42,10 +42,24 @@ public class TransactionController : ControllerBase
         return Ok(bills);
     }
 
-    [HttpGet("store/{storeid}/{status}")]
-    public async Task<IActionResult> GetBillListByStoreIdAsync(Guid storeid, DeliveryStatus status)
+    [HttpGet("store/{storeid}")]
+    public async Task<IActionResult> GetBillListByStoreIdAsync(Guid storeid)
     {
-        var bills = await _transactionService.GetBillListByStoreIdAsync(storeid, status);
+        var bills = await _transactionService.GetBillListByStoreIdAsync(storeid);
+        return Ok(bills);
+    }
+
+    [HttpGet("store/prev/{storeid}")]
+    public async Task<IActionResult> GetBillStatusByStoreIdPrevAsync(Guid storeid)
+    {
+        var billStatuses = await _transactionService.GetBillStatusByStoreIdPrevAsync(storeid);
+        return Ok(billStatuses);
+    }
+
+    [HttpGet("store/{storeid}/{status}")]
+    public async Task<IActionResult> GetBillListByStoreIdAndStatusAsync(Guid storeid, DeliveryStatus status)
+    {
+        var bills = await _transactionService.GetBillListByStoreIdAndStatusAsync(storeid, status);
         return Ok(bills);
     }
 
@@ -61,6 +75,13 @@ public class TransactionController : ControllerBase
     {
         var newBillId = await _transactionService.CreateBillAsync(billData);
         return Ok(new { new_bill = newBillId });
+    }
+
+    [HttpPost("bulk/{storeId}")]
+    public async Task<IActionResult> CreateBulkBill(Guid storeId)
+    {
+        await _transactionService.CreateBulkBillPrevDay(storeId);
+        return Ok();
     }
 
     [HttpPatch("status/{transactionId}/{status}")]

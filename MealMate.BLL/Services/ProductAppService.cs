@@ -271,5 +271,10 @@ namespace MealMate.BLL.Services
         {
             await _productRepository.DeleteProductAtStoreAsync(productId, storeId);
         }
+
+        public async Task<List<TempTop5Product>> GetTempTop5StoresAsync(Guid storeId)
+        {
+            return await _productRepository.GetTempTop5StoresAsync(storeId);
+        }
     }
 }

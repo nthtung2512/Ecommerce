@@ -1,7 +1,5 @@
-﻿using MealMate.BLL.Dtos.Product;
-using MealMate.BLL.IServices;
+﻿using MealMate.BLL.IServices;
 using MealMate.BLL.IServices.Redis;
-using MealMate.DAL.Entities.Transactions;
 using MealMate.DAL.IRepositories;
 using MealMate.DAL.Utils.Exceptions;
 using Microsoft.Extensions.DependencyInjection;
@@ -30,100 +28,98 @@ namespace MealMate.BLL.Services.Background
             var productService = scope.ServiceProvider.GetRequiredService<IProductAppService>();
             var storeRepository = scope.ServiceProvider.GetRequiredService<IStoreRepository>();
 
-            var ttl = TimeSpan.FromHours(5); // customize if needed
+            var ttl = TimeSpan.FromHours(5);
 
-            // Cache products by store
-            var stores = await storeRepository.GetAllStoresAsync();
-            var storeIds = stores.Select(s => s.Id).ToList();
-            foreach (var storeId in storeIds)
+            try
             {
-                var key = $"products-store:{storeId}";
-                var existing = await redisCacheService.GetDataAsync<List<ProductDto>>(key);
-                if (existing != null)
-                {
-                    _logger.LogInformation($"Cache already exists for store {storeId}, skipping.");
-                    continue;
-                }
+                await CacheProductsByStore(redisCacheService, productService, storeRepository, ttl);
+                await CacheProductsByCategory(redisCacheService, productService, ttl);
+                await CachePromotionalProducts(redisCacheService, productService, ttl);
+                await CacheTop5Products(redisCacheService, productService, ttl);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error during product caching operation.");
+            }
+
+            _logger.LogInformation("Product caching completed.");
+        }
+
+        private async Task CacheProductsByStore(IRedisCacheService redis, IProductAppService productService, IStoreRepository storeRepo, TimeSpan ttl)
+        {
+            var stores = await storeRepo.GetAllStoresAsync();
+            foreach (var store in stores)
+            {
+                var key = $"products-store:{store.Id}";
+                await redis.RemoveDataAsync(key);
 
                 try
                 {
-                    var products = await productService.GetListProductByStoreIDAsync(storeId);
-                    await redisCacheService.SetDataAsync(key, products, ttl);
-                    _logger.LogInformation($"Cached products for store {storeId}");
+                    var products = await productService.GetListProductByStoreIDAsync(store.Id);
+                    await redis.SetDataAsync(key, products, ttl);
+                    _logger.LogInformation("Cached products for store {StoreId}", store.Id);
                 }
                 catch (EntityNotFoundException)
                 {
-                    _logger.LogWarning($"No products found for store {storeId}");
+                    _logger.LogWarning("No products found for store {StoreId}", store.Id);
                 }
             }
+        }
 
-            // Cache products by category
+        private async Task CacheProductsByCategory(IRedisCacheService redis, IProductAppService productService, TimeSpan ttl)
+        {
             var categories = await productService.GetAllCategories();
             foreach (var category in categories)
             {
                 var key = $"products-category:{category}";
-                var existing = await redisCacheService.GetDataAsync<List<ProductDto>>(key);
-                if (existing != null)
-                {
-                    _logger.LogInformation($"Cache already exists for category {category}, skipping.");
-                    continue;
-                }
+                await redis.RemoveDataAsync(key);
 
                 try
                 {
                     var products = await productService.GetListProductByCategoryAsync(category);
-                    await redisCacheService.SetDataAsync(key, products, ttl);
-                    _logger.LogInformation($"Cached products for category {category}");
+                    await redis.SetDataAsync(key, products, ttl);
+                    _logger.LogInformation("Cached products for category {Category}", category);
                 }
                 catch (EntityNotFoundException)
                 {
-                    _logger.LogWarning($"No products found for category {category}");
+                    _logger.LogWarning("No products found for category {Category}", category);
                 }
             }
+        }
 
-            // Cache products have promotions
-            var keyPromotion = "products-promotion";
-            var existingPromotion = await redisCacheService.GetDataAsync<List<ProductDto>>(keyPromotion);
-            if (existingPromotion != null)
-            {
-                _logger.LogInformation("Cache already exists for products with promotions, skipping.");
-            }
-            else
-            {
-                try
-                {
-                    var products = await productService.GetListProductHavePromotionAsync();
-                    await redisCacheService.SetDataAsync(keyPromotion, products, ttl);
-                    _logger.LogInformation("Cached products with promotions");
-                }
-                catch (EntityNotFoundException)
-                {
-                    _logger.LogWarning("No products found with promotions");
-                }
-            }
+        private async Task CachePromotionalProducts(IRedisCacheService redis, IProductAppService productService, TimeSpan ttl)
+        {
+            const string key = "products-promotion";
+            await redis.RemoveDataAsync(key);
 
-            // Cache top 5 products
-            var keyTop5 = "products-top5";
-            var existingTop5 = await redisCacheService.GetDataAsync<List<TempTop5Product>>(keyTop5);
-            if (existingTop5 != null)
+            try
             {
-                _logger.LogInformation("Cache already exists for top 5 products, skipping.");
+                var products = await productService.GetListProductHavePromotionAsync();
+                await redis.SetDataAsync(key, products, ttl);
+                _logger.LogInformation("Cached products with promotions");
             }
-            else
+            catch (EntityNotFoundException)
             {
-                try
-                {
-                    var year = DateTime.UtcNow.Year;
-                    var top5Products = await productService.GetTempTop5ProductsAsync(year);
-                    await redisCacheService.SetDataAsync(keyTop5, top5Products, ttl);
-                    _logger.LogInformation("Cached top 5 products");
-                }
-                catch (EntityNotFoundException)
-                {
-                    _logger.LogWarning("No top 5 products found");
-                }
+                _logger.LogWarning("No products found with promotions");
             }
-            _logger.LogInformation("Product caching completed.");
+        }
+
+        private async Task CacheTop5Products(IRedisCacheService redis, IProductAppService productService, TimeSpan ttl)
+        {
+            const string key = "products-top5";
+            await redis.RemoveDataAsync(key);
+
+            try
+            {
+                var year = DateTime.UtcNow.Year;
+                var top5Products = await productService.GetTempTop5ProductsAsync(year);
+                await redis.SetDataAsync(key, top5Products, ttl);
+                _logger.LogInformation("Cached top 5 products");
+            }
+            catch (EntityNotFoundException)
+            {
+                _logger.LogWarning("No top 5 products found");
+            }
         }
     }
 
