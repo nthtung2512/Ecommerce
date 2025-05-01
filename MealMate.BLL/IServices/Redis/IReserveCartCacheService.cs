@@ -1,4 +1,5 @@
 ﻿using MealMate.BLL.Dtos.Cart;
+using MealMate.BLL.Dtos.Product;
 using MealMate.BLL.Dtos.Promotion;
 using MealMate.BLL.Dtos.Stores;
 
@@ -18,5 +19,6 @@ namespace MealMate.BLL.IServices.Redis
         Task<ATDto> GetAtByProductIDAndStoreIDAsync(Guid productId, Guid storeId);
         Task<List<ATDto>> GetAtByProductIDAsync(Guid productId);
         Task<List<ATDto>> GetAtByStoreIdAsync(Guid storeId);
+        Task<List<ProductRestockDto>> GetAtByStoreIdT2Async(Guid storeId);
     }
 }

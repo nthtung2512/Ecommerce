@@ -41,6 +41,13 @@ namespace MealMate.PL.Controllers
             return Ok(products);
         }
 
+        [HttpGet("category")]
+        public async Task<IActionResult> GetListCategory()
+        {
+            var categories = await _productAppService.GetAllCategories();
+            return Ok(categories);
+        }
+
         [HttpGet("promotion/{id}")]
         public async Task<IActionResult> GetListProductByPromotionID(Guid id)
         {
@@ -86,6 +93,16 @@ namespace MealMate.PL.Controllers
         public async Task<IActionResult> GetProductInformationAtStore(Guid storeid)
         {
             var productsAtStore = await _reserveCartCacheService.GetAtByStoreIdAsync(storeid);
+            return Ok(productsAtStore);
+        }
+
+        [HttpGet("atstore/product/lessdata/{storeid}")]
+        [SwaggerOperation(
+            Summary = "Get all products with stock at a store"
+        )]
+        public async Task<IActionResult> GetProductInformationAtStoreT2(Guid storeid)
+        {
+            var productsAtStore = await _reserveCartCacheService.GetAtByStoreIdT2Async(storeid);
             return Ok(productsAtStore);
         }
 

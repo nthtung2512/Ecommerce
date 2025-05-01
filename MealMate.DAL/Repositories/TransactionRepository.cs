@@ -103,17 +103,21 @@ namespace MealMate.DAL.Repositories
         {
             return await _context.Bills.Include(b => b.Includes).ThenInclude(i => i.Product).Where(b => b.StoreID == storeId && !b.IsDeleted).ToListAsync();
         }
-
         public async Task<BillStatusStatisticsDto> GetBillStatusStatisticsByStoreIdPrevAsync(Guid storeId)
         {
-            var previousDayStart = DateTime.UtcNow.Date.AddDays(-1);
-            var previousDayEnd = DateTime.UtcNow.Date;
+            var utcNow = DateTime.UtcNow;
+            var utcPlus7 = utcNow.AddHours(7).Date;
+            var previousDay = utcPlus7.AddDays(-1);
+
+            var previousDayUtcStart = previousDay.AddHours(-7); // Convert back to UTC
+            var previousDayUtcEnd = previousDay.AddDays(1).AddHours(-7); // Next day in UTC+7
+
 
             var bills = await _context.Bills
                 .Where(b =>
                     b.StoreID == storeId &&
-                    b.DateAndTime >= previousDayStart &&
-                    b.DateAndTime < previousDayEnd &&
+                    b.DateAndTime >= previousDayUtcStart &&
+                    b.DateAndTime < previousDayUtcEnd &&
                     !b.IsDeleted)
                 .ToListAsync();
 

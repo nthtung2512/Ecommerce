@@ -1,5 +1,6 @@
 ﻿using MealMate.BLL.Dtos.Bills;
 using MealMate.BLL.Dtos.Cart;
+using MealMate.BLL.Dtos.Product;
 using MealMate.BLL.Dtos.Promotion;
 using MealMate.BLL.Dtos.Stores;
 using MealMate.BLL.IServices.Hubs;
@@ -315,6 +316,31 @@ namespace MealMate.BLL.Services.Redis
             {
                 return null;
             }
+        }
+
+        public async Task<List<ProductRestockDto>> GetAtByStoreIdT2Async(Guid storeId)
+        {
+            var at = await _atRepository.GetAtByStoreIdAsync(storeId);
+            if (at.Count == 0)
+            {
+                throw new EntityNotFoundException("No product found for this store");
+            }
+            var restockDtos = new List<ProductRestockDto>();
+            foreach (var item in at)
+            {
+                var amountInCache = await GetQuantityFromCache(item.ProductID, storeId);
+                item.NumberAtStore -= amountInCache;
+
+                restockDtos.Add(new ProductRestockDto
+                {
+                    ProductID = item.ProductID,
+                    StoreID = item.StoreID,
+                    NumberAtStore = item.NumberAtStore,
+                    ProductName = item.Product.Name,
+                    Price = item.Product.Price
+                });
+            }
+            return restockDtos;
         }
     }
 }

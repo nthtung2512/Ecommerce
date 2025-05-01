@@ -21,7 +21,7 @@ namespace MealMate.DAL.Repositories
 
         public async Task<List<AT>> GetAtByStoreIdAsync(Guid storeId)
         {
-            return await Query.Where(at => at.StoreID == storeId).ToListAsync() ?? [];
+            return await Query.Where(at => at.StoreID == storeId).Include(a => a.Product).ToListAsync() ?? [];
         }
 
         public async Task UpdateAsync(AT updateData)
