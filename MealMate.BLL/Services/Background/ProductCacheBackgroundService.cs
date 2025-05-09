@@ -51,17 +51,23 @@ namespace MealMate.BLL.Services.Background
             foreach (var store in stores)
             {
                 var key = $"products-store:{store.Id}";
-                await redis.RemoveDataAsync(key);
 
-                try
+                if (await redis.GetDataAsync<object>(key) == null)
                 {
-                    var products = await productService.GetListProductByStoreIDAsync(store.Id);
-                    await redis.SetDataAsync(key, products, ttl);
-                    _logger.LogInformation("Cached products for store {StoreId}", store.Id);
+                    try
+                    {
+                        var products = await productService.GetListProductByStoreIDAsync(store.Id);
+                        await redis.SetDataAsync(key, products, ttl);
+                        _logger.LogInformation("Cached products for store {StoreId}", store.Id);
+                    }
+                    catch (EntityNotFoundException)
+                    {
+                        _logger.LogWarning("No products found for store {StoreId}", store.Id);
+                    }
                 }
-                catch (EntityNotFoundException)
+                else
                 {
-                    _logger.LogWarning("No products found for store {StoreId}", store.Id);
+                    _logger.LogInformation("Skipped caching for store {StoreId} - key already exists", store.Id);
                 }
             }
         }
@@ -72,17 +78,23 @@ namespace MealMate.BLL.Services.Background
             foreach (var category in categories)
             {
                 var key = $"products-category:{category}";
-                await redis.RemoveDataAsync(key);
 
-                try
+                if (await redis.GetDataAsync<object>(key) == null)
                 {
-                    var products = await productService.GetListProductByCategoryAsync(category);
-                    await redis.SetDataAsync(key, products, ttl);
-                    _logger.LogInformation("Cached products for category {Category}", category);
+                    try
+                    {
+                        var products = await productService.GetListProductByCategoryAsync(category);
+                        await redis.SetDataAsync(key, products, ttl);
+                        _logger.LogInformation("Cached products for category {Category}", category);
+                    }
+                    catch (EntityNotFoundException)
+                    {
+                        _logger.LogWarning("No products found for category {Category}", category);
+                    }
                 }
-                catch (EntityNotFoundException)
+                else
                 {
-                    _logger.LogWarning("No products found for category {Category}", category);
+                    _logger.LogInformation("Skipped caching for category {Category} - key already exists", category);
                 }
             }
         }
@@ -90,37 +102,48 @@ namespace MealMate.BLL.Services.Background
         private async Task CachePromotionalProducts(IRedisCacheService redis, IProductAppService productService, TimeSpan ttl)
         {
             const string key = "products-promotion";
-            await redis.RemoveDataAsync(key);
 
-            try
+            if (await redis.GetDataAsync<object>(key) == null)
             {
-                var products = await productService.GetListProductHavePromotionAsync();
-                await redis.SetDataAsync(key, products, ttl);
-                _logger.LogInformation("Cached products with promotions");
+                try
+                {
+                    var products = await productService.GetListProductHavePromotionAsync();
+                    await redis.SetDataAsync(key, products, ttl);
+                    _logger.LogInformation("Cached products with promotions");
+                }
+                catch (EntityNotFoundException)
+                {
+                    _logger.LogWarning("No products found with promotions");
+                }
             }
-            catch (EntityNotFoundException)
+            else
             {
-                _logger.LogWarning("No products found with promotions");
+                _logger.LogInformation("Skipped caching promotional products - key already exists");
             }
         }
 
         private async Task CacheTop5Products(IRedisCacheService redis, IProductAppService productService, TimeSpan ttl)
         {
             const string key = "products-top5";
-            await redis.RemoveDataAsync(key);
 
-            try
+            if (await redis.GetDataAsync<object>(key) == null)
             {
-                var year = DateTime.UtcNow.Year;
-                var top5Products = await productService.GetTempTop5ProductsAsync(year);
-                await redis.SetDataAsync(key, top5Products, ttl);
-                _logger.LogInformation("Cached top 5 products");
+                try
+                {
+                    var year = DateTime.UtcNow.Year;
+                    var top5Products = await productService.GetTempTop5ProductsAsync(year);
+                    await redis.SetDataAsync(key, top5Products, ttl);
+                    _logger.LogInformation("Cached top 5 products");
+                }
+                catch (EntityNotFoundException)
+                {
+                    _logger.LogWarning("No top 5 products found");
+                }
             }
-            catch (EntityNotFoundException)
+            else
             {
-                _logger.LogWarning("No top 5 products found");
+                _logger.LogInformation("Skipped caching top 5 products - key already exists");
             }
         }
     }
-
 }

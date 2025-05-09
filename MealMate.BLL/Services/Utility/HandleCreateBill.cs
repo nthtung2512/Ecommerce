@@ -50,13 +50,35 @@ namespace MealMate.BLL.Services.Utility
             {
                 int numberOfBills = 20;
 
+                var utcNow = DateTime.UtcNow;
+                var utcPlus7Now = utcNow.AddHours(7);
+
+                // Start of this week in UTC+7 (Monday 00:00)
+                var startOfThisWeekPlus7 = utcPlus7Now.Date.AddDays(-(int)utcPlus7Now.DayOfWeek + (int)DayOfWeek.Monday);
+
+                // Start and end of last week in UTC+7
+                var startOfLastWeekPlus7 = startOfThisWeekPlus7.AddDays(-7);
+                var endOfLastWeekPlus7 = startOfThisWeekPlus7;
+
+                // Convert to UTC
+                var startOfLastWeekUtc = startOfLastWeekPlus7.AddHours(-7);
+                var endOfLastWeekUtc = endOfLastWeekPlus7.AddHours(-7);
+
+                // Total timespan of last week
+                var totalSpan = endOfLastWeekUtc - startOfLastWeekUtc;
+
                 for (int i = 0; i < numberOfBills; i++)
                 {
-                    var store = stores[random.Next(stores.Count())];
+                    var store = stores[random.Next(stores.Count)];
+
+                    // Generate a random timespan offset into last week
+                    var randomOffset = new TimeSpan((long)(random.NextDouble() * totalSpan.Ticks));
+                    var randomBillDate = startOfLastWeekUtc + randomOffset;
+
                     var bill = new Bill(Guid.NewGuid())
                     {
                         PaymentMethod = random.Next(0, 2) == 0 ? "Credit Card" : "Momo",
-                        DateAndTime = DateTime.UtcNow.AddDays(-1),
+                        DateAndTime = randomBillDate,
                         CustomerID = customer.Id,
                         Customer = customer,
                         StoreID = store.Id,

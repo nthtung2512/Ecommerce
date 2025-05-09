@@ -5,6 +5,7 @@ using MealMate.BLL.IServices.Redis;
 using MealMate.BLL.IServices.Utility;
 using MealMate.DAL.Entities.Transactions;
 using MealMate.DAL.IRepositories;
+using MealMate.DAL.IRepositories.UnitOfWork;
 using MealMate.DAL.Utils.Exceptions;
 using MealMate.DAL.Utils.GuidUtil;
 
@@ -14,12 +15,15 @@ namespace MealMate.BLL.Services
     {
         private readonly IProductRepository _productRepository;
         private readonly ITransactionRepository _transactionRepository;
+        private readonly IAtRepository _atRepository;
         private readonly IMapProductService _mapProductService;
         private readonly IRedisCacheService _redisCacheService;
+        private readonly IProductCacheService _productCacheService;
         private readonly IValidator<Product> _productValidator;
         private readonly GuidGenerator _guidGenerator;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public ProductAppService(IProductRepository productRepository, GuidGenerator guidGenerator, IValidator<Product> productValidator, ITransactionRepository transactionRepository, IMapProductService mapProductService, IRedisCacheService redisCacheService)
+        public ProductAppService(IProductRepository productRepository, GuidGenerator guidGenerator, IValidator<Product> productValidator, ITransactionRepository transactionRepository, IMapProductService mapProductService, IRedisCacheService redisCacheService, IProductCacheService productCacheService, IAtRepository atRepository, IUnitOfWork unitOfWork)
         {
             _productRepository = productRepository;
             _guidGenerator = guidGenerator;
@@ -27,6 +31,9 @@ namespace MealMate.BLL.Services
             _transactionRepository = transactionRepository;
             _mapProductService = mapProductService;
             _redisCacheService = redisCacheService;
+            _productCacheService = productCacheService;
+            _atRepository = atRepository;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<List<ProductDto>> GetAllItemsByBillIdAsync(Guid transactionId)
@@ -234,14 +241,45 @@ namespace MealMate.BLL.Services
             }
             var newProductDto = await _mapProductService.MapProductDto(newProduct);
             await _productRepository.CreateAsync(newProduct);
+            await _productCacheService.InvalidProductCategoryCacheAsync(newProduct.Aisle);
             return newProductDto;
         }
 
         public async Task DeleteProductAsync(Guid id)
         {
-            var product = await _productRepository.GetAsync(id) ?? throw new EntityNotFoundException("Product not found");
-            await _productRepository.DeleteAsync(product);
+            await _unitOfWork.BeginTransactionAsync();
+            try
+            {
+                var product = await _productRepository.GetAsync(id)
+                    ?? throw new EntityNotFoundException("Product not found");
+
+                var allStoreHasProducts = await _atRepository.GetStoresByProductIdAsync(id);
+                var productAtStores = await _atRepository.GetAtByProductIDAsync(id);
+
+                await _productRepository.DeleteAsync(product);
+
+                foreach (var productAtStore in productAtStores)
+                {
+                    await _atRepository.DeleteAsync(productAtStore);
+                }
+
+                await _unitOfWork.CommitTransactionAsync(); // Only commit after DB updates succeed
+
+                // Invalidate cache outside the transaction (not typically transactional)
+                foreach (var store in allStoreHasProducts)
+                {
+                    await _productCacheService.InvalidProductAtStoreCacheAsync(store.Id);
+                }
+
+                await _productCacheService.InvalidProductCategoryCacheAsync(product.Aisle);
+            }
+            catch
+            {
+                await _unitOfWork.RollbackTransactionAsync();
+                throw;
+            }
         }
+
 
         public async Task<ProductDto> UpdateProductAsync(Guid id, ProductUpdateDto updateData)
         {
@@ -263,13 +301,14 @@ namespace MealMate.BLL.Services
             var productDto = await _mapProductService.MapProductDto(product);
             await _productRepository.UpdateAsync(product);
 
-            /*            await _cartService.RevalidateCartsWithProductIdsAsync([id]);*/
+            await _productCacheService.InvalidateProductCacheAsync(productDto);
             return productDto;
         }
 
         public async Task DeleteProductAtStoreAsync(Guid productId, Guid storeId)
         {
             await _productRepository.DeleteProductAtStoreAsync(productId, storeId);
+            await _productCacheService.InvalidProductAtStoreCacheAsync(storeId);
         }
 
         public async Task<List<TempTop5Product>> GetTempTop5StoresAsync(Guid storeId)

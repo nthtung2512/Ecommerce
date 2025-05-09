@@ -20,6 +20,37 @@ namespace MealMate.PL.Controllers
             _customerPromotionAppService = customerPromotionAppService;
         }
 
+        [HttpDelete("{type}/{id}")]
+        public async Task<IActionResult> DeletePromotion(string type, Guid id)
+        {
+            if (string.IsNullOrEmpty(type))
+            {
+                return BadRequest(new { message = "Promotion type is required." });
+            }
+            if (id == Guid.Empty)
+            {
+                return BadRequest(new { message = "Promotion ID is required." });
+            }
+            if (type.Equals("Product Promotion", StringComparison.OrdinalIgnoreCase))
+            {
+                await _productPromotionAppService.DeleteProductPromotionAsync(id);
+            }
+            else if (type.Equals("Bill Promotion", StringComparison.OrdinalIgnoreCase))
+            {
+                await _billPromotionAppService.DeleteBillPromotionAsync(id);
+            }
+            else if (type.Equals("Customer Promotion", StringComparison.OrdinalIgnoreCase))
+            {
+                await _customerPromotionAppService.DeleteCustomerPromotionAdminAsync(id);
+            }
+            else
+            {
+                return BadRequest(new { message = "Invalid promotion type." });
+            }
+
+            return Ok(new { message = "Promotion deleted successfully." });
+        }
+
         [HttpDelete]
         public async Task<IActionResult> DeleteExpiredPromotions()
         {

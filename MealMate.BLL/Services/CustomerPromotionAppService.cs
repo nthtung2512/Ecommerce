@@ -76,6 +76,12 @@ namespace MealMate.BLL.Services
             };
         }
 
+        public async Task DeleteCustomerPromotionAdminAsync(Guid id)
+        {
+            var promotion = await _customerPromotionRepository.GetCustomerPromotionByIdAsync(id) ?? throw new EntityNotFoundException("No customer promotion found");
+            await _customerPromotionRepository.DeleteAsync(promotion);
+        }
+
         public async Task DeleteCustomerPromotionAsync(Guid promotionid, Guid customerid)
         {
             var promoteCustomer = await _customerPromotionRepository.GetCustomerPromotionByPCIdAsync(promotionid, customerid) ?? throw new EntityNotFoundException("No customer promotion found");

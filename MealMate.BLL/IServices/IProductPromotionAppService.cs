@@ -9,5 +9,6 @@ namespace MealMate.BLL.IServices
         Task<List<ProductPromotionDto>> GetPromotionsByProductId(Guid productId);
         Task<ProductPromotionDto> CreateProductPromotionByProductIdAsync(ProductPromotionCreationDto promotionData);
         Task DeleteExpiredPromotionsAsync();
+        Task DeleteProductPromotionAsync(Guid id);
     }
 }

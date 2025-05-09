@@ -46,6 +46,7 @@ namespace MealMate.BLL.Services
             employee.Salary = updateData.Salary ?? employee.Salary;
             employee.Address = updateData.Address ?? employee.Address;
             employee.PhoneNumber = updateData.Phone ?? employee.PhoneNumber;
+            employee.StoreId = updateData.StoreID ?? employee.StoreId;
 
             await _employeeRepository.UpdateAsync(employee);
 

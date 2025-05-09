@@ -77,18 +77,31 @@ namespace MealMate.BLL.Services
         public async Task<CustomerDto> AddTotalMoneySpentByIdAsync(Guid id, decimal money)
         {
             // Fetch customer by ID to update
-            var existingCustomer = await _customerRepository.GetAsync(id) ?? throw new EntityNotFoundException("No customer found");
+            var existingCustomer = await _customerRepository.GetAsync(id)
+                ?? throw new EntityNotFoundException("No customer found");
 
-            // Update customer properties
-            existingCustomer.FortuneChance += (int)(money / 100);
-            existingCustomer.FortuneChance += (int)((money % 100.00m + existingCustomer.TotalMoneySpent % 100.00m) / 100);
+            // Calculate the fortune increment based on absolute money
+            int fortuneIncrement = (int)(Math.Abs(money) / 100);
+            int carryIncrement = (int)((Math.Abs(money) % 100.00m + existingCustomer.TotalMoneySpent % 100.00m) / 100);
 
-            existingCustomer.TotalMoneySpent += money;
+            if (money >= 0)
+            {
+                existingCustomer.FortuneChance += fortuneIncrement;
+                existingCustomer.FortuneChance += carryIncrement;
+                existingCustomer.TotalMoneySpent += money;
+            }
+            else
+            {
+                existingCustomer.FortuneChance -= fortuneIncrement;
+                existingCustomer.FortuneChance -= carryIncrement;
+                existingCustomer.TotalMoneySpent += money; // still use += since money is negative
+            }
 
             await _customerRepository.UpdateAsync(existingCustomer);
 
             return Map(existingCustomer);
         }
+
     }
 
 }

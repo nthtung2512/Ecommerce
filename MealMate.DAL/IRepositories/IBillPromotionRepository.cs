@@ -13,5 +13,6 @@ namespace MealMate.DAL.IRepositories
         /*     Task DeleteAsync(BillPromotion billPromotion);*/
         Task<List<BillPromotion>> GetExpiredBillPromotions();
         Task DeleteExpiredPromotionsAsync(BillPromotion billPromotion);
+        Task DeleteAsync(BillPromotion billPromotion);
     }
 }

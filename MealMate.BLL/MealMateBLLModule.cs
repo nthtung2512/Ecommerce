@@ -59,6 +59,7 @@ namespace MealMate.BLL
 
             services.AddScoped<IRedisCacheService, RedisCacheService>();
             services.AddScoped<ICartService, CartService>();
+            services.AddScoped<IProductCacheService, ProductCacheService>();
             services.AddScoped<IReserveCartCacheService, ReserveCartCacheService>();
             services.AddScoped<IReserveCartItemCacheService, ReserveCartItemCacheService>();
 

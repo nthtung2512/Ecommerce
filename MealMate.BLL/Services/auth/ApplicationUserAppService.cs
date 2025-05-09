@@ -109,7 +109,7 @@ namespace MealMate.BLL.Services.auth
             {
                 Id = _guidGenerator.Create(),
                 Email = shipperDto.SEmail,
-                UserName = shipperDto.FName + shipperDto.LName,
+                UserName = shipperDto.FName + " " + shipperDto.LName,
                 FName = shipperDto.FName,
                 LName = shipperDto.LName,
                 Address = shipperDto.Address ?? string.Empty,

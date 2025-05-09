@@ -10,7 +10,7 @@ namespace MealMate.DAL.Repositories
     {
         public async Task<List<Shipper>> GetListAsync()
         {
-            return await _context.Shippers.ToListAsync();
+            return await _context.Shippers.Where(s => !s.IsDeleted).ToListAsync();
         }
 
         public async Task<Shipper?> GetShipperByPhoneNumberAsync(string phoneno)

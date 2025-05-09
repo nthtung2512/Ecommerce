@@ -55,11 +55,11 @@ namespace MealMate.DAL.Repositories
                 .ToListAsync();
         }
 
-        /*public async Task<ProductPromotion?> GetProductPromotionByIdAsync(Guid id)
+        public async Task<ProductPromotion?> GetProductPromotionByIdAsync(Guid id)
         {
             return await _context.ProductPromotions
                 .FirstOrDefaultAsync(p => p.Id == id);
-        }*/
+        }
 
         public async Task<List<ProductPromotion>> GetPromotionByProductIdAsync(Guid productId)
         {

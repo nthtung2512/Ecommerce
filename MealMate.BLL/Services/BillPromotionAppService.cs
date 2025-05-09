@@ -59,6 +59,12 @@ namespace MealMate.BLL.Services
             return _mapper.Map<BillPromotionCreationDto>(newPromotion);
         }
 
+        public async Task DeleteBillPromotionAsync(Guid id)
+        {
+            var promotion = await _billPromotionRepository.GetBillPromotionByIdAsync(id) ?? throw new EntityNotFoundException("No promotion found");
+            await _billPromotionRepository.DeleteAsync(promotion);
+        }
+
         public async Task DeleteExpiredPromotionsAsync()
         {
             var expiredPromotions = await _billPromotionRepository.GetExpiredBillPromotions();

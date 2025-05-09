@@ -12,5 +12,6 @@ namespace MealMate.BLL.IServices
         Task<int> ApplyBillPromotionToBillAsync(Guid promotionId, Guid billId);
         /*        Task DeletePromotionAsync(Guid id);*/
         Task DeleteExpiredPromotionsAsync();
+        Task DeleteBillPromotionAsync(Guid id);
     }
 }

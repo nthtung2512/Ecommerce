@@ -102,5 +102,15 @@ namespace MealMate.DAL.Repositories
             _context.Remove(billPromotion);
             await _context.SaveChangesAsync();
         }
+
+        public async Task DeleteAsync(BillPromotion billPromotion)
+        {
+            _context.Entry(billPromotion).State = EntityState.Modified;
+            foreach (var promoteBill in billPromotion.PromoteBills)
+            {
+                _context.Entry(promoteBill).State = EntityState.Modified;
+            }
+            await _context.SaveChangesAsync();
+        }
     }
 }

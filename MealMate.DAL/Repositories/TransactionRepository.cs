@@ -106,18 +106,25 @@ namespace MealMate.DAL.Repositories
         public async Task<BillStatusStatisticsDto> GetBillStatusStatisticsByStoreIdPrevAsync(Guid storeId)
         {
             var utcNow = DateTime.UtcNow;
-            var utcPlus7 = utcNow.AddHours(7).Date;
-            var previousDay = utcPlus7.AddDays(-1);
+            var utcPlus7Now = utcNow.AddHours(7);
 
-            var previousDayUtcStart = previousDay.AddHours(-7); // Convert back to UTC
-            var previousDayUtcEnd = previousDay.AddDays(1).AddHours(-7); // Next day in UTC+7
+            // Get the start of this week (Monday)
+            var startOfThisWeekPlus7 = utcPlus7Now.Date.AddDays(-(int)utcPlus7Now.DayOfWeek + (int)DayOfWeek.Monday);
+
+            // Get the start and end of last week in UTC+7
+            var startOfLastWeekPlus7 = startOfThisWeekPlus7.AddDays(-7);
+            var endOfLastWeekPlus7 = startOfThisWeekPlus7;
+
+            // Convert to UTC
+            var startOfLastWeekUtc = startOfLastWeekPlus7.AddHours(-7);
+            var endOfLastWeekUtc = endOfLastWeekPlus7.AddHours(-7);
 
 
             var bills = await _context.Bills
                 .Where(b =>
                     b.StoreID == storeId &&
-                    b.DateAndTime >= previousDayUtcStart &&
-                    b.DateAndTime < previousDayUtcEnd &&
+                    b.DateAndTime >= startOfLastWeekUtc &&
+                    b.DateAndTime < endOfLastWeekUtc &&
                     !b.IsDeleted)
                 .ToListAsync();
 

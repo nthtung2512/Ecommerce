@@ -110,7 +110,7 @@ namespace MealMate.PL.Controllers
         {
             var purchaseHistory = await _transactionService.GetCustomerPurchaseHistory(customerId);
             return Ok(purchaseHistory);
-            
+
         }
     }
 }

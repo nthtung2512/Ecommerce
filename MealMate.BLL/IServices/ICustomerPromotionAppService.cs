@@ -9,6 +9,7 @@ namespace MealMate.BLL.IServices
         Task AssignPromotionToCustomerAsync(Guid promotionId, Guid customerid);
         Task DeleteExpiredPromotionsAsync();
         Task DeleteCustomerPromotionAsync(Guid promotionid, Guid customerid);
+        Task DeleteCustomerPromotionAdminAsync(Guid id);
         Task<List<CustomerPromotionDto>> GetListAsync();
         Task<List<CustomerPromotionDto>> GetListByCustomerIdAsync(Guid customerId);
         Task<List<CustomerPromotionDto>> GetDiscountByProductIdListAsync(List<Guid> productIdList);

@@ -23,7 +23,7 @@ namespace MealMate.PL.Controllers
             _applicationUserAppService = applicationUserAppService;
         }
 
-        [HttpGet("/login/{email}/{password}")]
+        [HttpGet("login/{email}/{password}")]
         [SwaggerOperation(
             Summary = "User login",
             Description = "Login by email and password then return Cookie. Cookie has 3 claim: Id, Username, Role"
@@ -54,7 +54,7 @@ namespace MealMate.PL.Controllers
             return Ok(userWithRole);
         }
 
-        [HttpPost("/register/customer")]
+        [HttpPost("register/customer")]
         [SwaggerOperation(
             Summary = "Register customer",
             Description = "Return: Guid Id; string Address; string FName; string LName; string PhoneNumber; string Email; decimal TotalMoneySpent; int FortuneChance"
@@ -66,7 +66,7 @@ namespace MealMate.PL.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        [HttpPost("/register/storemanager")]
+        [HttpPost("register/storemanager")]
         [SwaggerOperation(
             Summary = "Register storemanager",
             Description = "Return: Guid Id; string Address; string FName; string LName; string PhoneNumber; string Email; double Salary; Guid StoreID"
@@ -78,13 +78,24 @@ namespace MealMate.PL.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        [HttpPost("/register/shipper")]
+        [HttpPost("register/shipper")]
         [SwaggerOperation(
             Summary = "Register shipper",
             Description = "Return: Guid Id; string Address; string FName; string LName; string PhoneNumber; string Email; int VehicleCapacity"
         )]
         public async Task<IActionResult> RegisterShipper([FromBody] ShipperCreationDto shipperDto)
         {
+            var cookieHeader = Request.Headers["Cookie"];
+            Console.WriteLine($"Cookie Header: {cookieHeader}");
+            // Log the authenticated user details
+            Console.WriteLine("User Identity: " + User.Identity.Name); // Username of the authenticated user
+            Console.WriteLine("Is Authenticated: " + User.Identity.IsAuthenticated); // Authentication status
+
+            // Log all roles of the user
+            var userRoles = User.FindAll(ClaimTypes.Role).Select(role => role.Value);
+            Console.WriteLine("Current user's roles: " + string.Join(", ", userRoles));
+
+            // Proceed with registration
             var shipper = await _applicationUserAppService.RegisterShipperAsync(shipperDto);
             return Ok(shipper);
         }

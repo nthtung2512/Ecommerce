@@ -2,10 +2,9 @@
 using MealMate.DAL.Entities.ApplicationUser;
 using MealMate.DAL.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
 
 namespace MealMate.BLL
 {
@@ -20,6 +19,10 @@ namespace MealMate.BLL
             {
                 // Allow duplicate emails
                 options.User.RequireUniqueEmail = true;
+
+                // Allow spaces, dots, hyphens, etc. in usernames
+                options.User.AllowedUserNameCharacters =
+                    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 -._@+";
 
                 // Password requirements
                 options.Password.RequireDigit = false;
@@ -46,6 +49,21 @@ namespace MealMate.BLL
             {
                 options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme; // Change to cookie
+            })
+            .AddCookie(options =>
+            {
+                options.ExpireTimeSpan = TimeSpan.FromHours(6);
+                options.SlidingExpiration = true;
+                options.Cookie.Name = "CredentialCookie";
+                options.Cookie.SameSite = SameSiteMode.None;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // For HTTPS
+                options.Cookie.HttpOnly = true; // Prevent JavaScript access
+            });
+            /*services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme; // Use JWT for challenge
             })
             .AddCookie(options =>
@@ -63,7 +81,7 @@ namespace MealMate.BLL
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
                 };
-            });
+            });*/
         }
     }
 
