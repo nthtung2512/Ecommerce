@@ -30,6 +30,46 @@ namespace MealMate.PL.Controllers
             return Ok(recipes);
         }
 
+        [HttpGet("{recipeId}")]
+        [SwaggerOperation(
+                       Summary = "Get recipe by ID",
+                       Description = "Retrieves a specific recipe by its ID. \n\n" +
+                                     "**Parameters:**\n" +
+                                     "- `recipeId` (Guid) - The ID of the recipe (required)"
+                   )]
+        [SwaggerResponse(200, "Successfully retrieved the recipe", typeof(RecipeReturnDto))]
+        public async Task<IActionResult> GetRecipeById(Guid recipeId)
+        {
+            var recipe = await _recipeAppService.GetRecipeByIdAsync(recipeId);
+            return Ok(recipe);
+        }
+
+        [HttpGet("rating")]
+        [SwaggerOperation(
+                       Summary = "Get all recipe ratings",
+                       Description = "Retrieves a list of all recipe ratings."
+                   )]
+        [SwaggerResponse(200, "Successfully retrieved the list of recipe ratings", typeof(List<RecipeRatingReturnDto>))]
+        public async Task<IActionResult> GetAllRecipeRatings()
+        {
+            var recipeRatings = await _recipeRatingAppService.GetAllRecipeRatingsAsync();
+            return Ok(recipeRatings);
+        }
+
+        [HttpGet("rating/{customerId}")]
+        [SwaggerOperation(
+                       Summary = "Get all recipe ratings by customer ID",
+                       Description = "Retrieves a list of all recipe ratings given by a specific customer. \n\n" +
+                                     "**Parameters:**\n" +
+                                     "- `customerId` (Guid) - The ID of the customer (required)"
+                   )]
+        [SwaggerResponse(200, "Successfully retrieved the list of recipe ratings by customer ID", typeof(List<RecipeRatingReturnDto>))]
+        public async Task<IActionResult> GetAllRecipeRatingsByCustomerId(Guid customerId)
+        {
+            var recipeRatings = await _recipeRatingAppService.GetAllRecipeRatingsByCustomerIdAsync(customerId);
+            return Ok(recipeRatings);
+        }
+
         [HttpGet("rating/{recipeId}/{customerId}")]
         [SwaggerOperation(
             Summary = "Get a recipe rating",

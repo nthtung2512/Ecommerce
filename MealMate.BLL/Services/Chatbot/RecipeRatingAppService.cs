@@ -21,6 +21,30 @@ namespace MealMate.BLL.Services.Chatbot
             _unitOfWork = unitOfWork;
         }
 
+        public async Task<List<RecipeRatingReturnDto>> GetAllRecipeRatingsAsync()
+        {
+            var recipeRatings = await _recipeRatingRepository.GetAllAsync();
+            return recipeRatings.Select(r => new RecipeRatingReturnDto
+            {
+                RecipeId = r.RecipeId,
+                CustomerId = r.CustomerId,
+                Rating = r.Rating,
+                Timestamp = r.Timestamp
+            }).ToList();
+        }
+
+        public async Task<List<RecipeRatingReturnDto>> GetAllRecipeRatingsByCustomerIdAsync(Guid customerId)
+        {
+            var recipeRatings = await _recipeRatingRepository.GetRecipeRatingByCustomerIdAsync(customerId);
+            return recipeRatings.Select(r => new RecipeRatingReturnDto
+            {
+                RecipeId = r.RecipeId,
+                CustomerId = r.CustomerId,
+                Rating = r.Rating,
+                Timestamp = r.Timestamp
+            }).ToList();
+        }
+
         public async Task<RecipeRatingReturnDto> GetRecipeRatingAsync(Guid recipeId, Guid customerId)
         {
             var recipeRating = await _recipeRatingRepository.GetRecipeRatingAsync(recipeId, customerId) ?? throw new EntityNotFoundException("No rating found for this recipe");

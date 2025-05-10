@@ -41,5 +41,34 @@ namespace MealMate.BLL.Services.Chatbot
             }).ToList();
         }
 
+        public async Task<RecipeReturnDto> GetRecipeByIdAsync(Guid recipeId)
+        {
+            var recipe = await _recipeRepository.GetByIdAsync(recipeId)
+                ?? throw new EntityNotFoundException("Recipe not found");
+
+            return new RecipeReturnDto
+            {
+                Id = recipe.Id,
+                Title = recipe.Title,
+                Tags = recipe.GetListTags().ToList(),
+                Image = recipe.Image,
+                Instructions = recipe.Instructions,
+                Summary = recipe.Summary,
+                ReadyInMinutes = recipe.ReadyInMinutes,
+                Servings = recipe.Servings,
+                HealthScore = recipe.HealthScore,
+                AverageRating = recipe.AverageRating,
+                Ingredients = recipe.Ingredients.Select(i => new IngredientReturnDto
+                {
+                    RecipeId = i.RecipeId,
+                    Name = i.Name,
+                    Amount = i.Amount,
+                    Unit = i.Unit,
+                    Original = i.Original,
+                    NameClean = i.NameClean
+                }).ToList()
+            };
+        }
+
     }
 }
